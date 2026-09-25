@@ -14,6 +14,7 @@ WEB = Path(__file__).resolve().parents[1]
 ap = argparse.ArgumentParser()
 ap.add_argument('out')
 ap.add_argument('--size', default='1440x900')
+ap.add_argument('--url', default='', help='test a deployed site instead of a local server')
 args = ap.parse_args()
 out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 W, H = map(int, args.size.split('x'))
@@ -26,7 +27,7 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
 
 srv = socketserver.ThreadingTCPServer(('127.0.0.1', 0), functools.partial(Quiet, directory=str(WEB)))
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = f'http://127.0.0.1:{srv.server_address[1]}/index.html'
+url = args.url or f'http://127.0.0.1:{srv.server_address[1]}/index.html'
 errors, results = [], []
 
 with sync_playwright() as p:

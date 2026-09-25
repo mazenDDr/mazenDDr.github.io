@@ -1,5 +1,7 @@
 # Mazen's Room: the portfolio site
 
+**Live: https://mazenddr.github.io/**
+
 A first-person walk through Mazen's room, in the spirit of *Life is Strange*.
 You knock, the door opens, and you click where to go: sit on the couch, at the
 desk or on the bed, or look at the certificate wall. The TV, the computer and
@@ -75,7 +77,7 @@ as seen head-on) and the renders' screen-space vignette and glow.
 
 ```sh
 P=/tmp/t16-pw-venv/bin/python        # any Python with Playwright
-$P web/tools/flow_test.py OUT/       # the whole visit with real clicks: knock → couch → TV → desk → PC → diploma → pinboard
+$P web/tools/flow_test.py OUT/ [--url https://mazenddr.github.io/]   # the whole visit with real clicks: knock → couch → TV → desk → PC → diploma → pinboard
 $P web/tools/shoot.py --query view=hero --out hero.png
 $P web/tools/app_shot.py apps/tv/ tv.png --click .person
 ```
