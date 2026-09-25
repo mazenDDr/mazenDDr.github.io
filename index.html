@@ -6,6 +6,8 @@
 <title>Mazen's Room</title>
 <meta name="description" content="Mazen Khaled's portfolio: a room you can walk into.">
 <link rel="icon" href="favicon.svg">
+<link rel="preload" href="public/hall.webp" as="image" media="(orientation: landscape)">
+<link rel="preload" href="public/hall-portrait.webp" as="image" media="(orientation: portrait)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,12 +20,13 @@
 </script>
 </head>
 <body>
+<script>document.documentElement.classList.add('js');</script>
 <canvas id="room"></canvas>
 <div id="intro">
   <p class="kicker">a room full of projects</p>
   <h1>Mazen Khaled</h1>
   <p class="sub">AI engineer</p>
-  <button type="button" class="knock">Knock on the door <kbd>↵</kbd></button>
+  <button type="button" class="knock"><span>Knock on the door</span> <kbd>↵</kbd></button>
   <small>🔊 sound on</small>
 </div>
 <button id="mute" type="button" aria-label="Mute sound" title="Sound">🔊</button>

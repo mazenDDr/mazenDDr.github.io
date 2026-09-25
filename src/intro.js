@@ -111,7 +111,7 @@ function roomTone() {
 
 export function setMuted(m) { if (bus) bus.gain.setTargetAtTime(m ? 0 : 0.9, audio().currentTime, 0.1); }
 
-export function playIntro({ door, openAngle, director, doodles, camera, spill, onDone }) {
+export function playIntro({ door, openAngle, director, doodles, camera, spill, onDone, ready = Promise.resolve() }) {
   const card = document.getElementById('intro');
   const wait = (s) => new Promise((r) => setTimeout(r, s * 1000));
   let started = false;
@@ -164,6 +164,7 @@ export function playIntro({ door, openAngle, director, doodles, camera, spill, o
   const start = async () => {
     if (started) return;
     started = true;
+    await ready;                                  // a knock before the room has loaded waits for it
     director.nudge = 0;
     card.classList.add('knocking');
     doodles.hide('door');
@@ -195,6 +196,7 @@ export function playIntro({ door, openAngle, director, doodles, camera, spill, o
   });
 
   return {
+    knock: start,
     skip: async () => {
       started = true;
       card.classList.add('gone');

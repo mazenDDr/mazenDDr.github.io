@@ -18,10 +18,10 @@ for (const f of readdirSync(dir).filter((f) => f.endsWith('.png') && !f.endsWith
   const r = report[name];
   if (!r) continue;
   // Light is smooth: high-quality lossy WebP holds it well. Colour atlases get more care.
-  await sharp(`${dir}/${f}`).webp({ quality: 92, effort: 5 }).toFile(`${dir}/${name}.webp`);
+  await sharp(`${dir}/${f}`).webp({ quality: 86, effort: 6 }).toFile(`${dir}/${name}.webp`);
   const entry = { name, group: r.group, file: `${name}.webp`, size: r.res, range: r.range, kb: kb(`${dir}/${name}.webp`) };
   if (r.albedo) {
-    await sharp(`${dir}/${name}_albedo.png`).webp({ quality: 90, effort: 5 }).toFile(`${dir}/${name}_albedo.webp`);
+    await sharp(`${dir}/${name}_albedo.png`).webp({ quality: 84, effort: 6 }).toFile(`${dir}/${name}_albedo.webp`);
     entry.albedo = `${name}_albedo.webp`;
     entry.kb += kb(`${dir}/${name}_albedo.webp`);
   }

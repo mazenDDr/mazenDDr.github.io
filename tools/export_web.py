@@ -27,8 +27,9 @@ BAKED = ROOT / 'design/export/web_baked.blend'
 RAW = ROOT / 'web/build/room_raw.glb'
 MANIFEST = ROOT / 'web/build/materials.json'
 HINGE = Vector((3.315, 5.225, 0))
-MAX_TEX = 1024          # most textures; printed art and big surfaces get BIG_TEX
+MAX_TEX = 1024          # most textures; printed art (posters, covers) gets BIG_TEX
 BIG_TEX = 2048
+ART = ('poster', 'art', 'cover', 'book', 'spine')
 
 bpy.ops.wm.open_mainfile(filepath=str(BAKED))
 sc = bpy.context.scene
@@ -70,7 +71,7 @@ def rebuild(ma, kind, area):
         if e > 0 and (eimg or any(ec.default_value[:3])):
             entry['emissive'] = [round(v * e, 5) for v in (ec.default_value[:3] if not eimg else (1, 1, 1))]
             if eimg:
-                limit = BIG_TEX if area > .3 else MAX_TEX
+                limit = MAX_TEX
                 if max(eimg.size) > limit:
                     eimg.scale(*[max(1, int(v * limit / max(eimg.size))) for v in eimg.size])
                 t = nt.nodes.new('ShaderNodeTexImage')
@@ -79,7 +80,7 @@ def rebuild(ma, kind, area):
                 nb.inputs['Emission Strength'].default_value = 1
                 entry['emissiveMap'] = True
     if img:
-        limit = BIG_TEX if area > .3 or 'art' in (ma.name if ma else '') else MAX_TEX
+        limit = BIG_TEX if any(k in (ma.name if ma else '').lower() for k in ART) else MAX_TEX
         if max(img.size) > limit:
             img.scale(*[max(1, int(v * limit / max(img.size))) for v in img.size])
         t = nt.nodes.new('ShaderNodeTexImage')
@@ -151,7 +152,7 @@ for ob in list(sc.objects):
 RAW.parent.mkdir(parents=True, exist_ok=True)
 bpy.ops.export_scene.gltf(filepath=str(RAW), export_format='GLB', use_selection=False,
                           export_normals=False, export_texcoords=True, export_materials='EXPORT',  # light is baked: no normals needed
-                          export_image_format='WEBP', export_image_quality=88,
+                          export_image_format='WEBP', export_image_quality=82,
                           export_apply=False, export_yup=True, export_extras=False, export_cameras=False,
                           export_lights=False)
 MANIFEST.write_text(json.dumps(manifest, indent=1))

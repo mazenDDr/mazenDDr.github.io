@@ -17,6 +17,16 @@ scene.background = new THREE.Color(0x0b0806);
 const camera = new THREE.PerspectiveCamera(60, 1, 0.03, 80);
 camera.userData.canvas = canvas;
 
+// The title card and knock button show at once over a still of the hallway; a knock
+// during loading is remembered and plays as soon as the room is ready.
+const knockBtn = document.querySelector('#intro .knock');
+let earlyKnock = false;
+const knockLabel = knockBtn.querySelector('span');
+knockLabel.textContent = 'Loading the room…';
+document.getElementById('intro').classList.add('waiting');
+const onEarly = () => { earlyKnock = true; knockLabel.textContent = 'Knocking…'; };
+knockBtn.addEventListener('click', onEarly);
+
 const anchors = await (await fetch('public/anchors.json')).json();
 
 // Blender keeps the horizontal field of view fixed; do the same so framing
@@ -131,6 +141,13 @@ if (params.has('view')) {                      // exact Blender camera, for rend
   syncHud();
 } else {
   director.snap('hall');
+  knockBtn.removeEventListener('click', onEarly);
+  document.getElementById('intro').classList.remove('waiting');
+  knockLabel.textContent = 'Knock on the door';
+  if (earlyKnock) setTimeout(() => intro.knock(), 400);
+  if (params.has('still')) {           // tools/hall_still.py: the bare hallway, no UI
+    document.body.classList.add('still');
+  }
 }
 
 document.getElementById('loading').classList.add('done');
