@@ -28,6 +28,8 @@ ap.add_argument('--dpr', type=float, default=1)
 ap.add_argument('--size', default='1440x900')
 ap.add_argument('--page', default='index.html')
 ap.add_argument('--root', default=None)
+ap.add_argument('--url', default=None, help='measure a deployed site instead')
+ap.add_argument('--repeat', action='store_true', help='also time a second visit (service worker cache)')
 ap.add_argument('--mobile', action='store_true', help='touch phone viewport')
 ap.add_argument('--cpu', type=float, default=1, help='CPU slowdown (4 = a mid phone, 6 = a cheap one)')
 args = ap.parse_args()
@@ -37,7 +39,7 @@ H = type('Quiet', (http.server.SimpleHTTPRequestHandler,), {'log_message': lambd
 srv = type('Srv', (socketserver.ThreadingTCPServer,), {'request_queue_size': 64})(('127.0.0.1', 0), functools.partial(H, directory=str(root)))
 srv.daemon_threads = True
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = f'http://127.0.0.1:{srv.server_address[1]}/{args.page}'
+url = args.url or f'http://127.0.0.1:{srv.server_address[1]}/{args.page}'
 NETS = {'fast4g': (9e6, 170), 'slow4g': (1.6e6, 150), 'none': None}
 
 FPS = """(ms) => new Promise((res) => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < ms) requestAnimationFrame(f); else res(n * 1000 / (performance.now() - t0)); }; requestAnimationFrame(f); })"""
@@ -96,5 +98,14 @@ with sync_playwright() as p:
            'first_paint_s': round(fcp, 2) if fcp else None, 'interactive_s': round(interactive, 2), 'in_room_s': round(in_room, 2),
            'mb_to_room': round(mb, 1), 'idle_frames_s': round(idle, 1), 'flight_fps': round(flight, 1), 'frame_ms': round(frame, 2),
            'gpu_mb': round(gpu) if gpu is not None else None, 'errors': errors}
+    if args.repeat:                                     # a second visit, same browser: from the cache
+        t0 = time.time()
+        pg.goto(url, wait_until='commit')
+        pg.wait_for_function('window.__room && window.__room.director', timeout=60000)
+        out['repeat_interactive_s'] = round(time.time() - t0, 2)
+        pg.locator('#intro .knock').click()
+        pg.wait_for_function("__room.director.place === 'room' && !__room.director.busy", timeout=120000)
+        out['repeat_in_room_s'] = round(time.time() - t0, 2)
+        out['repeat_mb'] = round(pg.evaluate(BYTES) / 2**20, 2)
     print(json.dumps(out))
     b.close()

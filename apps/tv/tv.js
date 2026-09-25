@@ -190,7 +190,7 @@ function browse() {
   const cycle = () => { billboard(byId[data.projects[order[featured % 6]].id]); featured++; };
   cycle();
   clearInterval(rotate);
-  rotate = setInterval(() => { if (!document.querySelector('.modal') && !app.querySelector('.billboard:hover')) cycle(); }, 11000);
+  rotate = setInterval(() => { if (!document.querySelector('.modal') && !app.querySelector('.billboard:hover') && !still) cycle(); }, 11000);   // (not while asleep)
 
   const scroller = app.querySelector('.browse');
   scroller.addEventListener('scroll', () => app.querySelector('header.top').classList.toggle('solid', scroller.scrollTop > 30));
