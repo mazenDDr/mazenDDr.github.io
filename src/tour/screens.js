@@ -117,7 +117,8 @@ export class Screens {
     const o = this.objects[name];
     if (!o) return;
     const src = ALT[app] || o.app.src;
-    if (o.src !== src) { o.frame.src = src; o.src = src; }
+    const swapped = o.src !== src;
+    if (swapped) { o.frame.src = src; o.src = src; }
     this.active = name;
     document.body.classList.add('screen-focus');
     this.wake(o, true);
@@ -134,7 +135,9 @@ export class Screens {
       o.wrap.classList.add('on');
       o.to = 0;
       o.glass.sheen = 0.5;
-      setTimeout(() => o.frame.focus(), 350);
+      // keys go to the page only once it can answer them (Escape still works meanwhile)
+      if (swapped) o.frame.addEventListener('load', () => this.active === name && o.frame.focus(), { once: true });
+      else setTimeout(() => o.frame.focus(), 350);
     }
   }
 
