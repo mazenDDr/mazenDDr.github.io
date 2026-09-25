@@ -67,5 +67,3 @@ svg.string { position: absolute; inset: 0; width: 100%; height: 100%; pointer-ev
 #board.list svg.string { display: none; }
 #board.list ~ #zoom .item { transform: none; }
 
-/* asleep: on the room's wall, not being looked at */
-.asleep *, .asleep *::before, .asleep *::after { animation-play-state: paused !important; }

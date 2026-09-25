@@ -1,11 +1,20 @@
-"""How hard the page works the GPU, on a stand-in for a weak machine.
+"""What a visitor feels, measured: how fast the room appears, how much it downloads,
+how smooth it is, and how hard it works the device.
 
-Chrome's software GPU (SwiftShader) runs every pixel on the CPU, so its frame
-rate falls with exactly the work a cheap tablet's GPU would have to do. Measures:
-  idle   - frames drawn per second while you just sit and look (should be ~0)
-  moving - frame rate while flying couch -> desk -> couch
-  still  - frame time of one full-quality frame
-    /tmp/t16-pw-venv/bin/python web/tools/perf_probe.py [--gpu] [--dpr 1]
+  first_paint_s     first pixels on screen (First Contentful Paint)
+  interactive_s     the page answers (the knock button works)
+  in_room_s         knock at once, then time until standing in the room
+  mb_to_room        megabytes downloaded by then
+  idle_frames_s     frames the browser draws per second while you just look (0 is ideal)
+  flight_fps        page frame rate while flying to another place
+  frame_ms          one full redraw (GPU time, synced with a pixel read)
+  gpu_mb            texture memory (estimated from what is uploaded)
+
+Network: --net fast4g (9 Mbps, 170 ms) | slow4g (1.6 Mbps, 150 ms) | none. GPU: real, or
+--swiftshader (Chrome's software GPU, a stand-in for a very weak one); --cpu 6 slows the CPU
+like a cheap phone. --page engine/index.html
+measures the old real-time version the same way.
+  /tmp/t16-pw-venv/bin/python web/tools/perf_probe.py [--net fast4g] [--swiftshader] [--dpr 2] [--size 1440x900]
 """
 import argparse, functools, http.server, json, socketserver, threading, time
 from pathlib import Path
@@ -13,72 +22,79 @@ from playwright.sync_api import sync_playwright
 
 WEB = Path(__file__).resolve().parents[1]
 ap = argparse.ArgumentParser()
-ap.add_argument('--gpu', action='store_true', help='use the real GPU instead of SwiftShader')
+ap.add_argument('--net', default='none')
+ap.add_argument('--swiftshader', action='store_true')
 ap.add_argument('--dpr', type=float, default=1)
-ap.add_argument('--size', default='1280x800')
-ap.add_argument('--root', default=None, help='serve another copy of the site (e.g. an older checkout)')
+ap.add_argument('--size', default='1440x900')
+ap.add_argument('--page', default='index.html')
+ap.add_argument('--root', default=None)
+ap.add_argument('--mobile', action='store_true', help='touch phone viewport')
+ap.add_argument('--cpu', type=float, default=1, help='CPU slowdown (4 = a mid phone, 6 = a cheap one)')
 args = ap.parse_args()
-if args.root:
-    WEB = Path(args.root)
+root = Path(args.root) if args.root else WEB
 
-H = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(WEB))
 H = type('Quiet', (http.server.SimpleHTTPRequestHandler,), {'log_message': lambda *a: None})
-H = functools.partial(H, directory=str(WEB))
-srv = socketserver.ThreadingTCPServer(('127.0.0.1', 0), H)
+srv = type('Srv', (socketserver.ThreadingTCPServer,), {'request_queue_size': 64})(('127.0.0.1', 0), functools.partial(H, directory=str(root)))
 srv.daemon_threads = True
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = f'http://127.0.0.1:{srv.server_address[1]}/index.html?place=couch'
+url = f'http://127.0.0.1:{srv.server_address[1]}/{args.page}'
+NETS = {'fast4g': (9e6, 170), 'slow4g': (1.6e6, 150), 'none': None}
 
-COUNT = """(() => { const r = __room.renderer; if (!r.__n) { r.__n = 0; const f = r.render.bind(r); r.render = (...a) => { r.__n++; return f(...a); }; } return r.__n; })()"""
 FPS = """(ms) => new Promise((res) => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < ms) requestAnimationFrame(f); else res(n * 1000 / (performance.now() - t0)); }; requestAnimationFrame(f); })"""
+BYTES = """() => performance.getEntriesByType('resource').reduce((s, e) => s + (e.transferSize || e.encodedBodySize || 0), 0) + (performance.getEntriesByType('navigation')[0]?.transferSize || 0)"""
 
 w, h = map(int, args.size.split('x'))
-flags = [] if args.gpu else ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']
+flags = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] if args.swiftshader else []
 with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome', args=flags)
-    pg = b.new_page(viewport={'width': w, 'height': h}, device_scale_factor=args.dpr)
+    ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=args.dpr, is_mobile=args.mobile, has_touch=args.mobile)
+    pg = ctx.new_page()
     errors = []
     pg.on('pageerror', lambda e: errors.append(str(e)))
-    pg.goto(url)
-    pg.wait_for_function('window.__room && window.__room.ready', timeout=300000)
-    time.sleep(4)
+    cdp = ctx.new_cdp_session(pg)
+    if NETS[args.net]:
+        bps, rtt = NETS[args.net]
+        cdp.send('Network.enable')
+        cdp.send('Network.emulateNetworkConditions', {'offline': False, 'latency': rtt, 'downloadThroughput': bps / 8, 'uploadThroughput': bps / 8})
+    if args.cpu > 1:
+        cdp.send('Emulation.setCPUThrottlingRate', {'rate': args.cpu})
+    t0 = time.time()
+    pg.goto(url, wait_until='commit')
+    pg.wait_for_function('window.__room && window.__room.director', timeout=180000)
+    interactive = time.time() - t0
+    pg.locator('#intro .knock').click()
+    pg.wait_for_function("__room.director.place === 'room' && !__room.director.busy", timeout=600000)
+    in_room = time.time() - t0
+    mb = pg.evaluate(BYTES) / 2**20
+    fcp = pg.evaluate("performance.getEntriesByName('first-contentful-paint')[0]?.startTime / 1000")
+    time.sleep(3)
     pg.mouse.move(w / 2, h / 2)
     time.sleep(2)
-    # Frames the browser itself draws while nobody touches anything (WebGL, the live
-    # screens and the page's own CSS all count), from Chrome's own trace.
-    cdp = pg.context.new_cdp_session(pg)
-    events = []
+    # frames the browser itself draws while nobody touches anything
+    events, done = [], []
     cdp.on('Tracing.dataCollected', lambda e: events.extend(e['value']))
-    done = []
     cdp.on('Tracing.tracingComplete', lambda e: done.append(1))
     cdp.send('Tracing.start', {'categories': 'disabled-by-default-devtools.timeline.frame', 'transferMode': 'ReportEvents'})
-    n0 = pg.evaluate(COUNT); time.sleep(5); n1 = pg.evaluate(COUNT)
+    time.sleep(5)
     cdp.send('Tracing.end')
     while not done:
         pg.wait_for_timeout(100)
-    idle_frames = sum(1 for e in events if e.get('name') in ('DrawFrame',)) / 5
-    idle_draws = (n1 - n0) / 5                       # renderer.render calls per second (passes included)
-    idle_fps = pg.evaluate(FPS, 3000)
+    idle = sum(1 for e in events if e.get('name') == 'DrawFrame') / 5
     pg.evaluate("__room.director.goTo('desk')")
-    moving = pg.evaluate(FPS, 2500)
+    flight = pg.evaluate(FPS, 2000)
     pg.wait_for_function('!__room.director.busy', timeout=60000)
-    pg.evaluate("__room.director.goTo('couch')")
-    moving = (moving + pg.evaluate(FPS, 2500)) / 2
-    pg.wait_for_function('!__room.director.busy', timeout=60000)
-    time.sleep(2)
-    still_ms = pg.evaluate("""(() => { const r = __room, gl = r.renderer.getContext(), px = new Uint8Array(4);
-      const frame = () => { r.post.render(0); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); };
-      frame(); const t0 = performance.now();
-      for (let i = 0; i < 5; i++) frame(); return (performance.now() - t0) / 5; })()""")
-    stats = pg.evaluate("""(() => { const r = __room, info = r.renderer.info; info.autoReset = false; info.reset(); r.renderer.render(r.scene, r.camera); info.autoReset = true;
-      const seen = new Set(); let bytes = 0;
-      r.scene.traverse((o) => { const m = o.material; if (!m) return;
-        for (const t of Object.values(m.uniforms || {}).map((u) => u.value).concat([m.map])) {
-          if (!t || !t.isTexture || seen.has(t) || !t.image) continue; seen.add(t);
-          const w = t.image.width || 0, h = t.image.height || 0; bytes += w * h * 4 * (t.generateMipmaps !== false ? 4 / 3 : 1); } });
-      return { calls: info.render.calls, triangles: info.render.triangles, textures: seen.size, texture_mb: Math.round(bytes / 1048576) }; })()""")
-    out = {'mode': 'gpu' if args.gpu else 'swiftshader', 'viewport': args.size, 'dpr': args.dpr,
-           'idle_draw_calls_per_s': round(idle_draws, 1), 'idle_browser_frames_per_s': round(idle_frames, 1), 'idle_page_fps': round(idle_fps, 1),
-           'moving_fps': round(moving, 1), 'full_frame_ms': round(still_ms, 1), **stats, 'errors': errors}
-    print(json.dumps(out, indent=1))
+    time.sleep(1)
+    frame = pg.evaluate("""(() => { const r = __room, v = r.viewer;
+      if (v) { const gl = v.gl, px = new Uint8Array(4), f = () => { v.render(r.tour.camera, r.tour.pano); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); };
+        f(); const t = performance.now(); for (let i = 0; i < 5; i++) f(); return (performance.now() - t) / 5; }
+      const gl = r.renderer.getContext(), px = new Uint8Array(4), f = () => { r.post.render(0); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); };
+      f(); const t = performance.now(); for (let i = 0; i < 5; i++) f(); return (performance.now() - t) / 5; })()""")
+    gpu = pg.evaluate("""(() => { const v = __room.viewer; if (!v) return null; let b = 0;
+      for (const p of Object.values(v.panos)) { for (const f of Object.values(p.faces)) if (f) b += f.size * f.size * 4 * 4 / 3; if (p.strip) b += 1280 * 256 * 4; }
+      return b / 1048576; })()""")
+    out = {'page': args.page, 'net': args.net, 'cpu': args.cpu, 'gpu': 'swiftshader' if args.swiftshader else 'real', 'viewport': args.size, 'dpr': args.dpr,
+           'first_paint_s': round(fcp, 2) if fcp else None, 'interactive_s': round(interactive, 2), 'in_room_s': round(in_room, 2),
+           'mb_to_room': round(mb, 1), 'idle_frames_s': round(idle, 1), 'flight_fps': round(flight, 1), 'frame_ms': round(frame, 2),
+           'gpu_mb': round(gpu) if gpu is not None else None, 'errors': errors}
+    print(json.dumps(out))
     b.close()

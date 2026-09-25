@@ -116,5 +116,3 @@ body.in-room .scan { display: block; }
 @keyframes zr { 0% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .win { animation: none; } #boot .progress i { animation-duration: .01s; } }
 
-/* asleep: on the room's wall, not being looked at */
-.asleep *, .asleep *::before, .asleep *::after { animation-play-state: paused !important; }

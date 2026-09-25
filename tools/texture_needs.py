@@ -29,7 +29,7 @@ threading.Thread(target=srv.serve_forever, daemon=True).start()
 
 MEASURE = """async (REF) => {
   const THREE = await import('three');
-  const { PLACES } = await import('./src/places.js');
+  const { PLACES } = await import('./engine/src/places.js');
   const r = __room, d = r.director;
   // one id per texture image; every mesh gets a feedback material (untextured ones still hide what's behind)
   const images = [], index = new Map(), restore = [];
@@ -108,7 +108,7 @@ MEASURE = """async (REF) => {
 with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome')
     pg = b.new_page(viewport={'width': 800, 'height': 500})
-    pg.goto(f'http://127.0.0.1:{srv.server_address[1]}/index.html?skip')
+    pg.goto(f'http://127.0.0.1:{srv.server_address[1]}/engine/index.html?skip')
     pg.wait_for_function('window.__room && window.__room.ready', timeout=300000)
     res = pg.evaluate(MEASURE, REF_WIDTH)
     b.close()

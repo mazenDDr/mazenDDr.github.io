@@ -27,7 +27,7 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
 handler = functools.partial(Quiet, directory=str(WEB))
 srv = socketserver.ThreadingTCPServer(('127.0.0.1', 0), handler)
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = f'http://127.0.0.1:{srv.server_address[1]}/index.html?{args.query}'
+url = f'http://127.0.0.1:{srv.server_address[1]}/engine/index.html?{args.query}'
 
 errors = []
 with sync_playwright() as p:

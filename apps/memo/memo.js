@@ -2,6 +2,8 @@
 // and how to reach me. Laid out on a fixed 1300x900 stage scaled to fit.
 // In the room, a screen nobody is looking at stops animating (the room says when).
 addEventListener('message', (e) => { if (e.data?.type === 'room-focus') document.documentElement.classList.toggle('asleep', !e.data.on); });
+// embedded in the room, start asleep: the room wakes the screen you look at
+if (new URLSearchParams(location.search).has('room') && parent !== window) document.documentElement.classList.add('asleep');
 const ROOT = '../../';
 const data = await (await fetch(ROOT + 'content/portfolio.json')).json();
 const P = data.person;

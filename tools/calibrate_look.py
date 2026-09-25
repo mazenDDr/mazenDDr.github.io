@@ -49,7 +49,7 @@ threading.Thread(target=srv.serve_forever, daemon=True).start()
 with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome', headless=True, args=['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'])
     pg = b.new_page(viewport={'width': 1800, 'height': 1008})
-    pg.goto(f'http://127.0.0.1:{srv.server_address[1]}/index.html?view=hero')
+    pg.goto(f'http://127.0.0.1:{srv.server_address[1]}/engine/index.html?view=hero')
     pg.wait_for_function('window.__room && window.__room.ready', timeout=120000)
     time.sleep(1.5)
     base = pg.evaluate('() => JSON.parse(JSON.stringify(__room.post.look))')

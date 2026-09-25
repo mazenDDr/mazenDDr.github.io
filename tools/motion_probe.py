@@ -24,7 +24,7 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
 
 srv = socketserver.ThreadingTCPServer(('127.0.0.1', 0), functools.partial(Quiet, directory=str(WEB)))
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = (args.url or f'http://127.0.0.1:{srv.server_address[1]}/') + 'index.html?skip'
+url = (args.url or f'http://127.0.0.1:{srv.server_address[1]}/') + 'engine/index.html?skip'
 
 RECORD = '''() => { window.__trace = []; const c = __room.camera;
   const f = (t) => { __trace.push([t, ...c.position.toArray(), ...c.quaternion.toArray(), __room.director.busy ? 1 : 0]);

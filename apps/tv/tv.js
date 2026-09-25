@@ -3,7 +3,9 @@
 import { keyArt } from './art.js';
 // In the room, a screen nobody is looking at stops animating (the room says when):
 // CSS animations pause, and the key art (animated SVG) swaps to a still copy.
-let still = false;
+// embedded in the room, start asleep: the room wakes the screen you look at
+let still = new URLSearchParams(location.search).has('room') && parent !== window;
+document.documentElement.classList.toggle('asleep', still);  // (start asleep)
 const swapArt = new Map();                        // animated url <-> still url
 addEventListener('message', (e) => {
   if (e.data?.type !== 'room-focus') return;

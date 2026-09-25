@@ -22,7 +22,7 @@ with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome', headless=True, args=['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist'])
     for name, size in (('hall', (1920, 1080)), ('hall-portrait', (900, 1600))):
         pg = b.new_page(viewport={'width': size[0], 'height': size[1]})
-        pg.goto(f'http://127.0.0.1:{srv.server_address[1]}/index.html?still')
+        pg.goto(f'http://127.0.0.1:{srv.server_address[1]}/engine/index.html?still')
         pg.wait_for_function('window.__room && window.__room.ready', timeout=120000)
         pg.evaluate('() => { __room.post.look.grain = 0; __room.post.apply(__room.post.look); }')
         time.sleep(1.5)

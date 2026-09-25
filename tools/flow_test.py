@@ -25,7 +25,9 @@ class Quiet(http.server.SimpleHTTPRequestHandler):
         pass
 
 
-srv = socketserver.ThreadingTCPServer(('127.0.0.1', 0), functools.partial(Quiet, directory=str(WEB)))
+srv = type('Srv', (socketserver.ThreadingTCPServer,), {'request_queue_size': 64})(('127.0.0.1', 0), functools.partial(Quiet, directory=str(WEB)))
+
+
 threading.Thread(target=srv.serve_forever, daemon=True).start()
 url = args.url or f'http://127.0.0.1:{srv.server_address[1]}/index.html'
 errors, results = [], []
@@ -53,7 +55,7 @@ with sync_playwright() as p:
 
     def shot(name, expect=None):
         s = state()
-        s['cam'] = pg.evaluate('() => [...__room.camera.position.toArray().map(v => +v.toFixed(2)), ...__room.camera.getWorldDirection(new __room.camera.position.constructor()).toArray().map(v => +v.toFixed(2))]')
+        s['cam'] = pg.evaluate('() => { const c = __room.camera, r = c.ray(0, 0); return [...c.pos, ...r.d].map(v => +v.toFixed(2)); }')
         print('STEP', name, json.dumps(s), flush=True)
         pg.screenshot(path=str(out / f'{len(results):02d}_{name}.png'))
         ok = expect is None or all(s.get(k) == v for k, v in expect.items())
@@ -63,7 +65,7 @@ with sync_playwright() as p:
         # Aim at the object's marker like a visitor: the view drifts a little with
         # the pointer, so follow the marker until it is hovered, then click.
         where = f'''() => {{ const s = __room.spots.spots.find(s => (s.place || s.action) === '{place}');
-            const v = s.anchor.clone().project(__room.camera);
+            const p = __room.camera.project(s.anchor), v = {{ x: p[0], y: p[1] }};
             return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight, __room.spots.hover === s]; }}'''
         for _ in range(8):
             x, y, hovered = pg.evaluate(where)

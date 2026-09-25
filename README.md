@@ -4,32 +4,53 @@
 
 A first-person visit to Mazen's room, in the spirit of *Life is Strange*.
 You stand on a landing with paintings on the wall and knock (the room downloads
-while you knock); the door opens and the camera
-swoops in. Click where to go and it flies there like a drone: the couch, the
-desk, the bed or the certificate wall. The TV, the computer and the pinboard are
-live pages on the screens, visible from anywhere in the room, shown inside the
-tubes' real curved glass. Click the console under the TV to swap Mazenflix for the arcade.
+while you knock); the door opens and the camera swoops in. Click where to go and
+it flies there like a drone: the couch, the desk, the bed or the certificate wall.
+The TV, the computer and the pinboard are live pages, shown inside the tubes'
+curved glass. Click the console under the TV to swap Mazenflix for the arcade.
 
 ```
 cd web && python3 -m http.server 8765      # then open http://localhost:8765
 ```
 
-Deep links: `?place=couch|tv|desk|pc|bed|memo|certificates`, `?skip` (no knock),
-`?view=hero` (the exact Blender hero camera, for render comparisons).
+Deep links: `?place=couch|tv|desk|pc|bed|memo|certificates`, `?skip` (no knock).
+
+## How it works: pictures, not a 3D engine in your browser
+
+A visitor never walks freely: they stand at a few places, look around a little,
+and fly between them. So the room is **rendered in advance**, the way Matterport
+tours, Street View and Apple's product pages work:
+
+- **a panorama at every place**: a cube of pictures around the eye, turned to face
+  the default view (no back face: you never look there), at 1024/2048 px per face
+  and a 4096-px front for large high-DPI screens;
+- **a short video for every flight** between places (the same drone moves as the
+  real-time version, 60 fps), in AV1 for devices that decode it in hardware and
+  H.264 for everything else, at 1080p and 720p;
+- the **live pages** show through holes left in the pictures where the screens are,
+  each mapped onto its screen with one projective CSS matrix; the tube's glass
+  (rim darkening, reflections, dimming from across the room) is drawn over them.
+
+The browser only shows pictures and plays videos (`src/tour/`: ~42 KB of script,
+plain WebGL 1, no libraries), so it runs on anything and never works a GPU hard.
+The pictures and videos are made by the real-time engine in `engine/` (the baked
+Cycles lighting of `design/blender/`), at full quality with no frame budget.
 
 ## What's where
 
 | Path | What it is |
 |---|---|
-| `index.html`, `src/` | The room: loading, walking, hotspots, the knock intro, the live screens |
-| `src/places.js` | Where you can go and what you look at there (positions in Blender cm) |
+| `index.html` (built), `src/tour/` | The site: panoramas, flights, hotspots, the knock intro, the live screens |
+| `engine/` | The real-time room (three.js, baked light): renders the tour's pictures and videos |
+| `engine/src/places.js` | Where you can go and what you look at there (positions in Blender cm) |
+| `public/tour/` | The panoramas, flights and script, named by content hash (generated) |
 | `apps/tv/` | **Mazenflix**, the TV: profiles, billboard, rows, detail pages |
 | `apps/pc/` | **MazenOS**, the computer, styled on Mac OS 8/9 Platinum: windows, project READMEs, terminal |
 | `apps/games/` | **Mazen Arcade** on the TV (click the console): Pong, Snake, Breakout |
 | `apps/memo/` | The pinboard: how I work, skills, the diploma, projects, contact |
 | `content/portfolio.json` | **Everything the screens show.** Edit this to change the site |
 | `content/github/` | The READMEs the project numbers were copied from |
-| `public/room.glb`, `public/bake/` | The room model and its baked lighting (generated) |
+| `public/room.glb`, `public/bake/` | The room model and its baked lighting, for the engine (generated) |
 | `public/anchors.json` | Measured screen/door/wall positions (generated) |
 | `tools/` | The export pipeline and the browser checks |
 
@@ -56,8 +77,8 @@ and light are kept apart so the browser stays sharp and fast:
   look (`src/post.js`): Blender's lift/gamma/gain, saturation, vignette and glow,
   then AgX at the scene's exposure.
 
-Five stages, all from the repo root (a new prep always gets a fresh bake;
-`bake_web.py` only resumes a bake of the current prep):
+The engine's room in five stages, all from the repo root (a new prep always gets a
+fresh bake; `bake_web.py` only resumes a bake of the current prep):
 
 ```sh
 B=/Applications/Blender.app/Contents/MacOS/Blender
@@ -66,6 +87,16 @@ $B --background --python-exit-code 1 --python web/tools/bake_web.py -- --samples
 $B --background --python-exit-code 1 --python web/tools/export_web.py   # the GLB + material manifest (texture sizes from tools/texture_needs.json)
 $B --background design/blender/room_polished.blend --python web/tools/anchors.py
 cd web && node tools/pack.mjs                                            # meshopt + WebP + manifest
+```
+
+Then the tour, from `web/` (about 10 minutes):
+
+```sh
+P=/tmp/t16-pw-venv/bin/python
+$P tools/record_moves.py    # every flight, frame by frame, from the engine's own camera code -> tools/moves.json
+$P tools/capture.py         # panoramas (PNG) and flights (lossless master videos), rendered by the engine
+node tools/encode.mjs       # AVIF/WebP faces and AV1/H.264 videos, named by hash -> public/tour/
+node tools/build.mjs        # bundle + minify, inline CSS and data, preload tags -> index.html, sw.js
 ```
 
 `prep_web.py` also adds the lived-in details from `tools/realism.py`: CC0 props
@@ -99,7 +130,7 @@ that collapses (it happened on three chunks) falls back to smart-project's own l
 
 ## Motion
 
-Moving is a drone flight (`src/director.js`): the camera lifts to 1.75 m, flies
+Moving is a drone flight (`engine/src/director.js`, recorded frame by frame for the tour): the camera lifts to 1.75 m, flies
 straight to the next spot (routing around the tall wardrobe), banks a little
 into turns, widens its field of view with speed, and lands. Looking around is a
 critically damped spring, so hovering a hotspot eases the view to a stop instead
@@ -116,47 +147,71 @@ of view. Measured with `tools/motion_probe.py`:
 
 ## Speed on any machine
 
-The room is baked, so a still view is a still picture. What the page does:
+Measured with `tools/perf_probe.py`: the page is opened, the visitor knocks at once,
+enters the room and flies to the desk. "Old" is the previous real-time version (now
+`engine/index.html`), measured the same way.
 
-- **Draws only when something changes** (`src/main.js`): the camera, the door or a
-  screen's dimming. Sitting and reading costs the GPU nothing.
-- **Two full-screen passes, not five** (`src/post.js`): the colour grade runs in the
-  room's own shader, the glow blurs at half size, and one final pass adds glow,
-  tone-maps and adds grain. The picture is the same (mean difference under 1/255).
-- **Dynamic resolution while moving**: a GPU that can't hold the frame rate flies
-  at 75% or 55% resolution, and gets one full-quality frame the moment it stops.
-- **Screens that sleep**: the live pages pause their animations when you're not
-  looking at them, pages out of view are hidden, and the dimming is drawn in WebGL
-  instead of a CSS filter (which made Chrome redraw a 1280-px page every frame).
-- **Shader variants**: each kind of surface only reads the textures it uses.
-- **Textures sized by measurement** (`tools/texture_needs.py`): the room is drawn
-  from every place you can be, in all directions, at 4K density, and each texture
-  keeps only the resolution some pixel can show.
+**Laptop** (M4 Pro, 1440x900 at 2x, fast 4G 9 Mbps):
 
-Measured with `tools/perf_probe.py` (couch view; the old build vs this one):
-
-| | before | now |
+| | old | now |
 |---|---:|---:|
-| browser frames per second while sitting still (M4 Pro, 2880x1800) | 60 | **0** |
-| one full-quality frame (M4 Pro, 2880x1800) | 12.5 ms | **6.4–8.3 ms** |
-| page responsiveness while still, software GPU (SwiftShader, 1280x800) | 2.6 fps | **60 fps** |
-| frame rate while flying, software GPU | 3.0 fps | **4.8 fps** |
+| first picture | 0.62 s | **0.33 s** |
+| the page answers (knock works) | 3.48 s | **0.49 s** |
+| standing in the room (after about 8 s of knocking, footsteps and the door) | 38.2 s | **10.8 s** |
+| downloaded by then | 33.6 MB | **2.1 MB** |
+| GPU time per frame | 11.2 ms | **1.5 ms** |
 
-SwiftShader runs the GPU's work on the CPU, so it stands in for a very weak GPU.
-Next step for low-memory tablets: GPU-compressed textures (KTX2/Basis). The
-textures take about 1.2 GB of GPU memory as plain RGBA; compressed they would
-take 4–8x less, at the cost of a bigger download.
+**Phone** (844x390 at 3x, CPU 4x slower, fast 4G): the page answers in 0.54 s (old
+3.51 s), in the room at 10.9 s (old 40.4 s), 2.0 MB (old 33.6 MB), 60 fps flights.
+
+**A weak machine** (software GPU, CPU 6x slower, slow 4G 1.6 Mbps, 1280x720):
+
+| | old | now |
+|---|---:|---:|
+| the page answers | 14.1 s | **2.0 s** |
+| standing in the room | 215 s | **17.3 s** |
+| downloaded by then | 33.6 MB | **1.0 MB** |
+| frame rate while flying | 5.5 fps | **59.4 fps** |
+| time per frame | 256 ms | **3.6 ms** |
+
+What makes it fast:
+
+- **Nothing heavy to run**: pictures and hardware-decoded video; the whole GPU
+  job is drawing five textured squares, and only when the view changes (a still
+  view draws nothing; the loop stops until the pointer moves).
+- **Only what this screen needs, in the order it's needed**: a 256-px strip of
+  the place first (a few KB), then sharper faces, sized to the screen; AVIF where
+  supported (WebP otherwise); AV1 only where the hardware decodes it
+  (`navigator.mediaCapabilities`: `powerEfficient`); 720p video and no
+  prefetching on Save-Data or 2G/3G.
+- **The wait is hidden**: loading starts before the first knock; the knocking
+  lasts until the room is ready.
+- **The next move is already there**: after arriving, the flights you can take
+  from here are fetched in the background; pointing at an arrow fetches its
+  flight first. Flights are played from memory, so they never stall.
+- **One round trip to start**: CSS and the tour's data are inlined in the page,
+  fonts are self-hosted, the first pictures and the script are preloaded.
+- **Cached forever**: every file is named by its content hash; a service worker
+  keeps them, so a second visit loads from disk.
+- **Video quality by measurement**: VMAF (Netflix's perceptual metric) against
+  the lossless master on the way-in flight: H.264 CRF 20 scores 96.0 at 2.5 MB,
+  AV1 CRF 36 scores 96.1 at 1.15 MB (visually identical is about 95).
+- **Screens that sleep**: the pages pause their endless animations and swap their
+  animated key art for stills when you're not looking at them.
+- **Works everywhere**: WebGL 1, ES2019 script, no CSS 3D context (Safari won't
+  draw three.js-style CSS3D scenes: the pages are mapped with one flat matrix each);
+  without WebGL at all the page offers the screens as plain pages.
 
 ## Checks
 
 ```sh
 P=/tmp/t16-pw-venv/bin/python        # any Python with Playwright
 $P web/tools/flow_test.py OUT/ [--url https://mazenddr.github.io/]   # the whole visit with real clicks: knock → couch → TV → arcade → desk → PC → diploma → pinboard
-$P web/tools/shoot.py --query view=hero --out hero.png
+$P web/tools/shoot.py --query view=hero --out hero.png      # the engine, at the Blender hero camera
 $P web/tools/app_shot.py apps/tv/ tv.png --click .person
 $P web/tools/motion_probe.py         # smoothness of the camera
-$P web/tools/perf_probe.py [--gpu] [--root OLD_CHECKOUT]   # GPU work: idle frames, frame time, texture memory
-$P web/tools/texture_needs.py        # measure how big each texture needs to be (before export_web.py)
+$P web/tools/perf_probe.py [--net fast4g|slow4g] [--cpu 6] [--swiftshader] [--mobile] [--page engine/index.html]
+$P web/tools/texture_needs.py        # the engine: how big each texture needs to be (before export_web.py)
 $P web/tools/calibrate_look.py       # refit the grade after a rebake
 $P web/tools/sharpness.py REF.png WEB.png   # detail vs a Cycles close-up
 ```

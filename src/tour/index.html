@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mazen's Room · Mazen Khaled, AI engineer</title>
+<meta name="description" content="Mazen Khaled's portfolio: knock on the door and look around his room. The TV, the computer and the pinboard show his projects.">
+<meta name="theme-color" content="#0b0806">
+<meta property="og:title" content="Mazen's Room · Mazen Khaled, AI engineer">
+<meta property="og:description" content="Knock on the door and look around. The TV, the computer and the pinboard show his projects.">
+<meta property="og:image" content="{{og}}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg">
+<link rel="preload" href="{{hallStrip}}" as="fetch" crossorigin fetchpriority="high">
+<link rel="preload" href="{{hallFront}}" as="image" type="image/avif">
+<link rel="preload" href="fonts/{{caveat}}" as="font" type="font/woff2" crossorigin>
+<link rel="modulepreload" href="{{app}}">
+<style>{{css}}</style>
+<style>#still { background-image: url({{hallFrontWebp}}); background-image: image-set(url({{hallFront}}) type("image/avif"), url({{hallFrontWebp}}) type("image/webp")); }</style>
+</head>
+<body>
+<div id="still"></div>
+<canvas id="room"></canvas>
+<div id="vignette"></div>
+<div id="intro">
+  <p class="kicker">a room full of projects</p>
+  <h1>Mazen Khaled</h1>
+  <p class="sub">AI engineer</p>
+  <button type="button" class="knock"><span>Knock on the door</span> <kbd>↵</kbd></button>
+  <small>🔊 sound on</small>
+</div>
+<button id="mute" type="button" aria-label="Mute sound" title="Sound">🔊</button>
+<button id="back" type="button">← Back</button>
+<p id="hint" role="status"></p>
+<div id="lightbox" hidden><figure><img alt=""><figcaption></figcaption></figure><button type="button" aria-label="Close">✕</button></div>
+<div id="rotate" role="dialog" aria-label="Turn your phone sideways">
+  <div class="phone" aria-hidden="true"><i></i></div>
+  <p class="rotate-title">Turn your phone sideways</p>
+  <p>The room is made for a wide screen.</p>
+  <button type="button" class="turn" hidden>Turn it for me</button>
+  <button type="button" class="stay">Continue anyway</button>
+</div>
+<div id="fallback" hidden>
+  <p>This browser can't show the room, but everything in it is here:</p>
+  <a href="apps/tv/">Mazenflix: my projects</a>
+  <a href="apps/pc/">MazenOS: about me and my work</a>
+  <a href="apps/memo/">The pinboard: skills and contact</a>
+</div>
+<noscript><div id="fallback"><p>The room needs JavaScript. Everything in it is also here:</p><a href="apps/tv/">Mazenflix: my projects</a><a href="apps/pc/">MazenOS: about me</a><a href="apps/memo/">The pinboard</a></div></noscript>
+<script id="tour-data" type="application/json">{{data}}</script>
+<script type="module" src="{{app}}"></script>
+</body>
+</html>
