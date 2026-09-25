@@ -22,7 +22,7 @@ export const EDGES = [
 // Places: a floor node to walk to, then a final eye position (standing or
 // sitting) and what to look at. `focus` names a screen to zoom into afterwards.
 export const PLACES = {
-  hall: { node: 'hall', eye: B(294, 660, 160), look: B(294, 520, 142), hfov: 64, pose: 'stand', label: '' },
+  hall: { node: 'hall', eye: B(294, 700, 162), look: B(294, 520, 138), hfov: 66, pose: 'stand', label: '' },
   room: { node: 'front', eye: B(178, 470, 150), look: B(170, 120, 118), hfov: 84, pose: 'stand', label: 'Stand in the room' },
   couch: { node: 'couchFront', eye: B(44, 300, 108), look: B(300, 288, 86), hfov: 66, pose: 'sit', label: 'Sit on the couch' },
   tv: { node: 'couchFront', eye: B(44, 300, 108), look: B(300, 288, 86), hfov: 66, pose: 'sit', focus: 'tv', label: 'Watch TV' },

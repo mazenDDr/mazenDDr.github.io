@@ -41,12 +41,29 @@ function openWin({ id, title, w = 520, h = 400, x, y, body, cls = '', status = '
   el.innerHTML = `<div class="bar"><button class="close" aria-label="Close ${esc(title)}"></button><b>${esc(title)}</b></div>
     <div class="body">${body}</div>${status ? `<div class="status">${status}</div>` : ''}`;
   desktop.append(el);
+  zoomRects(el);
   el.querySelector('.close').addEventListener('click', () => el.remove());
   el.addEventListener('pointerdown', () => focusWin(el));
   drag(el);
   focusWin(el);
   return el;
 }
+// The classic Finder "zoom rectangles": outlines stepping out from the pointer to the window.
+let lastClick = { x: innerWidth / 2, y: innerHeight / 2 };
+addEventListener('pointerdown', (e) => { lastClick = { x: e.clientX, y: e.clientY - 26 }; }, true);
+function zoomRects(el) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const to = { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight };
+  for (let i = 1; i <= 6; i++) {
+    const k = i / 6, r = document.createElement('div');
+    r.className = 'zoomrect';
+    r.style.cssText = `left:${lastClick.x + (to.x - lastClick.x) * k}px;top:${lastClick.y + (to.y - lastClick.y) * k}px;width:${to.w * k}px;height:${to.h * k}px;animation-delay:${i * 22}ms`;
+    desktop.append(r);
+    setTimeout(() => r.remove(), 220 + i * 22);
+  }
+  el.style.animationDelay = '130ms';
+}
+
 function focusWin(el) {
   document.querySelectorAll('.win.active').forEach((w) => w.classList.remove('active'));
   el.classList.add('active');
@@ -92,8 +109,9 @@ function project(id) {
   const names = { play: 'Open demo', guide: 'Field guide', code: 'GitHub', model: 'Model' };
   const buttons = Object.entries(p.links).map(([k, v], i) =>
     `<a class="pbtn${i === 0 ? ' default' : ''}" href="${v}" target="_blank" rel="noopener">${names[k] || k}</a>`).join('');
-  openWin({ id: 'p-' + id, title: p.title + ' — README', w: 600, h: 470, body: `
+  openWin({ id: 'p-' + id, title: p.title + ' — README', w: 620, h: 520, body: `
     <article class="doc">
+      ${p.art ? `<img class="readme-hero" src="${ROOT + 'content/' + p.art}" alt="">` : ''}
       <h1>${esc(p.title)}</h1><p class="hook">${esc(p.hook)}</p>
       <div class="stat"><b>${esc(p.stat.value)}</b>${esc(p.stat.label)}</div>
       <p>${esc(p.logline)}</p>
@@ -247,4 +265,17 @@ icons.append(
 desktop.append(icons);
 const tick = () => { document.getElementById('clock').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); };
 tick(); setInterval(tick, 10000);
+// A warm startup chord, played once the visitor has interacted (browsers require a gesture).
+function chime() {
+  try {
+    const a = new (window.AudioContext || window.webkitAudioContext)(), t = a.currentTime + 0.02;
+    for (const f of [261.6, 329.6, 392, 523.3]) {
+      const o = a.createOscillator(), g = a.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.06, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+      o.connect(g).connect(a.destination); o.start(t); o.stop(t + 2.3);
+    }
+  } catch { /* no audio */ }
+}
+addEventListener('pointerdown', chime, { once: true });
 setTimeout(() => { document.getElementById('boot').classList.add('done'); projectsFolder(); aboutMe(); }, 1500);

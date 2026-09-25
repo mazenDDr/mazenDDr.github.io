@@ -3,8 +3,9 @@
 // and redrawn a few times a second; the live apps take over when zoomed in.
 import * as THREE from 'three';
 
-// Screens glow, but the room is graded warm and dim; keep them in its light.
-const SCREEN_TINT = new THREE.Color(0.86, 0.78, 0.68);
+// Screens glow. The room is rendered in scene-linear light and exposed down by
+// the grade (-3.35 stops), so a screen's picture is lifted by the same amount.
+const SCREEN_TINT = new THREE.Color(0.86, 0.78, 0.68).multiplyScalar(2 ** 3.704 * 0.55);
 
 function screenMesh(anchor, canvas) {
   const tex = new THREE.CanvasTexture(canvas);

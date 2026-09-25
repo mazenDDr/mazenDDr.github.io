@@ -65,6 +65,9 @@ out = {
     'cameras': {n.replace('styled_camera_', '').replace('_camera', ''): camera(n) for n in
                 ('styled_camera_hero', 'styled_camera_tv', 'styled_camera_couch', 'styled_camera_desk',
                  'styled_camera_bed', 'certificates_camera')},
+    # the close-up review cameras of design/progress/polished, for quality checks
+    'review': {n.replace('polish_camera_', ''): camera(n) for n in
+               ('polish_camera_couch', 'polish_camera_desk', 'polish_camera_collectibles', 'polish_camera_floor')},
 }
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps(out, indent=1))

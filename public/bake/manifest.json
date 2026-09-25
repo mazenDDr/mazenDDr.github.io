@@ -1,66 +1,4057 @@
 {
- "built": "2026-09-25T03:39:53.648Z",
- "glb_kb": 7422,
+ "built": "2026-09-25T06:30:05.021Z",
+ "glb_kb": 22898,
  "chunks": [
   {
-   "name": "c0",
-   "file": "c0.webp",
+   "name": "d0",
+   "group": "detail",
+   "file": "d0.webp",
    "size": 4096,
-   "kb": 827
+   "range": [
+    -12.0588,
+    3.9412
+   ],
+   "kb": 3509,
+   "albedo": "d0_albedo.webp"
   },
   {
-   "name": "c1",
-   "file": "c1.webp",
+   "name": "d1",
+   "group": "detail",
+   "file": "d1.webp",
    "size": 4096,
-   "kb": 422
-  },
-  {
-   "name": "c2",
-   "file": "c2.webp",
-   "size": 4096,
-   "kb": 277
-  },
-  {
-   "name": "c3",
-   "file": "c3.webp",
-   "size": 4096,
-   "kb": 297
-  },
-  {
-   "name": "c4",
-   "file": "c4.webp",
-   "size": 4096,
-   "kb": 689
-  },
-  {
-   "name": "c5",
-   "file": "c5.webp",
-   "size": 4096,
-   "kb": 237
-  },
-  {
-   "name": "c6",
-   "file": "c6.webp",
-   "size": 2048,
-   "kb": 232
-  },
-  {
-   "name": "c7",
-   "file": "c7.webp",
-   "size": 2048,
-   "kb": 31
+   "range": [
+    -11.0496,
+    4.9504
+   ],
+   "kb": 2338,
+   "albedo": "d1_albedo.webp"
   },
   {
    "name": "door",
+   "group": "door",
    "file": "door.webp",
    "size": 1024,
-   "kb": 16
+   "range": [
+    -13.3191,
+    1.3495
+   ],
+   "kb": 25
   },
   {
    "name": "outside",
+   "group": "outside",
    "file": "outside.webp",
+   "size": 1024,
+   "range": [
+    -10.17,
+    5.83
+   ],
+   "kb": 115
+  },
+  {
+   "name": "p0",
+   "group": "plain",
+   "file": "p0.webp",
    "size": 2048,
-   "kb": 534
+   "range": [
+    -11.4216,
+    4.5784
+   ],
+   "kb": 250
+  },
+  {
+   "name": "p1",
+   "group": "plain",
+   "file": "p1.webp",
+   "size": 2048,
+   "range": [
+    -11.6276,
+    4.3724
+   ],
+   "kb": 489
+  },
+  {
+   "name": "p2",
+   "group": "plain",
+   "file": "p2.webp",
+   "size": 2048,
+   "range": [
+    -12.0518,
+    3.9482
+   ],
+   "kb": 178
+  },
+  {
+   "name": "p3",
+   "group": "plain",
+   "file": "p3.webp",
+   "size": 2048,
+   "range": [
+    -11.8747,
+    4.1253
+   ],
+   "kb": 138
+  },
+  {
+   "name": "p4",
+   "group": "plain",
+   "file": "p4.webp",
+   "size": 2048,
+   "range": [
+    -12.1986,
+    3.8014
+   ],
+   "kb": 382
+  },
+  {
+   "name": "p5",
+   "group": "plain",
+   "file": "p5.webp",
+   "size": 2048,
+   "range": [
+    -10.5596,
+    5.4404
+   ],
+   "kb": 441
+  },
+  {
+   "name": "p6",
+   "group": "plain",
+   "file": "p6.webp",
+   "size": 2048,
+   "range": [
+    -10.3793,
+    5.6207
+   ],
+   "kb": 88
+  },
+  {
+   "name": "p7",
+   "group": "plain",
+   "file": "p7.webp",
+   "size": 2048,
+   "range": [
+    -12.5769,
+    3.4231
+   ],
+   "kb": 43
+  },
+  {
+   "name": "special",
+   "group": "special",
+   "file": "special.webp",
+   "size": 2048,
+   "range": [
+    -9.1033,
+    6.8967
+   ],
+   "kb": 621
   }
- ]
+ ],
+ "materials": {
+  "constant|polish_oak_shadow_in_joints": {
+   "kind": "constant",
+   "color": [
+    0.13725,
+    0.0902,
+    0.05882
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|plaster": {
+   "kind": "constant",
+   "color": [
+    0.92549,
+    0.86275,
+    0.75294
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|trim": {
+   "kind": "constant",
+   "color": [
+    0.96471,
+    0.94118,
+    0.90196
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|rug_cream": {
+   "kind": "constant",
+   "color": [
+    0.8549,
+    0.76863,
+    0.64314
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|black": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|brownwood": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|darkwood": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|membrane cooper": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|koc": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|no_material": {
+   "kind": "constant",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|membrane": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|lightgray": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|darkgraymetal": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cinchhl": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|red": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Material.002": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Material.003": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|styled_glazed_tea": {
+   "kind": "constant",
+   "color": [
+    0.67843,
+    0.4,
+    0.28235
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|styled_cream_glaze": {
+   "kind": "constant",
+   "color": [
+    0.91373,
+    0.84314,
+    0.69804
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|flex": {
+   "kind": "constant",
+   "color": [
+    0.33725,
+    0.13333,
+    0.12549
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|bulb": {
+   "kind": "constant",
+   "color": [
+    1,
+    0.83922,
+    0.61176
+   ],
+   "emissive": [
+    16,
+    8.65882,
+    2.76078
+   ]
+  },
+  "constant|curated_warm_paper": {
+   "kind": "constant",
+   "color": [
+    0.8902,
+    0.85882,
+    0.76863
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|curated_poster_Blade Runner": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|curated_charcoal": {
+   "kind": "constant",
+   "color": [
+    0.10196,
+    0.1098,
+    0.10588
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|linen": {
+   "kind": "constant",
+   "color": [
+    0.9098,
+    0.88627,
+    0.83137
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_upholstery_thread": {
+   "kind": "constant",
+   "color": [
+    0.39216,
+    0.24314,
+    0.14118
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_cotton_thread": {
+   "kind": "constant",
+   "color": [
+    0.81961,
+    0.7451,
+    0.58039
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_ridged_terracotta": {
+   "kind": "constant",
+   "color": [
+    0.52157,
+    0.2549,
+    0.1451
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_terracotta_rim": {
+   "kind": "constant",
+   "color": [
+    0.60784,
+    0.32549,
+    0.19608
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_dark_potting_soil": {
+   "kind": "constant",
+   "color": [
+    0.1098,
+    0.08235,
+    0.04706
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_soil_mineral": {
+   "kind": "constant",
+   "color": [
+    0.6549,
+    0.59216,
+    0.45098
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_tree_bark": {
+   "kind": "constant",
+   "color": [
+    0.28235,
+    0.19216,
+    0.11373
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_1": {
+   "kind": "constant",
+   "color": [
+    0.12157,
+    0.26275,
+    0.08235
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_midrib": {
+   "kind": "constant",
+   "color": [
+    0.34902,
+    0.42353,
+    0.15294
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_2": {
+   "kind": "constant",
+   "color": [
+    0.13725,
+    0.28627,
+    0.0902
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_3": {
+   "kind": "constant",
+   "color": [
+    0.15294,
+    0.3098,
+    0.09804
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_0": {
+   "kind": "constant",
+   "color": [
+    0.10588,
+    0.23922,
+    0.07451
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_4": {
+   "kind": "constant",
+   "color": [
+    0.16863,
+    0.33333,
+    0.10588
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_new_leaf_burgundy": {
+   "kind": "constant",
+   "color": [
+    0.35686,
+    0.12157,
+    0.07843
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|wicker_basket_02": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|ceiling": {
+   "kind": "constant",
+   "color": [
+    0.94902,
+    0.91765,
+    0.86275
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_paper": {
+   "kind": "constant",
+   "color": [
+    0.90196,
+    0.88627,
+    0.81961
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_0": {
+   "kind": "constant",
+   "color": [
+    0.61961,
+    0.20784,
+    0.32549
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_ink": {
+   "kind": "constant",
+   "color": [
+    0.09412,
+    0.11373,
+    0.11765
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_1": {
+   "kind": "constant",
+   "color": [
+    0.17255,
+    0.41569,
+    0.52157
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_2": {
+   "kind": "constant",
+   "color": [
+    0.67451,
+    0.36471,
+    0.13333
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_3": {
+   "kind": "constant",
+   "color": [
+    0.30196,
+    0.46667,
+    0.31373
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_4": {
+   "kind": "constant",
+   "color": [
+    0.44314,
+    0.28627,
+    0.51765
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_felt_coaster": {
+   "kind": "constant",
+   "color": [
+    0.25882,
+    0.27059,
+    0.18824
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_amber_candle_cup": {
+   "kind": "constant",
+   "color": [
+    0.38824,
+    0.16471,
+    0.06275
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_beeswax": {
+   "kind": "constant",
+   "color": [
+    0.83922,
+    0.69412,
+    0.43137
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_wick": {
+   "kind": "constant",
+   "color": [
+    0.09412,
+    0.06667,
+    0.03529
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_candle_flame": {
+   "kind": "constant",
+   "color": [
+    1,
+    0.62745,
+    0.18824
+   ],
+   "emissive": [
+    18,
+    9.52941,
+    2.47059
+   ]
+  },
+  "image|rug_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|crt_tv_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|coffee_table_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books__3_": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books_front": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books__4_": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books_rear": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|g0": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|figure_5_ironman_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    1,
+    1,
+    1
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "constant|web_default_clay": {
+   "kind": "constant",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|salt_lamp_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    1,
+    1,
+    1
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|cork_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|styled_tea": {
+   "kind": "constant",
+   "color": [
+    0.16078,
+    0.07451,
+    0.03137
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|curated_poster_Back to the Future": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|polish_warm_opal_diffuser": {
+   "kind": "constant",
+   "color": [
+    0.86667,
+    0.72157,
+    0.47843
+   ],
+   "emissive": [
+    2.4,
+    1.71294,
+    0.94118
+   ]
+  },
+  "constant|Material.001": {
+   "kind": "constant",
+   "color": [
+    0.99221,
+    0.49878,
+    0
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.009": {
+   "kind": "constant",
+   "color": [
+    0.00356,
+    0.00645,
+    0.01038
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.008": {
+   "kind": "constant",
+   "color": [
+    0.2149,
+    0.24128,
+    0.24128
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.005": {
+   "kind": "constant",
+   "color": [
+    0.83879,
+    0.14996,
+    0.02122
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.006": {
+   "kind": "constant",
+   "color": [
+    0.62397,
+    0.02416,
+    0.02416
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.007": {
+   "kind": "constant",
+   "color": [
+    0.11603,
+    0.02398,
+    0.0033
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.010": {
+   "kind": "constant",
+   "color": [
+    0.04204,
+    0.02639,
+    0.19361
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_ivory_ceramic_cat": {
+   "kind": "constant",
+   "color": [
+    0.75686,
+    0.7098,
+    0.60392
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|card": {
+   "kind": "constant",
+   "color": [
+    0.67451,
+    0.54118,
+    0.37647
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|peg_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|fig_red": {
+   "kind": "constant",
+   "color": [
+    0.6902,
+    0.22745,
+    0.20392
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|fig_blue": {
+   "kind": "constant",
+   "color": [
+    0.22745,
+    0.32941,
+    0.58039
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|fig_yellow": {
+   "kind": "constant",
+   "color": [
+    0.83922,
+    0.6902,
+    0.28235
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|plastic_dk": {
+   "kind": "constant",
+   "color": [
+    0.17255,
+    0.16863,
+    0.16471
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|curated_poster_Alien": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_Spirited Away": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|tv_stand_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|crt_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    2.6,
+    2.6,
+    2.6
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|floor_lamp_2_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    1,
+    1,
+    1
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|BookPaper": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover1": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover10": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover11": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover12": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover3": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover4": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover5": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover6": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover7": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover8": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|BookCover9": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|console_2_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    1,
+    1,
+    1
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "constant|blinn6": {
+   "kind": "constant",
+   "color": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|plastic_gy": {
+   "kind": "constant",
+   "color": [
+    0.2902,
+    0.28235,
+    0.27451
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|curated_poster_Half-Life 2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_Stray": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|live_PS_blue": {
+   "kind": "constant",
+   "color": [
+    0.08627,
+    0.25098,
+    0.61569
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|Fluent_Python_display_print": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|wall_clock": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|real_switch_plastic": {
+   "kind": "constant",
+   "color": [
+    0.86,
+    0.84,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|real_cable": {
+   "kind": "constant",
+   "color": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_floor": {
+   "kind": "constant",
+   "color": [
+    0.16,
+    0.09,
+    0.05
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_wall_l": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.47,
+    0.38
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_runner": {
+   "kind": "constant",
+   "color": [
+    0.28,
+    0.07,
+    0.05
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_lamp": {
+   "kind": "constant",
+   "color": [
+    1,
+    0.75,
+    0.45
+   ],
+   "emissive": [
+    3,
+    2.25,
+    1.35
+   ]
+  },
+  "image|spine_2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_9": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_4": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_11": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_6": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|post_a": {
+   "kind": "constant",
+   "color": [
+    0.6902,
+    0.2902,
+    0.24314
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|post_c": {
+   "kind": "constant",
+   "color": [
+    0.81569,
+    0.6902,
+    0.32941
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|desk_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|PC9801U.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|pc_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    5,
+    5,
+    5
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|PC9801UX.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|Lamp.001": {
+   "kind": "constant",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|lambert9": {
+   "kind": "constant",
+   "color": [
+    0.1752,
+    0.243,
+    0.10741
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|lambert6": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|lambert7": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|lambert5": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|tripo_material_668ca4ad-0823-48df-82b2-e6bfe641f3e1": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Material.004": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Dark Oak Wood": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|main_column": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_The Last of Us Part I": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_Portal 2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|curated_oxblood": {
+   "kind": "constant",
+   "color": [
+    0.37255,
+    0.15294,
+    0.11765
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|curated_pencil_lacquer": {
+   "kind": "constant",
+   "color": [
+    0.78039,
+    0.52157,
+    0.15294
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|curated_pencil_ceramic": {
+   "kind": "constant",
+   "color": [
+    0.62353,
+    0.34118,
+    0.19216
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_desk_leather": {
+   "kind": "constant",
+   "color": [
+    0.23922,
+    0.30196,
+    0.2549
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_coffee": {
+   "kind": "constant",
+   "color": [
+    0.12941,
+    0.05882,
+    0.02745
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|Ukulele_01": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|stationery_supplies": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "special|brass": {
+   "kind": "special",
+   "color": [
+    0.76863,
+    0.60392,
+    0.30588
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|steel": {
+   "kind": "special",
+   "color": [
+    0.58824,
+    0.59608,
+    0.61176
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|chrome": {
+   "kind": "special",
+   "color": [
+    0.82353,
+    0.83137,
+    0.84706
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|マテリアル.007": {
+   "kind": "special",
+   "color": [
+    0.00806,
+    0.00806,
+    0.00806
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|マテリアル.006": {
+   "kind": "special",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|マテリアル.005": {
+   "kind": "special",
+   "color": [
+    0.78,
+    0.74,
+    0.65
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|マテリアル.004": {
+   "kind": "special",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|Lamp.001": {
+   "kind": "special",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "cutout|PCKD854n.001": {
+   "kind": "cutout",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "special|M_OldTableLamp_V01": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|page_edges": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover_jacket": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|page_edges.001": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover.001": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|page_edges.004": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover.004": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|page_edges.005": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover.005": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover.002": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover_inner": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|page_edges.002": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover_jacket1": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover_jacket2": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover.003": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover_inner.001": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|page_edges.003": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|cover_jacket1.001": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|None": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|shade": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|pasted__unwrapChekcerShader": {
+   "kind": "special",
+   "color": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|curated_antique_brass": {
+   "kind": "special",
+   "color": [
+    0.56863,
+    0.41569,
+    0.2
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|polish_aged_brass": {
+   "kind": "special",
+   "color": [
+    0.48235,
+    0.35294,
+    0.17647
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|alarm_clock_01": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "cutout|alarm_clock_01_Glass": {
+   "kind": "cutout",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "special|round_spectacles": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "cutout|round_spectacles_glass": {
+   "kind": "cutout",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|wall_clock": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|wall_clock_glass": {
+   "kind": "special",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|real_brass": {
+   "kind": "special",
+   "color": [
+    0.72,
+    0.52,
+    0.26
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|real_linen_curtain": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|sky": {
+   "kind": "special",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "special|bldg_near": {
+   "kind": "special",
+   "color": [
+    0.61961,
+    0.58039,
+    0.56471
+   ],
+   "emissive": [
+    1.77882,
+    1.69098,
+    1.66902
+   ]
+  },
+  "special|bldg_dark": {
+   "kind": "special",
+   "color": [
+    0.50196,
+    0.51765,
+    0.55686
+   ],
+   "emissive": [
+    1.31765,
+    1.38353,
+    1.51529
+   ]
+  },
+  "special|bldg_win": {
+   "kind": "special",
+   "color": [
+    1,
+    0.83922,
+    0.58824
+   ],
+   "emissive": [
+    5,
+    4.03922,
+    2.70588
+   ]
+  },
+  "special|bldg_far": {
+   "kind": "special",
+   "color": [
+    0.70588,
+    0.70588,
+    0.7451
+   ],
+   "emissive": [
+    2.02039,
+    2.04235,
+    2.15216
+   ]
+  },
+  "special|curated_outside_bark": {
+   "kind": "special",
+   "color": [
+    0.25882,
+    0.19216,
+    0.13333
+   ],
+   "emissive": [
+    0.18118,
+    0.13451,
+    0.09333
+   ]
+  },
+  "special|curated_outside_leaf0": {
+   "kind": "special",
+   "color": [
+    0.19216,
+    0.30196,
+    0.14118
+   ],
+   "emissive": [
+    0.2498,
+    0.39255,
+    0.18353
+   ]
+  },
+  "special|curated_outside_leaf2": {
+   "kind": "special",
+   "color": [
+    0.24706,
+    0.34902,
+    0.16471
+   ],
+   "emissive": [
+    0.32118,
+    0.45373,
+    0.21412
+   ]
+  },
+  "special|curated_outside_leaf1": {
+   "kind": "special",
+   "color": [
+    0.21961,
+    0.32549,
+    0.15294
+   ],
+   "emissive": [
+    0.28549,
+    0.42314,
+    0.19882
+   ]
+  },
+  "special|curated_outside_leaf3": {
+   "kind": "special",
+   "color": [
+    0.27451,
+    0.37255,
+    0.17647
+   ],
+   "emissive": [
+    0.35686,
+    0.48431,
+    0.22941
+   ]
+  },
+  "recipe|oak": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|walnut": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|polish_cinnamon_woven_upholstery": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|polish_rust_herringbone_pillow": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|wood leg": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|Check texture": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|label_front": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|label_back": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|label_side": {
+   "kind": "constant",
+   "color": [
+    0.521,
+    0.56471,
+    0.56471
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|vinyl": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|cover.056": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "recipe|cardboard": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|cover.055": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.054": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.053": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.052": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.006": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.007": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.008": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.009": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.010": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.011": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.012": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.013": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.014": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.015": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.016": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.017": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.018": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.019": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.020": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.021": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.022": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.023": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.024": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.025": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.026": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.027": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.028": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.029": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.030": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.031": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.032": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.033": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.034": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.035": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.036": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.037": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.038": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.039": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.040": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.041": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.042": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.043": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.044": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.045": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.046": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.047": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.048": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.049": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.050": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cover.051": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "recipe|polish_scanned_oiled_wood": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|spine_1": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_7": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_10": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_8": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|bed_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    1,
+    1,
+    1
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|Wooden Chair": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|OldPCMAT": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|record_player_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|ring_small_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|curated_oat_linen": {
+   "kind": "constant",
+   "color": [
+    0.66275,
+    0.59216,
+    0.44314
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_pillow_linen": {
+   "kind": "constant",
+   "color": [
+    0.83529,
+    0.78039,
+    0.64706
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|alarm_clock_01": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|office_notepads": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|office_notepads.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|stationery_supplies.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|cert_bsc_frame": {
+   "kind": "constant",
+   "color": [
+    0.09,
+    0.055,
+    0.035
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|cert_bsc_mat": {
+   "kind": "constant",
+   "color": [
+    0.86,
+    0.82,
+    0.74
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|cert_bsc": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "recipe|polish_side_table_walnut": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|polish_olive_linen_pillow": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|polish_oatmeal_throw": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "recipe|polish_olive_throw_border": {
+   "kind": "recipe",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_slab": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.64,
+    0.53
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_panel_in_0": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.64,
+    0.53
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_panel_in_1": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.64,
+    0.53
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_knob_in": {
+   "kind": "constant",
+   "color": [
+    0.62,
+    0.45,
+    0.2
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_panel_out_0": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.64,
+    0.53
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_panel_out_1": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.64,
+    0.53
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|door_knob_out": {
+   "kind": "constant",
+   "color": [
+    0.62,
+    0.45,
+    0.2
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_ceiling": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.47,
+    0.38
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_wall_r": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.47,
+    0.38
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_wall_back": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.47,
+    0.38
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "glass|pane": {
+   "kind": "glass"
+  }
+ }
 }

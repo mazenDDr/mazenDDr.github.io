@@ -1,13 +1,33 @@
-// Moves the visitor's eyes around the room: walk along the floor graph with a
-// light head bob, turn toward what the place is about, sit or stand, and zoom
-// into a screen. One camera, driven every frame from `update(dt)`.
+// Moves the visitor's eyes around the room like a camera on a gimbal: glide
+// along the floor graph at a steady speed with soft starts and stops, keep the
+// horizon level, turn smoothly a little ahead of the path, settle on what the
+// place is about, sit or stand, and zoom into a screen.
+// One camera, driven every frame from `update(dt)`.
 import * as THREE from 'three';
 import { PLACES, NODES, EYE, B, shortestPath } from './places.js';
 
 const { degToRad, radToDeg, smootherstep, clamp, lerp } = THREE.MathUtils;
 const ease = (t) => smootherstep(t, 0, 1);
-const WALK_SPEED = 1.15;   // m/s, an unhurried indoor walk
-const STRIDE = 0.72;       // m per step, for the head bob
+const CRUISE = 1.35;       // m/s once moving
+const RAMP = 0.6;          // s to reach cruise speed and to come to rest
+const LOOK_AHEAD = 0.9;    // m: where along the path the camera aims while moving
+const TURN_RATE = 4.2;     // 1/s: spring stiffness for turning (higher = snappier)
+const MAX_PAN = THREE.MathUtils.degToRad(110);   // rad/s: no faster than a camera operator pans
+
+/** Distance fraction covered at time fraction u, for a move with soft ramps:
+ *  speed rises along a half-sine, cruises, then falls the same way. */
+function travelTable(duration) {
+  const a = Math.min(0.45, RAMP / duration), n = 256, out = new Float32Array(n + 1);
+  let acc = 0;
+  for (let i = 1; i <= n; i++) {
+    const u = (i - 0.5) / n;
+    const v = u < a ? Math.sin((u / a) * Math.PI / 2) ** 2 : u > 1 - a ? Math.sin(((1 - u) / a) * Math.PI / 2) ** 2 : 1;
+    acc += v;
+    out[i] = acc;
+  }
+  for (let i = 0; i <= n; i++) out[i] /= acc;
+  return (u) => { const f = u * n, i = Math.min(n - 1, Math.floor(f)); return out[i] + (out[i + 1] - out[i]) * (f - i); };
+}
 
 function lookQuat(from, to) {
   const m = new THREE.Matrix4().lookAt(from, to, new THREE.Vector3(0, 1, 0));
@@ -51,6 +71,7 @@ export class Director extends EventTarget {
     const p = PLACES[key];
     this.place = key;
     this.focus = null;
+    this.settle = null;
     this.pos.copy(p.eye);
     this.quat.copy(lookQuat(p.eye, p.look));
     this.hfov = p.hfov;
@@ -76,25 +97,29 @@ export class Director extends EventTarget {
   walk(key) {
     const target = PLACES[key];
     const here = PLACES[this.place];
-    const pts = [this.pos.clone()];
-    if (this.focus) pts.push(here.eye.clone());          // back off the screen first
-    const nodes = shortestPath(here ? here.node : target.node, target.node);
-    for (const n of nodes) {
+    // The path runs at standing eye height; height changes are applied separately
+    // so standing up happens at the start and sitting down only at the very end.
+    const flat = (v) => new THREE.Vector3(v.x, EYE.stand, v.z);
+    const pts = [flat(this.pos)];
+    if (this.focus) pts.push(flat(here.eye));          // back off the screen first
+    for (const n of shortestPath(here ? here.node : target.node, target.node)) {
       const [x, y] = NODES[n];
       const p = B(x, y);
       p.y = EYE.stand;
-      if (p.distanceTo(pts[pts.length - 1]) > 0.25) pts.push(p);
+      if (p.distanceTo(pts[pts.length - 1]) > 0.3) pts.push(p);
     }
-    pts.push(target.eye.clone());
-    // Standing up from a seat: rise before walking away.
-    if (here && here.pose !== 'stand' && pts.length > 2) pts.splice(1, 0, pts[0].clone().setY(EYE.stand));
-    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    const end = flat(target.eye);
+    if (end.distanceTo(pts[pts.length - 1]) < 0.3) pts.pop();
+    pts.push(end);
+    if (pts.length < 2) pts.unshift(pts[0].clone().add(new THREE.Vector3(0.01, 0, 0)));
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal', 0.5);
     const length = curve.getLength();
+    const duration = Math.max(1.2, length / CRUISE + RAMP + (target.pose !== 'stand' ? 0.35 : 0));
     this.focus = null;
     this.place = key;
     return this.run({
-      duration: Math.max(1.4, length / WALK_SPEED + (target.pose !== 'stand' ? 0.6 : 0)),
-      curve, length,
+      duration, curve, length, travel: travelTable(duration),
+      y0: this.pos.y, y1: target.eye.y,
       q0: this.quat.clone(), q1: lookQuat(target.eye, target.look),
       h0: this.hfov, h1: target.hfov,
       then: target.focus ? () => this.zoomTo(target.focus) : null,
@@ -115,7 +140,8 @@ export class Director extends EventTarget {
     return { eye, quat: lookQuat(eye, c), hfov };
   }
 
-  zoomTo(name, duration = 1.1) {
+  zoomTo(name, duration = 1.0) {
+    this.settle = null;
     const pose = this.screenPose(name);
     const curve = new THREE.LineCurve3(this.pos.clone(), pose.eye);
     this.focus = name;
@@ -149,30 +175,38 @@ export class Director extends EventTarget {
     const m = this.move;
     if (m) {
       m.t = Math.min(1, m.t + dt / m.duration);
-      const u = ease(m.t);
-      this.pos.copy(m.curve.getPointAt(u));
       if (m.length > 0) {
-        // Face along the path while walking, then settle on the place's view.
-        const tangent = m.curve.getTangentAt(Math.min(u, 0.999)).setY(0).normalize();
-        const walkQ = lookQuat(this.pos, this.pos.clone().add(tangent).add(new THREE.Vector3(0, -0.12, 0)));
-        const inW = smootherstep(m.t, 0, 0.22), outW = smootherstep(m.t, 0.55, 1);
-        this.quat.copy(m.q0).slerp(walkQ, inW).slerp(m.q1, outW);
-        // Head bob: steps are strongest mid-walk and fade at both ends.
-        const walking = Math.sin(Math.PI * m.t);
-        const s = (u * m.length) / STRIDE * Math.PI;
-        this.pos.y += Math.abs(Math.sin(s)) * 0.022 * walking - 0.011 * walking;
-        const side = new THREE.Vector3(-tangent.z, 0, tangent.x);
-        this.pos.addScaledVector(side, Math.sin(s) * 0.008 * walking);
+        const f = m.travel(m.t), d = f * m.length, left = m.length - d;
+        this.pos.copy(m.curve.getPointAt(f));
+        // Level glide: rise from a seat in the first 0.8 m, sit only in the last 0.9 m.
+        const rise = smootherstep(d, 0, 0.8), sit = 1 - smootherstep(left, 0, 0.9);
+        this.pos.y = lerp(lerp(m.y0, EYE.stand, rise), m.y1, sit);
+        // Aim a little ahead along the path, then hand over to the place's view.
+        const ahead = m.curve.getPointAt(Math.min(1, f + LOOK_AHEAD / m.length));
+        const aim = new THREE.Vector3(ahead.x, this.pos.y - 0.1, ahead.z);
+        const walkQ = aim.distanceToSquared(this.pos) > 1e-4 ? lookQuat(this.pos, aim) : m.q1;
+        const want = walkQ.clone().slerp(m.q1, 1 - smootherstep(left, 0.15, 1.6));
+        const gap = this.quat.angleTo(want);
+        if (gap > 1e-5) {
+          const spring = gap * (1 - Math.exp(-dt * TURN_RATE * (0.6 + 0.8 * smootherstep(m.t, 0, 0.3))));
+          this.quat.rotateTowards(want, Math.min(spring, MAX_PAN * dt));
+        }
+        if (m.t >= 1) this.settle = m.q1;      // finish the last few degrees after arriving
       } else {
+        const u = ease(m.t);
+        this.pos.copy(m.curve.getPoint(u));
         this.quat.copy(m.q0).slerp(m.q1, u);
       }
-      this.hfov = lerp(m.h0, m.h1, u);
+      this.hfov = lerp(m.h0, m.h1, ease(m.t));
       if (m.t >= 1) {
         this.move = null;
         m.then ? m.then() : null;
         this.dispatchEvent(new CustomEvent('arrive', { detail: { place: this.place, focus: this.focus } }));
         m.resolve();
       }
+    } else if (this.settle) {
+      this.quat.slerp(this.settle, 1 - Math.exp(-dt * 7));
+      if (this.quat.angleTo(this.settle) < 0.002) { this.quat.copy(this.settle); this.settle = null; }
     }
     // Free look: a little when seated or zoomed, more when standing.
     // Holding still while a hotspot is hovered keeps it from sliding away from the cursor.
@@ -187,6 +221,7 @@ export class Director extends EventTarget {
 
   apply() {
     this.camera.position.copy(this.pos);
+    if (this.nudge) this.camera.position.addScaledVector(new THREE.Vector3(0, 0, -1).applyQuaternion(this.quat), this.nudge);
     this.camera.quaternion.copy(this.quat);
     this.camera.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), this.lookOffset.x);
     this.camera.rotateX(this.lookOffset.y);

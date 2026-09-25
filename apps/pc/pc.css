@@ -89,3 +89,12 @@ body.in-room .scan { display: block; }
 .term input { flex: 1; background: none; border: 0; outline: none; color: inherit; font: inherit; caret-color: #33ff66; padding: 0; }
 
 @media (prefers-reduced-motion: reduce) { .win { animation: none; } #boot .progress i { animation-duration: .01s; } }
+
+.zoomrect { position: absolute; z-index: 400; border: 1px dotted #000; pointer-events: none; opacity: 0; animation: zr .2s steps(2) both; }
+@keyframes zr { 0% { opacity: 1; } 100% { opacity: 0; } }
+.win { animation-fill-mode: both; }
+.readme-hero { display: block; width: 100%; margin: 0 0 14px; border: 2px solid #000; background: #f5f3ee; }
+.icon { transition: transform .08s; }
+.icon:active { transform: translate(1px, 1px); }
+.win .bar { user-select: none; }
+.win.active { box-shadow: 3px 3px 0 #000, 0 12px 30px #0004; }

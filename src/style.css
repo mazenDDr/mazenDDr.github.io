@@ -8,41 +8,56 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 #loading.done { opacity: 0; pointer-events: none; }
 #loading .bar { width: 220px; height: 3px; background: #2a1f17; border-radius: 3px; overflow: hidden; }
 #loading .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
-#loading p { margin: 0; opacity: .7; letter-spacing: .04em; }
+#loading .hand-title { margin: 0; font: 700 44px/1 Caveat, cursive; color: #ffd9a3; animation: write 1.2s cubic-bezier(.4,0,.3,1) both; }
 
-/* Intro: hallway title card and knock prompt */
-#intro { position: fixed; inset: auto 0 9vh 0; display: grid; justify-items: center; gap: 8px; text-align: center;
-  z-index: 5; transition: opacity 1s, transform 1s; text-shadow: 0 2px 18px #000c; }
-#intro h1 { margin: 0; font: 600 clamp(28px, 4.2vw, 52px)/1.05 ui-serif, Georgia, serif; letter-spacing: .01em; }
-#intro p { margin: 0 0 10px; opacity: .8; }
-#intro button { font: inherit; font-weight: 600; color: #1a120c; background: var(--accent); border: 0; border-radius: 999px;
-  padding: 11px 26px; cursor: pointer; box-shadow: 0 6px 30px #f0a45a55; transition: transform .15s; }
-#intro button:hover { transform: translateY(-1px) scale(1.03); }
+/* Intro: an episode-style title card, bottom left */
+#intro { position: fixed; left: max(28px, 5vw); bottom: max(28px, 7vh); z-index: 5; display: grid; gap: 4px; justify-items: start;
+  transition: opacity 1s, transform 1s; text-shadow: 0 2px 20px #000; }
+#intro .kicker { margin: 0; font: 600 26px/1 Caveat, cursive; color: #ffd9a3; opacity: 0; animation: rise 1s .5s both; }
+#intro h1 { margin: 0; font: 300 clamp(34px, 5vw, 64px)/1 Inter, system-ui, sans-serif; letter-spacing: .18em; text-transform: uppercase;
+  opacity: 0; animation: track 1.6s .8s cubic-bezier(.2,.7,.2,1) both; }
+#intro .sub { margin: 4px 0 18px; font: 500 13px/1 Inter, sans-serif; letter-spacing: .42em; text-transform: uppercase; color: #cdbba4;
+  opacity: 0; animation: rise 1s 1.3s both; }
+#intro .knock { font: 500 14px Inter, sans-serif; letter-spacing: .06em; color: var(--ink); background: #0000; border: 1px solid #f3e6d366;
+  border-radius: 999px; padding: 9px 18px; cursor: pointer; opacity: 0; animation: rise 1s 1.8s both; transition: background .2s, border-color .2s; }
+#intro .knock:hover { background: #f3e6d314; border-color: #f3e6d3; }
 #intro kbd { font: inherit; opacity: .55; margin-left: 6px; }
-#intro small { opacity: .5; }
-#intro.knocking button { animation: knock .34s 3; }
-#intro.gone { opacity: 0; transform: translateY(12px); pointer-events: none; }
-@keyframes knock { 40% { transform: translateX(-3px) scale(.98); } }
+#intro small { margin-top: 8px; font: 12px Inter, sans-serif; opacity: 0; color: #bba98f; animation: rise 1s 2.1s both; }
+#intro.knocking .knock { opacity: .4; pointer-events: none; }
+#intro.gone { opacity: 0 !important; transform: translateY(10px); pointer-events: none; }
+#intro.gone * { animation: none; opacity: 0; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes track { from { opacity: 0; letter-spacing: .5em; } to { opacity: 1; letter-spacing: .18em; } }
+#mute { position: fixed; right: max(16px, env(safe-area-inset-right)); top: max(16px, env(safe-area-inset-top)); z-index: 6; width: 38px; height: 38px;
+  border-radius: 50%; border: 1px solid #f3e6d333; background: #140e0a99; color: var(--ink); font-size: 16px; cursor: pointer; backdrop-filter: blur(6px); }
 
-/* Hotspot markers and hover label */
-#spots { position: fixed; inset: 0; pointer-events: none; z-index: 3; }
-.spot { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; padding: 0;
-  border: 2px solid #fff6e8; background: #f0a45a66; box-shadow: 0 0 14px #f0a45acc; opacity: 0; cursor: pointer;
-  transition: opacity .4s, scale .2s; pointer-events: none; }
-.spot.on { opacity: .85; pointer-events: auto; animation: pulse 2.4s ease-in-out infinite; }
-.spot.hot { scale: 1.35; opacity: 1; }
-@keyframes pulse { 50% { box-shadow: 0 0 22px 4px #f0a45a99; } }
-#spot-label { position: fixed; left: 0; top: 0; z-index: 4; pointer-events: none; padding: 6px 12px; border-radius: 8px;
-  background: #140e0acc; border: 1px solid #f0a45a55; backdrop-filter: blur(6px); font-size: 14px; white-space: nowrap;
-  opacity: 0; transition: opacity .15s; }
-#spot-label.on { opacity: 1; }
+/* Hotspots: an invisible hit target on the object; the arrow shows where it is */
+#spots { position: fixed; inset: 0; pointer-events: none; z-index: 4; }
+.spot { position: absolute; left: -24px; top: -24px; width: 48px; height: 48px; border-radius: 50%; padding: 0; border: 0;
+  background: none; cursor: pointer; pointer-events: none; }
+.spot.on { pointer-events: auto; }
+.spot:focus-visible { outline: 2px dashed #fff5e6; outline-offset: -6px; }
+
+/* Hand-drawn arrows and handwritten labels */
+#doodles { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; overflow: visible; }
+.doodle { opacity: 0; transition: opacity .35s; }
+.doodle.on { opacity: 1; }
+.pen { fill: none; stroke: #fff4e2; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 1px 1.5px #000a) drop-shadow(0 0 6px #0006); transition: stroke-width .2s, stroke .2s; }
+.doodle.hot .pen { stroke-width: 3.2; stroke: #ffe0a8; }
+.pen.under { stroke-dasharray: 0 999; }
+.hand { font: 700 31px/1 Caveat, 'Bradley Hand', cursive; fill: #fff4e2; stroke: #fff4e2; stroke-width: .6; opacity: 0;
+  filter: drop-shadow(0 1px 1.5px #000c) drop-shadow(0 0 8px #0008); pointer-events: none; cursor: pointer; }
+.doodle.on .hand { pointer-events: all; }
+.doodle.hot .hand { opacity: 1; animation: write .6s cubic-bezier(.4,0,.3,1) both; }
+@keyframes write { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% -5% -20% 0); } }
 
 /* Back / stand up */
 #back { position: fixed; left: max(16px, env(safe-area-inset-left)); top: max(16px, env(safe-area-inset-top)); z-index: 6;
   font: inherit; color: var(--ink); background: #140e0acc; border: 1px solid #f0a45a55; border-radius: 999px; padding: 8px 16px;
   cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(6px); }
 #back.on { opacity: 1; pointer-events: auto; }
-@media (prefers-reduced-motion: reduce) { .spot.on { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .pen { transition: none !important; } .doodle.hot .hand { animation: none; } }
 
 /* Live screen apps, pinned onto the 3D screens */
 /* CSS3DRenderer's own full-screen divs must not catch clicks meant for the room. */
@@ -66,7 +81,7 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 #app-sheet.on { opacity: 1; pointer-events: auto; }
 #app-sheet iframe.flat { width: 100% !important; height: 100% !important; }
 
-#hint { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, 8px); z-index: 6; margin: 0;
+#hint { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, 8px); z-index: 4; margin: 0;
   max-width: calc(100vw - 32px); padding: 9px 16px; border-radius: 999px; background: #140e0acc; border: 1px solid #f0a45a44;
   backdrop-filter: blur(6px); font-size: 14px; text-align: center; opacity: 0; pointer-events: none; transition: opacity .6s, transform .6s; }
 #hint.on { opacity: 1; transform: translate(-50%, 0); }

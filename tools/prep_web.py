@@ -1,9 +1,18 @@
 """Stage 1 of the web export: turn room_polished.blend into a bake-ready scene.
 
-Every visible renderable object becomes a real mesh (modifiers applied, heavy
-meshes decimated), a hallway is added outside the door for the intro, the door
-is rotated closed around its hinge, and objects are split into equal-texel
-bake chunks. Output: design/export/web_prep.blend + web/tools/prep_report.json.
+Lived-in props and details are added (realism.py), every visible renderable
+object becomes a real mesh (modifiers applied, heavy meshes decimated), a real
+door and a hallway are built for the intro, the diploma is framed, and objects
+are grouped into bake chunks by how their colour is made:
+
+  plain    colour is a constant or the object's own image -> bake light only
+  detail   colour comes from a node recipe -> bake light + a colour atlas
+  special  translucent, metal, cut-out leaves or odd shaders -> bake everything together
+  glass    clear glass -> not baked; the browser draws a faint reflective pane
+  outside  the city through the window -> bake everything, low resolution
+  door     moves, so it gets its own small chunk
+
+Output: design/export/web_prep.blend + web/tools/prep_report.json.
 
   Blender --background --python web/tools/prep_web.py
 """
@@ -16,10 +25,11 @@ SRC = ROOT / 'design/blender/room_polished.blend'
 OUT = ROOT / 'design/export/web_prep.blend'
 REPORT = Path(__file__).with_name('prep_report.json')
 
-TRI_CAP = 9000          # per-object triangle ceiling after decimation
-TRI_PER_SQRT_M2 = 9000  # smaller objects get proportionally fewer: cap = k*sqrt(area)
-TRI_FLOOR = 150
-CHUNKS = 8              # bake atlases
+TRI_CAP = 20000         # per-object triangle ceiling after decimation
+TRI_PER_SQRT_M2 = 16000 # smaller objects get proportionally fewer: cap = k*sqrt(area)
+TRI_FLOOR = 200
+PLAIN_CHUNKS = 8        # light-only atlases
+DETAIL_CHUNKS = 2       # light + colour atlases
 DOOR = ('door_leaf', 'door_panel_0_0', 'door_panel_1_0', 'door_knob')
 # Texel weight per collection: the room shell is large and plain, props carry detail.
 WEIGHT = {'01_shell': .35, '02_openings': .5, '08_floor': .6}
@@ -27,6 +37,9 @@ OUTSIDE_WEIGHT = .08    # the city seen through the window
 
 t0 = time.time()
 bpy.ops.wm.open_mainfile(filepath=str(SRC))
+sys.path.insert(0, str(Path(__file__).parent))
+import realism
+realism_report = realism.add_realism()
 sc = bpy.context.scene
 dg = bpy.context.evaluated_depsgraph_get()
 
@@ -197,41 +210,87 @@ lo.location = (2.94, 6.08, 2.18)
 sc.collection.objects.link(lo)
 
 # ---- 6. classify and chunk
+def colour_kind(ma):
+    """How a material makes its colour: constant | image | recipe | special | glass."""
+    if not ma or not ma.use_nodes:
+        return 'constant'
+    nt = ma.node_tree
+    out = next((n for n in nt.nodes if n.type == 'OUTPUT_MATERIAL' and n.is_active_output), None)
+    surf = out and out.inputs['Surface'].links and out.inputs['Surface'].links[0].from_node
+    if not surf or surf.type != 'BSDF_PRINCIPLED':
+        return 'special'
+    val = lambda k: surf.inputs[k].default_value
+    # Clear glass (picture frames, the clock face) is drawn as a faint pane, not baked,
+    # so it can never cover the poster behind it.
+    if val('Transmission Weight') > .5 or (not surf.inputs['Alpha'].is_linked and val('Alpha') < .5):
+        return 'glass'
+    # A metallic *map* is normal on downloaded PBR models and is mostly zero there;
+    # only a truly metallic value makes a surface metal.
+    if (val('Metallic') > .5 and not surf.inputs['Metallic'].is_linked) or val('Transmission Weight') > .05 \
+            or surf.inputs['Alpha'].is_linked or val('Alpha') < .99:
+        return 'special'
+    bc = surf.inputs['Base Color']
+    if not bc.is_linked:
+        return 'constant'
+    src = bc.links[0].from_node
+    if src.type == 'TEX_IMAGE' and src.image:
+        vec = src.inputs['Vector']
+        if not vec.is_linked or vec.links[0].from_node.type in ('UVMAP', 'TEX_COORD'):
+            return 'image'
+    return 'recipe'
+
+
 report = {'objects': len(made), 'tris_before': tris_before, 'tris_after': tris_after,
-          'door_open_angle_deg': math.degrees(open_angle), 'cutout': [], 'chunks': []}
+          'door_open_angle_deg': math.degrees(open_angle), 'realism': realism_report,
+          'groups': {}, 'chunks': []}
 items = []
 for ob in made:
     area = sum(p.area for p in ob.data.polygons)
     cols = ob['src_cols']
     w = next((v for k, v in WEIGHT.items() if k in cols), 1.0)
     c = sum((Vector(b) for b in ob.bound_box), Vector()) / 8
-    ob['outside'] = c.y < -.2          # beyond the window wall: sky and city
-    if ob['outside']:
-        w = OUTSIDE_WEIGHT
-    ob['cutout'] = any(has_alpha(s.material) for s in ob.material_slots)
-    if ob['cutout']:
-        report['cutout'].append(ob.name)
+    kinds = {colour_kind(s.material) for s in ob.material_slots}
+    for s_ in ob.material_slots:
+        if s_.material:
+            s_.material['web_kind'] = colour_kind(s_.material)
+    if ob.get('door'):
+        group = 'door'
+    elif c.y < -.2:                    # beyond the window wall: sky and city
+        group = 'outside'
+    elif kinds == {'glass'}:
+        group = 'glass'
+    elif 'special' in kinds or 'glass' in kinds:
+        group = 'special'
+    elif 'recipe' in kinds:
+        group = 'detail'
+    else:
+        group = 'plain'
+    ob['group'] = group
+    report['groups'][group] = report['groups'].get(group, 0) + 1
     items.append((ob, area * w, c))
 
-# Door gets its own chunk so it can move; everything else is split into
-# CHUNKS equal-weight groups, swept along the room so chunks stay compact.
-rest = sorted([i for i in items if not i[0].get('door') and not i[0]['outside']], key=lambda i: (round(i[2].y * 2), i[2].x))
-total = sum(i[1] for i in rest)
-chunk, acc = 0, 0.0
-for ob, wa, _ in rest:
-    if acc > total * (chunk + 1) / CHUNKS and chunk < CHUNKS - 1:
-        chunk += 1
-    ob['chunk'] = 'c%d' % chunk
-    acc += wa
+
+def split(group, n, prefix):
+    """Equal-weight chunks, swept along the room so each chunk stays compact."""
+    rows = sorted([i for i in items if i[0]['group'] == group], key=lambda i: (round(i[2].y * 2), i[2].x))
+    total = sum(i[1] for i in rows) or 1
+    k, acc = 0, 0.0
+    for ob, wa, _ in rows:
+        if acc > total * (k + 1) / n and k < n - 1:
+            k += 1
+        ob['chunk'] = f'{prefix}{k}'
+        acc += wa
+
+
+split('plain', PLAIN_CHUNKS, 'p')
+split('detail', DETAIL_CHUNKS, 'd')
 for ob, _, _ in items:
-    if ob.get('door'):
-        ob['chunk'] = 'door'
-    elif ob['outside']:
-        ob['chunk'] = 'outside'
+    if ob['group'] in ('special', 'outside', 'door', 'glass'):
+        ob['chunk'] = ob['group']
 
 for name in sorted({o['chunk'] for o in made}):
     obs = [o for o in made if o['chunk'] == name]
-    report['chunks'].append({'name': name, 'objects': len(obs),
+    report['chunks'].append({'name': name, 'group': obs[0]['group'], 'objects': len(obs),
                              'tris': sum(tri_count(o.data) for o in obs),
                              'area_m2': round(sum(p.area for o in obs for p in o.data.polygons), 2)})
 
@@ -239,4 +298,4 @@ report['seconds'] = round(time.time() - t0, 1)
 REPORT.write_text(json.dumps(report, indent=1))
 OUT.parent.mkdir(parents=True, exist_ok=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(OUT), compress=False)
-print('PREP DONE', json.dumps({k: v for k, v in report.items() if k != 'cutout'}))
+print('PREP DONE', json.dumps({k: v for k, v in report.items() if k != 'realism'}))
