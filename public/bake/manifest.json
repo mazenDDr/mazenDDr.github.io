@@ -1,35 +1,41 @@
 {
- "built": "2026-09-25T14:41:07.792Z",
+ "built": "2026-09-25T19:48:03.971Z",
  "glb_kb": 25184,
+ "lo_kb": 12544,
  "chunks": [
   {
    "name": "d0",
    "group": "detail",
    "file": "d0.webp",
+   "lo": "d0-lo.webp",
    "size": 4096,
    "range": [
     -12.1246,
     3.8754
    ],
    "kb": 2492,
-   "albedo": "d0_albedo.webp"
+   "albedo": "d0_albedo.webp",
+   "albedoLo": "d0_albedo-lo.webp"
   },
   {
    "name": "d1",
    "group": "detail",
    "file": "d1.webp",
+   "lo": "d1-lo.webp",
    "size": 4096,
    "range": [
     -11.0503,
     4.9497
    ],
    "kb": 1694,
-   "albedo": "d1_albedo.webp"
+   "albedo": "d1_albedo.webp",
+   "albedoLo": "d1_albedo-lo.webp"
   },
   {
    "name": "door",
    "group": "door",
    "file": "door.webp",
+   "lo": "door-lo.webp",
    "size": 1024,
    "range": [
     -13.137,
@@ -41,6 +47,7 @@
    "name": "hall",
    "group": "hall",
    "file": "hall.webp",
+   "lo": "hall-lo.webp",
    "size": 2048,
    "range": [
     -10.7214,
@@ -52,6 +59,7 @@
    "name": "outside",
    "group": "outside",
    "file": "outside.webp",
+   "lo": "outside-lo.webp",
    "size": 1024,
    "range": [
     -10.1683,
@@ -63,6 +71,7 @@
    "name": "p0",
    "group": "plain",
    "file": "p0.webp",
+   "lo": "p0-lo.webp",
    "size": 2048,
    "range": [
     -11.4688,
@@ -74,6 +83,7 @@
    "name": "p1",
    "group": "plain",
    "file": "p1.webp",
+   "lo": "p1-lo.webp",
    "size": 2048,
    "range": [
     -11.6112,
@@ -85,6 +95,7 @@
    "name": "p2",
    "group": "plain",
    "file": "p2.webp",
+   "lo": "p2-lo.webp",
    "size": 2048,
    "range": [
     -12.1601,
@@ -96,6 +107,7 @@
    "name": "p3",
    "group": "plain",
    "file": "p3.webp",
+   "lo": "p3-lo.webp",
    "size": 2048,
    "range": [
     -11.7112,
@@ -107,6 +119,7 @@
    "name": "p4",
    "group": "plain",
    "file": "p4.webp",
+   "lo": "p4-lo.webp",
    "size": 2048,
    "range": [
     -3.5015,
@@ -118,6 +131,7 @@
    "name": "p5",
    "group": "plain",
    "file": "p5.webp",
+   "lo": "p5-lo.webp",
    "size": 2048,
    "range": [
     -11.7497,
@@ -129,6 +143,7 @@
    "name": "p6",
    "group": "plain",
    "file": "p6.webp",
+   "lo": "p6-lo.webp",
    "size": 2048,
    "range": [
     -12.3305,
@@ -140,6 +155,7 @@
    "name": "p7",
    "group": "plain",
    "file": "p7.webp",
+   "lo": "p7-lo.webp",
    "size": 2048,
    "range": [
     -10.6515,
@@ -151,6 +167,7 @@
    "name": "special",
    "group": "special",
    "file": "special.webp",
+   "lo": "special-lo.webp",
    "size": 2048,
    "range": [
     -9.1294,
@@ -159,6 +176,1198 @@
    "kb": 438
   }
  ],
+ "textures": {
+  "10": {
+   "file": "10-92e03146.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "11": {
+   "file": "11-482b8452.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "12": {
+   "file": "12-1c2ddd7f.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "13": {
+   "file": "13-241d484c.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "14": {
+   "file": "14-754a875d.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "15": {
+   "file": "15-64f4f069.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "16": {
+   "file": "16-2c43f4b1.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "17": {
+   "file": "17-40a1b049.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "18": {
+   "file": "18-52f264af.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "19": {
+   "file": "19-648f1781.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "20": {
+   "file": "20-dbc7bce1.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "21": {
+   "file": "21-32abeb98.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "22": {
+   "file": "22-04e3bc60.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "23": {
+   "file": "23-e9fabe62.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "24": {
+   "file": "24-6d961788.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "25": {
+   "file": "25-5466c584.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "26": {
+   "file": "26-1a21982f.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "27": {
+   "file": "27-5bb0b808.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "28": {
+   "file": "28-bac56f99.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "29": {
+   "file": "29-93edef6c.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "30": {
+   "file": "30-4c245a78.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "31": {
+   "file": "31-826476a3.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "32": {
+   "file": "32-937d0218.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "33": {
+   "file": "33-b2820463.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "34": {
+   "file": "34-5148665a.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "35": {
+   "file": "35-2aaccb08.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "36": {
+   "file": "36-e4875f99.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "37": {
+   "file": "37-c443131a.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "38": {
+   "file": "38-03782f2b.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "39": {
+   "file": "39-7cfbfc4f.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "40": {
+   "file": "40-69a3067f.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "41": {
+   "file": "41-79f77107.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "42": {
+   "file": "42-2a244417.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "43": {
+   "file": "43-f01ce1fd.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "44": {
+   "file": "44-a114abee.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "45": {
+   "file": "45-0eb12048.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "46": {
+   "file": "46-d98f322a.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "47": {
+   "file": "47-7e518017.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "48": {
+   "file": "48-b983cfb1.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "49": {
+   "file": "49-b5926b5f.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "50": {
+   "file": "50-4b5251ed.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "51": {
+   "file": "51-68e39cbf.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "01": {
+   "file": "01-62c64028.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "02": {
+   "file": "02-e4876f82.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "03": {
+   "file": "03-ea50fc8c.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "04": {
+   "file": "04-ff52e991.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "05": {
+   "file": "05-c8844623.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "06": {
+   "file": "06-196016c6.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "07": {
+   "file": "07-5dc450e9.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "08": {
+   "file": "08-3474e0bf.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "09": {
+   "file": "09-1f5d6cc6.webp",
+   "size": [
+    1220,
+    600
+   ]
+  },
+  "Poliigon_WoodVeneerOak_7760_BaseColor": {
+   "file": "Poliigon_WoodVeneerOak_7760_BaseColor-f0714e74.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Poliigon_MetalPaintedMatte_7037_BaseColor": {
+   "file": "Poliigon_MetalPaintedMatte_7037_BaseColor-1fc6b33a.webp",
+   "size": [
+    851,
+    851
+   ]
+  },
+  "Poliigon_MetalSteelBrushed_7174_BaseColor": {
+   "file": "Poliigon_MetalSteelBrushed_7174_BaseColor-43227810.webp",
+   "size": [
+    131,
+    131
+   ]
+  },
+  "potted_plant_02_pot_diff_1k": {
+   "file": "potted_plant_02_pot_diff_1k-b700cd31.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "potted_plant_01_pot_diff_1k": {
+   "file": "potted_plant_01_pot_diff_1k-ec16a13b.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "painted_wooden_bench_diff_1k": {
+   "file": "painted_wooden_bench_diff_1k-1c1444a9.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project": {
+   "file": "Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project-31bae0d8.webp",
+   "size": [
+    1280,
+    1007
+   ]
+  },
+  "Tsunami_by_hokusai_19th_century": {
+   "file": "Tsunami_by_hokusai_19th_century-d1bd11d5.webp",
+   "size": [
+    1280,
+    860
+   ]
+  },
+  "Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog": {
+   "file": "Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog-5c38effc.webp",
+   "size": [
+    1280,
+    1639
+   ]
+  },
+  "Van_Gogh_-_Starry_Night_-_Google_Art_Project": {
+   "file": "Van_Gogh_-_Starry_Night_-_Google_Art_Project-f133633b.webp",
+   "size": [
+    1280,
+    1014
+   ]
+  },
+  "Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project": {
+   "file": "Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project-ebbe8e9a.webp",
+   "size": [
+    1280,
+    1435
+   ]
+  },
+  "Claude_Monet_-_Water_Lilies_-_1906,_Ryerson": {
+   "file": "Claude_Monet_-_Water_Lilies_-_1906__Ryerson-a99f2792.webp",
+   "size": [
+    1280,
+    1230
+   ]
+  },
+  "cork_art": {
+   "file": "cork_art-f9cf17d1.webp",
+   "size": [
+    512,
+    384
+   ]
+  },
+  "book_spine_2": {
+   "file": "book_spine_2-2876afb3.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_9": {
+   "file": "book_spine_9-2a0b028a.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_4": {
+   "file": "book_spine_4-2a853c7d.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_11": {
+   "file": "book_spine_11-282a216d.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_6": {
+   "file": "book_spine_6-c4f5f31d.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "Office_desk_BaseColor": {
+   "file": "Office_desk_BaseColor-150322f9.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "texture pothos": {
+   "file": "texture_pothos-5fd7d7ce.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "pot texture": {
+   "file": "pot_texture-241566e6.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "potted+plant+3d+model_basecolor": {
+   "file": "potted_plant_3d_model_basecolor-43330547.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Back_plate_Material_BaseColor": {
+   "file": "Back_plate_Material_BaseColor-280b54b6.webp",
+   "size": [
+    231,
+    231
+   ]
+  },
+  "New_music_column_Dark Oak Wood_BaseColor": {
+   "file": "New_music_column_Dark_Oak_Wood_BaseColor-6d36aa96.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "the_last_of_us": {
+   "file": "the_last_of_us-b1a9506f.webp",
+   "size": [
+    600,
+    900
+   ]
+  },
+  "portal_2": {
+   "file": "portal_2-5dc5d00d.webp",
+   "size": [
+    600,
+    900
+   ]
+  },
+  "Ukulele_01_diff_2k": {
+   "file": "Ukulele_01_diff_2k-0fd99de3.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "stationery_supplies_diff_2k": {
+   "file": "stationery_supplies_diff_2k-1e100622.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "book_spine_1": {
+   "file": "book_spine_1-5c4c0a06.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_7": {
+   "file": "book_spine_7-56926447.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_10": {
+   "file": "book_spine_10-d0d26c9e.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "book_spine_8": {
+   "file": "book_spine_8-25810208.webp",
+   "size": [
+    64,
+    320
+   ]
+  },
+  "LampShade_emissive": {
+   "file": "LampShade_emissive-668aa6b9.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Bed_albedo": {
+   "file": "Bed_albedo-29cb8a62.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Chair_low_Material.001_BaseColor": {
+   "file": "Chair_low_Material.001_BaseColor-f6c35f68.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "PC9801U_Base_Color": {
+   "file": "PC9801U_Base_Color-31ea4619.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "pc_screen_art": {
+   "file": "pc_screen_art-023b0865.webp",
+   "size": [
+    384,
+    300
+   ]
+  },
+  "PC-9801 UX_Base_Color": {
+   "file": "PC-9801_UX_Base_Color-372ca7f5.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "pctowercolor": {
+   "file": "pctowercolor-6a91269a.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Record_Player_StingrayPBS1SG_albedo": {
+   "file": "Record_Player_StingrayPBS1SG_albedo-50a4b344.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "Ring_Material _25_BaseColor": {
+   "file": "Ring_Material__25_BaseColor-25fd6526.webp",
+   "size": [
+    685,
+    685
+   ]
+  },
+  "mini_music_column_main_column_BaseColor": {
+   "file": "mini_music_column_main_column_BaseColor-07224b5f.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "alarm_clock_01_diff_2k": {
+   "file": "alarm_clock_01_diff_2k-d451457f.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "office_notepads_diff_2k": {
+   "file": "office_notepads_diff_2k-a83e0ee6.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "black": {
+   "file": "black-018de0f7.webp",
+   "size": [
+    256,
+    256
+   ]
+  },
+  "brownwood": {
+   "file": "brownwood-4665c646.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "darkwood": {
+   "file": "darkwood-0bb93614.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "membrane cooper": {
+   "file": "membrane_cooper-0aa488ca.webp",
+   "size": [
+    170,
+    170
+   ]
+  },
+  "koc": {
+   "file": "koc-3b4adceb.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "membrane": {
+   "file": "membrane-f6239b68.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "cinchhl": {
+   "file": "cinchhl-1bd09837.webp",
+   "size": [
+    170,
+    170
+   ]
+  },
+  "darkgray": {
+   "file": "darkgray-7d71fa55.webp",
+   "size": [
+    256,
+    256
+   ]
+  },
+  "red": {
+   "file": "red-6c3f0684.webp",
+   "size": [
+    64,
+    64
+   ]
+  },
+  "blade_runner": {
+   "file": "blade_runner-3d03d28e.webp",
+   "size": [
+    251,
+    380
+   ]
+  },
+  "spirited_away": {
+   "file": "spirited_away-0fc82bbf.webp",
+   "size": [
+    265,
+    376
+   ]
+  },
+  "wicker_basket_02_diff_2k": {
+   "file": "wicker_basket_02_diff_2k-0840eeea.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "ai-engineering_spine": {
+   "file": "ai-engineering_spine-493dd279.webp",
+   "size": [
+    127,
+    1025
+   ]
+  },
+  "ai-engineering_cover": {
+   "file": "ai-engineering_cover-9804bcf4.webp",
+   "size": [
+    328,
+    430
+   ]
+  },
+  "bsc_datascience_ai_2026": {
+   "file": "bsc_datascience_ai_2026-86dad44e.webp",
+   "size": [
+    1024,
+    742
+   ]
+  },
+  "texture_pbr_v128": {
+   "file": "texture_pbr_v128-ba44c89c.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "hands-on-llms_spine": {
+   "file": "hands-on-llms_spine-bd22bdc0.webp",
+   "size": [
+    103,
+    1025
+   ]
+  },
+  "hands-on-llms_cover": {
+   "file": "hands-on-llms_cover-66960617.webp",
+   "size": [
+    815,
+    1070
+   ]
+  },
+  "practical-nlp_spine": {
+   "file": "practical-nlp_spine-81b1f6e9.webp",
+   "size": [
+    109,
+    1025
+   ]
+  },
+  "practical-nlp_cover": {
+   "file": "practical-nlp_cover-e7ef0694.webp",
+   "size": [
+    748,
+    981
+   ]
+  },
+  "practical-mlops_spine": {
+   "file": "practical-mlops_spine-b1a6eb30.webp",
+   "size": [
+    111,
+    1025
+   ]
+  },
+  "practical-mlops_cover": {
+   "file": "practical-mlops_cover-487e5bd9.webp",
+   "size": [
+    889,
+    1167
+   ]
+  },
+  "llmops_spine": {
+   "file": "llmops_spine-9c2aa914.webp",
+   "size": [
+    74,
+    1025
+   ]
+  },
+  "llmops_cover": {
+   "file": "llmops_cover-4c6c5a1e.webp",
+   "size": [
+    889,
+    1167
+   ]
+  },
+  "ddia2_spine": {
+   "file": "ddia2_spine-c1013e80.webp",
+   "size": [
+    64,
+    426
+   ]
+  },
+  "ddia2_cover": {
+   "file": "ddia2_cover-42848726.webp",
+   "size": [
+    425,
+    557
+   ]
+  },
+  "database-internals_spine": {
+   "file": "database-internals_spine-30d6e942.webp",
+   "size": [
+    91,
+    1025
+   ]
+  },
+  "database-internals_cover": {
+   "file": "database-internals_cover-3d6b5a4b.webp",
+   "size": [
+    929,
+    1219
+   ]
+  },
+  "storytelling-with-data_spine": {
+   "file": "storytelling-with-data_spine-3c884b1c.webp",
+   "size": [
+    71,
+    1030
+   ]
+  },
+  "storytelling-with-data_cover": {
+   "file": "storytelling-with-data_cover-dac288ec.webp",
+   "size": [
+    970,
+    1199
+   ]
+  },
+  "esl_spine": {
+   "file": "esl_spine-8b35b015.webp",
+   "size": [
+    176,
+    1034
+   ]
+  },
+  "esl_cover": {
+   "file": "esl_cover-48de111d.webp",
+   "size": [
+    1014,
+    1323
+   ]
+  },
+  "cv-szeliski_spine": {
+   "file": "cv-szeliski_spine-7246261f.webp",
+   "size": [
+    217,
+    1118
+   ]
+  },
+  "cv-szeliski_cover": {
+   "file": "cv-szeliski_cover-bc60cc2c.webp",
+   "size": [
+    1024,
+    1362
+   ]
+  },
+  "TVScreen_albedo": {
+   "file": "TVScreen_albedo-9342981d.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "saltLamp_mtl_emissive": {
+   "file": "saltLamp_mtl_emissive-aa9fe7e9.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "saltLamp_mtl_albedo": {
+   "file": "saltLamp_mtl_albedo-9322b597.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "texgen_2": {
+   "file": "texgen_2-926c70f7.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "back_to_the_future": {
+   "file": "back_to_the_future-89ad3ddf.webp",
+   "size": [
+    251,
+    397
+   ]
+  },
+  "rug_art": {
+   "file": "rug_art-b420401e.webp",
+   "size": [
+    1024,
+    696
+   ]
+  },
+  "TVStand_mat_diff": {
+   "file": "TVStand_mat_diff-27d95aaa.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "crt_screen_art": {
+   "file": "crt_screen_art-b7a555cd.webp",
+   "size": [
+    400,
+    320
+   ]
+  },
+  "Material_albedo": {
+   "file": "Material_albedo-cd44fb02.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "arch_books__3_": {
+   "file": "arch_books__3_-71c48e14.webp",
+   "size": [
+    2016,
+    2048
+   ]
+  },
+  "arch_books_front": {
+   "file": "arch_books_front-c73e1d41.webp",
+   "size": [
+    780,
+    1019
+   ]
+  },
+  "arch_books__4_": {
+   "file": "arch_books__4_-89bb70c5.webp",
+   "size": [
+    780,
+    1120
+   ]
+  },
+  "arch_books_rear": {
+   "file": "arch_books_rear-82e4088a.webp",
+   "size": [
+    202,
+    274
+   ]
+  },
+  "low_Face_1001_Emissive": {
+   "file": "low_Face_1001_Emissive-6d7a9b8b.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "low_Face_1001_Diffuse": {
+   "file": "low_Face_1001_Diffuse-fb6ebbf5.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "M_Steam_Machine_1001_emissive": {
+   "file": "M_Steam_Machine_1001_emissive-fece79d9.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "M_Steam_Machine_1001_albedo": {
+   "file": "M_Steam_Machine_1001_albedo-a9ab54aa.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "alien_(film)": {
+   "file": "alien__film_-f57fd6a6.webp",
+   "size": [
+    250,
+    382
+   ]
+  },
+  "peg_art": {
+   "file": "peg_art-d6f344b5.webp",
+   "size": [
+    480,
+    380
+   ]
+  },
+  "DefaultMaterial_emissive": {
+   "file": "DefaultMaterial_emissive-d9bd7e87.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "DefaultMaterial_albedo": {
+   "file": "DefaultMaterial_albedo-41f01515.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "kertas_buku": {
+   "file": "kertas_buku-cefb4aed.webp",
+   "size": [
+    128,
+    1024
+   ]
+  },
+  "buku_1": {
+   "file": "buku_1-b09e7ad9.webp",
+   "size": [
+    1920,
+    1342
+   ]
+  },
+  "buku_10": {
+   "file": "buku_10-11987175.webp",
+   "size": [
+    1504,
+    894
+   ]
+  },
+  "buku_11": {
+   "file": "buku_11-021fc647.webp",
+   "size": [
+    1298,
+    926
+   ]
+  },
+  "buku_12": {
+   "file": "buku_12-351cc520.webp",
+   "size": [
+    1000,
+    684
+   ]
+  },
+  "buku_2": {
+   "file": "buku_2-552c55bb.webp",
+   "size": [
+    1178,
+    837
+   ]
+  },
+  "buku_3": {
+   "file": "buku_3-87bdd3a8.webp",
+   "size": [
+    900,
+    707
+   ]
+  },
+  "buku_5": {
+   "file": "buku_5-16596631.webp",
+   "size": [
+    1178,
+    837
+   ]
+  },
+  "buku_6": {
+   "file": "buku_6-217781f2.webp",
+   "size": [
+    1178,
+    837
+   ]
+  },
+  "buku_7": {
+   "file": "buku_7-c3738ef2.webp",
+   "size": [
+    956,
+    675
+   ]
+  },
+  "buku_8": {
+   "file": "buku_8-7b9412c4.webp",
+   "size": [
+    92,
+    64
+   ]
+  },
+  "buku_9": {
+   "file": "buku_9-fbf32ba4.webp",
+   "size": [
+    800,
+    574
+   ]
+  },
+  "half_life_2": {
+   "file": "half_life_2-643ae1bf.webp",
+   "size": [
+    600,
+    900
+   ]
+  },
+  "stray": {
+   "file": "stray-f8708f46.webp",
+   "size": [
+    600,
+    900
+   ]
+  },
+  "wall_clock_diff_2k": {
+   "file": "wall_clock_diff_2k-8ddb9988.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "hands-on-ml_spine": {
+   "file": "hands-on-ml_spine-39aeac9f.webp",
+   "size": [
+    200,
+    1025
+   ]
+  },
+  "hands-on-ml_cover": {
+   "file": "hands-on-ml_cover-9cb564ba.webp",
+   "size": [
+    328,
+    429
+   ]
+  },
+  "PCKD854n_Base_Color": {
+   "file": "PCKD854n_Base_Color-b5573280.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "potted_plant_02_leaves_diff_1k": {
+   "file": "potted_plant_02_leaves_diff_1k-4b9c4099.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "potted_plant_01_leaves_diff_1k": {
+   "file": "potted_plant_01_leaves_diff_1k-eee64f70.webp",
+   "size": [
+    1024,
+    1024
+   ]
+  }
+ },
  "materials": {
   "constant|polish_oak_shadow_in_joints": {
    "kind": "constant",

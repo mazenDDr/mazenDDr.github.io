@@ -1,5 +1,5 @@
 // The live screens. The TV, the PC and the pinboard run all the time as real
-// pages (iframes) placed on their surfaces with CSS3DRenderer, *behind* the
+// pages (iframes) mapped onto their surfaces with one projective CSS matrix each, *behind* the
 // transparent WebGL canvas. The 3D room punches a hole where each one shows
 // (alpha 0, with depth), so anything in front of a screen still covers it.
 //
@@ -9,7 +9,7 @@
 // it. Over it, the same glass is drawn again: darker towards the rim where the
 // tube curves away, with the room's lights reflected in its curvature.
 import * as THREE from 'three';
-import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { place } from '../../src/tour/homography.js';
 
 // Pixel size each app is designed for (the aspect matches the glass), and the
 // black border a CRT leaves around its picture, as a fraction of the glass.
@@ -110,14 +110,12 @@ function glassGeometry(g, s) {
 
 export class Screens {
   constructor(anchors, scene, exposure, onBack) {
-    this.renderer = new CSS3DRenderer();
-    const el = this.renderer.domElement;
+    const el = document.createElement('div');
     el.id = 'screens';
     document.body.prepend(el);                     // behind the canvas
-    this.scene = new THREE.Scene();
+    this.root = el;
     this.objects = {};
     this.active = null;
-    this.frustum = new THREE.Frustum();
     for (const [name, app] of Object.entries(APPS)) {
       const s = anchors.screens[name];
       const g = app.crt && anchors.glass?.[name];
@@ -134,12 +132,12 @@ export class Screens {
       const right = new THREE.Vector3().fromArray(s.right), up = new THREE.Vector3().fromArray(s.up);
       const n = new THREE.Vector3().fromArray(s.normal);
       const q = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().makeBasis(right, up, n));
-      let k, hole, glass = null;
+      let k, hole, glass = null, pw = w, ph = h;
       if (g) {
         // The picture fills the glass less its border; the black around it runs past
         // the glass on every side so its outline never shows an edge.
         k = Math.min(s.width / w, s.height / h) * (1 - 2 * app.border);
-        const pw = Math.ceil(s.width * 1.06 / k), ph = Math.ceil(s.height * 1.06 / k);
+        pw = Math.ceil(s.width * 1.06 / k); ph = Math.ceil(s.height * 1.06 / k);
         wrap.style.cssText = `width:${pw}px;height:${ph}px`;
         frame.style.margin = `${(ph - h) / 2}px ${(pw - w) / 2}px`;
         const geo = glassGeometry(g, s);
@@ -159,18 +157,17 @@ export class Screens {
       hole.renderOrder = 1;
       glass.renderOrder = 2;
       scene.add(hole, glass);
-      const obj = new CSS3DObject(wrap);
-      obj.quaternion.copy(q);
-      obj.position.fromArray(s.center);
-      if (g) obj.position.addScaledVector(n, -0.006);  // a little into the tube, under the curved front
-      obj.scale.setScalar(k);
-      this.scene.add(obj);
-      this.objects[name] = { obj, wrap, frame, hole, glass, src: app.src, shown: true, dim: DIM, to: DIM };
+      // the page's corners in the room (TL TR BR BL): mapped onto the screen each frame
+      const c = new THREE.Vector3().fromArray(s.center);
+      if (g) c.addScaledVector(n, -0.006);             // a little into the tube, under the curved front
+      const corners = [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([x, y]) => c.clone().addScaledVector(right, (x * pw * k) / 2).addScaledVector(up, (y * ph * k) / 2).toArray());
+      if (!g) wrap.style.cssText = `width:${w}px;height:${h}px`;
+      el.append(wrap);
+      this.objects[name] = { wrap, frame, hole, glass, corners, px: [[0, 0], [pw, 0], [pw, ph], [0, ph]], src: app.src, dim: DIM, to: DIM };
     }
     // Apps ask to leave with Escape (keys inside an iframe never reach this page).
     addEventListener('message', (e) => { if (e.data?.type === 'room-back') onBack(); });
-    this.resize();
-    addEventListener('resize', () => this.resize());
+
   }
 
   /** Narrow or portrait screens can't read a 1280-px app shrunk onto a TV. */
@@ -224,7 +221,7 @@ export class Screens {
     this.changed = true;
   }
 
-  resize() { this.renderer.setSize(innerWidth, innerHeight); }
+  resize() {}
 
   /** Ease the dimming in and out; true while it's still changing (the room must redraw). */
   update(dt) {
@@ -240,15 +237,8 @@ export class Screens {
   }
 
   render(camera) {
-    // A page whose screen is out of view is hidden, so the browser skips drawing it.
-    this.frustum.setFromProjectionMatrix(new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
-    for (const o of Object.values(this.objects)) {
-      const geo = o.hole.geometry;
-      geo.boundingSphere || geo.computeBoundingSphere();
-      const sphere = geo.boundingSphere.clone().applyMatrix4(o.hole.matrixWorld);
-      const see = this.frustum.intersectsSphere(sphere);
-      if (see !== o.shown) { o.shown = see; o.wrap.style.visibility = see ? '' : 'hidden'; }
-    }
-    this.renderer.render(this.scene, camera);
+    // each page onto its screen with one flat matrix (works in Safari; hidden when out of view)
+    const m = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).elements;
+    for (const o of Object.values(this.objects)) place(o, m, innerWidth, innerHeight);
   }
 }

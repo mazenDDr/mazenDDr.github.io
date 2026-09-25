@@ -96,7 +96,7 @@ export class Doodles {
         const ux = cx / n, uy = cy / n;
         it.dir = [ux * Math.cos(turn) - uy * Math.sin(turn), ux * Math.sin(turn) + uy * Math.cos(turn)];
       }
-      const k = Math.min(1, Math.max(0.6, innerWidth / 1100));   // smaller arrows on small screens
+      const k = Math.min(1, Math.max(0.5, innerWidth / 1100), innerHeight / 720);   // smaller arrows on small (or short) screens
       let s = arrowShape(it.seed, it.dir, k);
       // Keep the tail and its label on screen: mirror the arrow if it would leave.
       const room = 16, labelW = 170;

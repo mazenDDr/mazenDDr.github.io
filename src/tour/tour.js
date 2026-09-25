@@ -3,7 +3,7 @@
 // in advance), played as a video. Before a flight the view turns to its exact
 // first frame, and it lands on the next panorama at its exact last frame, so the
 // hand-off is invisible. Looking around is a damped spring toward the pointer.
-import { Camera, qaxis, qmul, qslerp, deg, clamp, lerp, smoother } from './m.js';
+import { Camera, qaxis, qmul, qslerp, qangle, deg, clamp, lerp, smoother } from './m.js';
 
 export const PARENT = { tv: 'couch', games: 'couch', pc: 'desk', memo: 'bed' };
 const FOCUS = { tv: 'tv', games: 'tv', pc: 'pc', memo: 'memo' };
@@ -12,8 +12,9 @@ const VIDEO_ASPECT = 16 / 9;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export class Tour extends EventTarget {
-  constructor(manifest, anchors, loader, video) {
+  constructor(manifest, anchors, loader, video, canvas) {
     super();
+    this.canvas = canvas;
     this.m = manifest;
     this.anchors = anchors;
     this.loader = loader;
@@ -103,30 +104,39 @@ export class Tour extends EventTarget {
     this.dispatchEvent(new CustomEvent('arrive', { detail: { place: key } }));
   }
 
-  /** Play a chain of flights and land on the last one's panorama. */
+  /** Play a chain of flights and land on the last one's panorama. If a flight isn't
+   *  ready almost at once (or can't play), the view dissolves there instead: a click
+   *  always answers right away. */
   async fly(chain, dest) {
     const moves = chain.map((k) => this.m.moves[k]);
     const first = moves[0], last = moves[moves.length - 1];
-    const srcs = chain.map((k) => this.loader.video(k, 0));
-    this.loader.pano(this.view(dest), 0);
-    let urls = null;
-    if (!reduced) urls = await Promise.race([Promise.all(srcs), new Promise((r) => setTimeout(() => r(null), 5000))]);
-    // 1. turn to the flight's first frame
-    await this.tween({ look: [0, 0], hfov: this.coverHfov(first.first[7]), quat: first.first.slice(3, 7) }, 0.32);
+    const land = this.loader.pano(this.view(dest), 0);
+    const wait = (p, ms) => Promise.race([p, new Promise((r) => setTimeout(() => r(null), ms))]);
+    const urls = reduced ? null : await wait(Promise.all(chain.map((k) => this.loader.video(k, 0))).catch(() => null), 350);
+    let flown = false;
     if (urls) {
-      for (let i = 0; i < moves.length; i++) await this.video.play(urls[i], i === 0);
-    } else {
-      await this.loader.pano(this.view(dest), 0);     // no video in time: a quick dissolve instead
-      await this.video.dissolve();
+      // 1. turn to the flight's first frame (quick when already close)
+      const turn = Math.max(qangle(this.camera.quat, first.first.slice(3, 7)), Math.abs(this.hfov - this.coverHfov(first.first[7])) / 40);
+      await this.tween({ look: [0, 0], hfov: this.coverHfov(first.first[7]), quat: first.first.slice(3, 7) }, clamp(turn * 0.5, 0.1, 0.32));
+      flown = true;
+      for (let i = 0; i < urls.length && flown; i++) flown = await this.video.play(urls[i], () => this.dispatchEvent(new Event('covered')));
+    }
+    if (!flown) {                                    // dissolve: hold this view, land under it
+      this.drawNow?.();                               // WebGL keeps a frame only until it's shown
+      this.video.snapshot(this.canvas);
+      this.dispatchEvent(new Event('covered'));
+      await wait(land, 2500);
     }
     // 2. land on the panorama at the last frame, then settle into the place's own framing
     this.pano = this.view(dest);
-    this.base = last.last.slice(3, 7);
-    this.hfov = this.coverHfov(last.last[7]);
+    this.base = flown ? last.last.slice(3, 7) : null;
+    this.hfov = flown ? this.coverHfov(last.last[7]) : this.placeHfov(dest);
     this.look = [0, 0]; this.lookVel = [0, 0];
     this.apply();
     this.dispatchEvent(new Event('change'));
-    await this.video.hide();
+    this.dispatchEvent(new Event('uncovered'));      // the screens come back under the fading video
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await this.video.hide(flown ? 180 : 420);
     this.base = null;
     await this.tween({ hfov: this.placeHfov(dest) }, 0.35);
   }

@@ -44,6 +44,14 @@ export class Viewer {
     if (!gl) throw new Error('no WebGL');
     this.gl = gl;
     this.canvas = canvas;
+    // Phones can take the GPU back (backgrounded tab, memory pressure): rebuild after.
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.lost = true; });
+    canvas.addEventListener('webglcontextrestored', () => { this.init(); this.lost = false; this.onRestore?.(); });
+    this.init();
+  }
+
+  init() {
+    const gl = this.gl;
     this.aniso = gl.getExtension('EXT_texture_filter_anisotropic');
     this.maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
     this.face = program(gl, FACE_VERT, FACE_FRAG);
@@ -51,8 +59,9 @@ export class Viewer {
     this.glassProg = program(gl, GLASS_VERT, `precision ${hp} float;\n${GLASS_FRAG}\nvoid main() { gl_FragColor = glass(); }`);
     this.quad = gl.createBuffer();          // one unit quad, reused for every face
     this.panos = {};
+    const geos = this.glass?.map((g) => [g.geo, g.crt, g]) || [];
     this.glass = [];
-    this.pano = null;
+    for (const [geo, crt, old] of geos) Object.assign(old, this.addGlass(geo, crt, old));
   }
 
   /** A place's panorama: its turn (the view's quaternion) and faces as they load. */
@@ -64,7 +73,7 @@ export class Viewer {
   texture(img, mips) {
     const gl = this.gl, t = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, t);
-    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !(img instanceof ImageBitmap));  // bitmaps come premultiplied
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, !(typeof ImageBitmap !== 'undefined' && img instanceof ImageBitmap));  // bitmaps come premultiplied (old Safari has no ImageBitmap)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -113,12 +122,12 @@ export class Viewer {
   }
 
   /** The screens' glass (tv, pc: the real mesh; memo: its page rectangle). */
-  addGlass(geo, crt) {
+  addGlass(geo, crt, keep) {
     const gl = this.gl, b = (a) => { const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(a), gl.STATIC_DRAW); return buf; };
     const idx = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, idx);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geo.index), gl.STATIC_DRAW);
-    const g = { pos: b(geo.position), nor: b(geo.normal), face: b(geo.face), idx, n: geo.index.length, crt, dim: 0.42, sheen: 1 };
+    const g = Object.assign(keep || { dim: 0.42, sheen: 1 }, { geo, pos: b(geo.position), nor: b(geo.normal), face: b(geo.face), idx, n: geo.index.length, crt });
     this.glass.push(g);
     return g;
   }
@@ -130,6 +139,7 @@ export class Viewer {
 
   render(cam, key) {
     const gl = this.gl, p = this.panos[key];
+    if (this.lost) return;
     gl.viewport(0, 0, this.canvas.width, this.canvas.height);
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);

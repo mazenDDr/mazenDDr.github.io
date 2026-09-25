@@ -15,6 +15,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument('out')
 ap.add_argument('--size', default='1440x900')
 ap.add_argument('--url', default='', help='test a deployed site instead of a local server')
+ap.add_argument('--mode', default='', help='live or tour (default: what the page picks for this machine)')
 args = ap.parse_args()
 out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 W, H = map(int, args.size.split('x'))
@@ -29,7 +30,7 @@ srv = type('Srv', (socketserver.ThreadingTCPServer,), {'request_queue_size': 64}
 
 
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = args.url or f'http://127.0.0.1:{srv.server_address[1]}/index.html'
+url = (args.url or f'http://127.0.0.1:{srv.server_address[1]}/index.html') + (f'?mode={args.mode}' if args.mode else '')
 errors, results = [], []
 
 with sync_playwright() as p:
@@ -55,7 +56,9 @@ with sync_playwright() as p:
 
     def shot(name, expect=None):
         s = state()
-        s['cam'] = pg.evaluate('() => { const c = __room.camera, r = c.ray(0, 0); return [...c.pos, ...r.d].map(v => +v.toFixed(2)); }')
+        s['cam'] = pg.evaluate('''() => { const c = __room.camera;
+            if (c.ray) { const r = c.ray(0, 0); return [...c.pos, ...r.d].map(v => +v.toFixed(2)); }          // the tour's camera
+            return [...c.position.toArray(), ...c.getWorldDirection(new c.position.constructor()).toArray()].map(v => +v.toFixed(2)); }''')
         print('STEP', name, json.dumps(s), flush=True)
         pg.screenshot(path=str(out / f'{len(results):02d}_{name}.png'))
         ok = expect is None or all(s.get(k) == v for k, v in expect.items())
@@ -65,7 +68,7 @@ with sync_playwright() as p:
         # Aim at the object's marker like a visitor: the view drifts a little with
         # the pointer, so follow the marker until it is hovered, then click.
         where = f'''() => {{ const s = __room.spots.spots.find(s => (s.place || s.action) === '{place}');
-            const p = __room.camera.project(s.anchor), v = {{ x: p[0], y: p[1] }};
+            const v = s.anchor.isVector3 ? s.anchor.clone().project(__room.camera) : (([x, y]) => ({{ x, y }}))(__room.camera.project(s.anchor));
             return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight, __room.spots.hover === s]; }}'''
         for _ in range(8):
             x, y, hovered = pg.evaluate(where)

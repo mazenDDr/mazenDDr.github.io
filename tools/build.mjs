@@ -26,6 +26,15 @@ for (const f of readdirSync(OUT)) if (/^app-[0-9a-f]{8}\.js$/.test(f)) rmSync(`$
 const app = `${OUT}/app-${hash(code)}.js`;
 writeFileSync(app, code);
 
+// 1b. the live room (engine/src + three.js), for capable computers
+const live = await build({ entryPoints: ['engine/src/main.js'], bundle: true, minify: true, format: 'esm', target: ['es2020'],
+  supported: { 'top-level-await': true }, write: false, legalComments: 'none',
+  alias: { three: './vendor/three/three.module.js', 'three/addons': './vendor/three/addons' } });
+const liveCode = live.outputFiles[0].contents;
+for (const f of readdirSync(OUT)) if (/^live-[0-9a-f]{8}\.js$/.test(f)) rmSync(`${OUT}/${f}`);
+const liveFile = `${OUT}/live-${hash(liveCode)}.js`;
+writeFileSync(liveFile, liveCode);
+
 // 2. the CSS, inlined
 const css = await build({ stdin: { contents: readFileSync('fonts/fonts.css', 'utf8') + readFileSync('src/tour/style.css', 'utf8'), loader: 'css' },
   minify: true, write: false, target: ['safari13'] });
@@ -47,6 +56,7 @@ const hall = manifest.views.hall.files;
 const caveat = readdirSync('fonts').find((f) => f.startsWith('caveat'));
 const html = readFileSync('src/tour/index.html', 'utf8')
   .replaceAll('{{app}}', app)
+  .replaceAll('{{live}}', liveFile)
   .replace('{{css}}', css.outputFiles[0].text.trim())
   .replace('{{data}}', data)
   .replace('{{og}}', `https://mazenddr.github.io/${ogFile}`)
@@ -75,4 +85,4 @@ self.addEventListener('fetch', (e) => {
 });
 `);
 const gz = (b) => Math.round(b.length / 1024);
-console.log(`index.html ${gz(Buffer.from(html))} KB, ${app} ${gz(code)} KB, og ${gz(og)} KB`);
+console.log(`index.html ${gz(Buffer.from(html))} KB, ${app} ${gz(code)} KB, ${liveFile} ${gz(liveCode)} KB, og ${gz(og)} KB`);

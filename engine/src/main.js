@@ -103,15 +103,21 @@ if (document.documentElement.requestFullscreen && screen.orientation?.lock) {
 const knockBtn = document.querySelector('#intro .knock span');
 knockBtn.textContent = 'Knock on the door';
 let progress = 0;
+// On the website (window.ROOM_LIVE, set by the page's device check) the room starts
+// small and streams its full textures in; the capture tools load it all at once.
+const live = !!window.ROOM_LIVE;
 const bar = document.querySelector('#loading .bar i');
-const roomReady = loadRoom(renderer, (p) => { progress = p; bar.style.width = `${p * 100}%`; }, anchors.door.hinge).then(({ room, parts }) => {
+const uploads = [];
+const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.width = `${p * 100}%`; }, anchors.door.hinge, { lite: live }).then(({ room, parts, stream }) => {
+  stream(uploads);                  // sharper pictures from now on, the landing first
   scene.add(room);
   post = createPost(renderer, scene, camera);
   post.onChange = () => { redraw = true; };
   screens = new Screens(anchors, scene, LOOK.exposure, goBack);
   door = parts.door;
   resize();
-  document.getElementById('loading').classList.add('done');     // the 3D view takes over from the still
+  document.getElementById('loading')?.classList.add('done');    // the 3D view takes over from the still
+  document.body.classList.add('drawn');
   return { door: parts.door, parts };
 });
 
@@ -163,12 +169,15 @@ renderer.setAnimationLoop(() => {
   if (!params.has('view')) director.update(dt); else director.apply();
   spots.update();
   if (!post) return;
+  // a sharper texture onto the GPU: one per frame, never mid-flight (no hitches)
+  if (uploads.length && !director.busy) { uploads.shift()(); redraw = true; }
   const view = viewChanged();
   const moving = !!view || screens.update(dt);
   if (moving || redraw) {
     if (moving && wasMoving) {                      // how long the last moving frame really took
       if (raw > 1 / 42) { slow++; quick = 0; } else if (raw < 1 / 56) { quick++; slow = 0; }
       if (slow > 6 && level < SCALES.length - 1) { level++; slow = 0; }
+      if (live) watchdog(raw);
       if (quick > 120 && level > 0) { level--; quick = 0; }
     }
     const scale = moving && !redraw ? SCALES[level] : 1;
@@ -185,3 +194,16 @@ renderer.setAnimationLoop(() => {
 });
 const invalidate = () => { redraw = true; };
 window.__room = { director, spots, camera, invalidate, ready: false };
+
+// This machine can't draw the room smoothly even at the smallest size: take the visitor
+// to the pre-rendered room instead (same place), and remember it for next time.
+let slowFrames = 0, movingFrames = 0;
+function watchdog(raw) {
+  movingFrames++;
+  if (level === SCALES.length - 1 && raw > 1 / 22) slowFrames++;
+  if (movingFrames > 90 && slowFrames > movingFrames * 0.4) {
+    try { localStorage.setItem('room-mode', 'tour'); } catch { /* private mode */ }
+    const place = director.place && director.place !== 'hall' ? director.place : 'room';
+    location.replace(`${location.pathname}?mode=tour&place=${place}`);
+  }
+}

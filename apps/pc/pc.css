@@ -21,14 +21,14 @@ a { color: #0000cc; }
 :focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
 
 /* The Mac OS default desktop: a soft blue-violet with a fine pattern. */
-#desktop { position: absolute; inset: 22px 0 0 0; background-color: var(--desk);
+#desktop { position: absolute; top: 22px; right: 0; bottom: 0; left: 0; background-color: var(--desk);
   background-image: radial-gradient(#ffffff14 1px, #0000 1.3px), linear-gradient(160deg, #6a70ad, #4d5190); background-size: 3px 3px, 100% 100%; }
-.scan { position: fixed; inset: 0; pointer-events: none; z-index: 999; display: none;
+.scan { position: fixed; top: 0; right: 0; bottom: 0; left: 0; pointer-events: none; z-index: 999; display: none;
   background: repeating-linear-gradient(0deg, #0000 0 2px, #00000012 2px 3px), radial-gradient(ellipse, #0000 62%, #0006 100%); }
 body.in-room .scan { display: block; }
 
 /* ---------- boot ---------- */
-#boot { position: fixed; inset: 0; z-index: 100; background: var(--desk); display: grid; place-content: center; justify-items: center; gap: 22px;
+#boot { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 100; background: var(--desk); display: grid; place-content: center; justify-items: center; gap: 22px;
   transition: opacity .35s; }
 #boot .happy img { width: 64px; height: 64px; image-rendering: auto; }
 #boot .welcome { background: var(--plat); border: 1px solid #000; box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 var(--plat-lo), 2px 2px 0 #0006;
@@ -39,7 +39,7 @@ body.in-room .scan { display: block; }
 @keyframes boot { to { width: 100%; } }
 
 /* ---------- menu bar ---------- */
-#menubar { position: fixed; inset: 0 0 auto 0; height: 22px; z-index: 50; display: flex; align-items: center; gap: 0; padding: 0 8px;
+#menubar { position: fixed; top: 0; right: 0; bottom: auto; left: 0; height: 22px; z-index: 50; display: flex; align-items: center; gap: 0; padding: 0 8px;
   background: linear-gradient(#f4f4f4, #d8d8d8); border-bottom: 1px solid #000; font-size: 12px; }
 #menubar > button { padding: 0 10px; height: 100%; }
 #menubar > button:hover, #menubar > button.open { background: var(--sel); color: #fff; }
@@ -74,7 +74,7 @@ body.in-room .scan { display: block; }
 .win .close, .win .zoombox, .win .shade { position: absolute; top: 4px; width: 12px; height: 12px; background: linear-gradient(135deg, #fff, #bbb);
   border: 1px solid #000; box-shadow: inset 1px 1px 0 #fff; }
 .win .close { left: 6px; }
-.win .zoombox { right: 24px; } .win .zoombox::after { content: ''; position: absolute; inset: 2px 4px 4px 2px; border: 1px solid #000; }
+.win .zoombox { right: 24px; } .win .zoombox::after { content: ''; position: absolute; top: 2px; right: 4px; bottom: 4px; left: 2px; border: 1px solid #000; }
 .win .shade { right: 6px; } .win .shade::after { content: ''; position: absolute; left: 1px; right: 1px; top: 4px; height: 2px; border-top: 1px solid #000; border-bottom: 1px solid #000; }
 .win:not(.active) .close, .win:not(.active) .zoombox, .win:not(.active) .shade { visibility: hidden; }
 .win .close:active { background: #888; }

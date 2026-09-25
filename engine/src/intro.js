@@ -146,7 +146,7 @@ export function setMuted(m) { if (bus) bus.gain.setTargetAtTime(m ? 0 : 0.9, aud
  */
 export function playIntro({ room, progress, openAngle, director, doodles, camera, onDone }) {
   const card = document.getElementById('intro');
-  const still = document.getElementById('loading');
+  const still = document.getElementById('still') || document.getElementById('loading');
   const button = card.querySelector('.knock');
   const label = button.querySelector('span');
   const wait = (s) => new Promise((r) => setTimeout(r, s * 1000));

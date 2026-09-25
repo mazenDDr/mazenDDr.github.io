@@ -15,7 +15,36 @@
 <link rel="preload" href="{{hallStrip}}" as="fetch" crossorigin fetchpriority="high">
 <link rel="preload" href="{{hallFront}}" as="image" type="image/avif">
 <link rel="preload" href="fonts/{{caveat}}" as="font" type="font/woff2" crossorigin>
-<link rel="modulepreload" href="{{app}}">
+<script>
+/* Which room this device gets, decided before anything big downloads (ES5: runs anywhere).
+   live: the real-time 3D room (sharp, flies freely) for capable computers.
+   tour: the pre-rendered room (pictures and short videos) for phones and weak machines.
+   ?mode=live|tour overrides; a computer too slow for live is remembered as tour. */
+(function () {
+  function pick() {
+    var n = navigator, c = n.connection || {}, ua = n.userAgent;
+    if (c.saveData || /2g|3g/.test(c.effectiveType || '')) return 'tour';
+    if ((n.userAgentData && n.userAgentData.mobile) || /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && n.maxTouchPoints > 1)) return 'tour';
+    if ((n.deviceMemory && n.deviceMemory < 4) || (n.hardwareConcurrency && n.hardwareConcurrency < 4)) return 'tour';
+    var gl = null;
+    try { gl = document.createElement('canvas').getContext('webgl2'); } catch (e) {}
+    if (!gl || !(gl.getExtension('EXT_color_buffer_half_float') || gl.getExtension('EXT_color_buffer_float'))) return 'tour';
+    var info = gl.getExtension('WEBGL_debug_renderer_info');
+    var gpu = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+    var lose = gl.getExtension('WEBGL_lose_context');
+    if (lose) lose.loseContext();
+    if (/swiftshader|llvmpipe|softpipe|software|basic render|mali|adreno|powervr|videocore/i.test(gpu)) return 'tour';
+    if (/intel/i.test(gpu) && !/iris|arc/i.test(gpu)) return 'tour';      /* Intel HD/UHD: the weak laptop GPUs */
+    return 'live';
+  }
+  var m = /[?&]mode=(live|tour)/.exec(location.search), mode = m && m[1];
+  if (!mode) { try { mode = localStorage.getItem('room-mode'); } catch (e) {} }
+  if (mode !== 'live' && mode !== 'tour') mode = pick();
+  window.ROOM_MODE = mode;
+  window.ROOM_LIVE = mode === 'live';
+  document.documentElement.className += ' ' + mode;
+})();
+</script>
 <style>{{css}}</style>
 <style>#still { background-image: url({{hallFrontWebp}}); background-image: image-set(url({{hallFront}}) type("image/avif"), url({{hallFrontWebp}}) type("image/webp")); }</style>
 </head>
@@ -49,6 +78,14 @@
 </div>
 <noscript><div id="fallback"><p>The room needs JavaScript. Everything in it is also here:</p><a href="apps/tv/">Mazenflix: my projects</a><a href="apps/pc/">MazenOS: about me</a><a href="apps/memo/">The pinboard</a></div></noscript>
 <script id="tour-data" type="application/json">{{data}}</script>
-<script type="module" src="{{app}}"></script>
+<script type="module">
+  // the chosen room; if the live one can't start here, the pictures always can
+  import(window.ROOM_LIVE ? './{{live}}' : './{{app}}').catch((e) => {
+    console.error(e);
+    if (!window.ROOM_LIVE) return;
+    try { localStorage.setItem('room-mode', 'tour'); } catch (e) { /* private mode */ }
+    location.replace(location.pathname + '?mode=tour');
+  });
+</script>
 </body>
 </html>

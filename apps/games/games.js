@@ -11,7 +11,7 @@ const NEON = { pink: '#ff3cac', cyan: '#2bd2ff', lime: '#7dff5a', gold: '#ffd23f
 let ac;
 function blip(f = 440, dur = 0.06, type = 'square', vol = 0.06) {
   try {
-    ac ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
     const o = ac.createOscillator(), v = ac.createGain(), t = ac.currentTime;
     o.type = type; o.frequency.setValueAtTime(f, t);
     v.gain.setValueAtTime(vol, t); v.gain.exponentialRampToValueAtTime(0.0001, t + dur);

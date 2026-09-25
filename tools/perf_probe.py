@@ -31,6 +31,7 @@ ap.add_argument('--root', default=None)
 ap.add_argument('--url', default=None, help='measure a deployed site instead')
 ap.add_argument('--repeat', action='store_true', help='also time a second visit (service worker cache)')
 ap.add_argument('--mobile', action='store_true', help='touch phone viewport')
+ap.add_argument('--mode', default='', help='force live or tour')
 ap.add_argument('--cpu', type=float, default=1, help='CPU slowdown (4 = a mid phone, 6 = a cheap one)')
 args = ap.parse_args()
 root = Path(args.root) if args.root else WEB
@@ -39,8 +40,8 @@ H = type('Quiet', (http.server.SimpleHTTPRequestHandler,), {'log_message': lambd
 srv = type('Srv', (socketserver.ThreadingTCPServer,), {'request_queue_size': 64})(('127.0.0.1', 0), functools.partial(H, directory=str(root)))
 srv.daemon_threads = True
 threading.Thread(target=srv.serve_forever, daemon=True).start()
-url = args.url or f'http://127.0.0.1:{srv.server_address[1]}/{args.page}'
-NETS = {'fast4g': (9e6, 170), 'slow4g': (1.6e6, 150), 'none': None}
+url = (args.url or f'http://127.0.0.1:{srv.server_address[1]}/{args.page}') + (f'?mode={args.mode}' if args.mode else '')
+NETS = {'home': (20e6, 40), 'fast4g': (9e6, 170), 'slow4g': (1.6e6, 150), 'none': None}
 
 FPS = """(ms) => new Promise((res) => { let n = 0; const t0 = performance.now(); const f = () => { n++; if (performance.now() - t0 < ms) requestAnimationFrame(f); else res(n * 1000 / (performance.now() - t0)); }; requestAnimationFrame(f); })"""
 BYTES = """() => performance.getEntriesByType('resource').reduce((s, e) => s + (e.transferSize || e.encodedBodySize || 0), 0) + (performance.getEntriesByType('navigation')[0]?.transferSize || 0)"""
@@ -94,7 +95,7 @@ with sync_playwright() as p:
     gpu = pg.evaluate("""(() => { const v = __room.viewer; if (!v) return null; let b = 0;
       for (const p of Object.values(v.panos)) { for (const f of Object.values(p.faces)) if (f) b += f.size * f.size * 4 * 4 / 3; if (p.strip) b += 1280 * 256 * 4; }
       return b / 1048576; })()""")
-    out = {'page': args.page, 'net': args.net, 'cpu': args.cpu, 'gpu': 'swiftshader' if args.swiftshader else 'real', 'viewport': args.size, 'dpr': args.dpr,
+    out = {'page': args.page, 'mode': pg.evaluate('window.ROOM_MODE || null'), 'net': args.net, 'cpu': args.cpu, 'gpu': 'swiftshader' if args.swiftshader else 'real', 'viewport': args.size, 'dpr': args.dpr,
            'first_paint_s': round(fcp, 2) if fcp else None, 'interactive_s': round(interactive, 2), 'in_room_s': round(in_room, 2),
            'mb_to_room': round(mb, 1), 'idle_frames_s': round(idle, 1), 'flight_fps': round(flight, 1), 'frame_ms': round(frame, 2),
            'gpu_mb': round(gpu) if gpu is not None else None, 'errors': errors}

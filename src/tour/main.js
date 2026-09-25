@@ -23,7 +23,7 @@ async function start() {
     return;
   }
 
-  let running = false, idle = 0, last = 0, redraw = true;
+  let running = false, idle = 0, last = 0, redraw = true, drawn = false;
   /** Something may have changed: run the loop until everything is still again. */
   function wake() {
     idle = 0;
@@ -36,7 +36,9 @@ async function start() {
   const [avif, codec] = await Promise.all([avifSupported(), pickCodec()]);
   const loader = new Loader(manifest, viewer, { avif, codec, onReady: wake });
   const flight = new Flight();
-  const tour = new Tour(manifest, anchors, loader, flight);
+  const tour = new Tour(manifest, anchors, loader, flight, canvas);
+  tour.drawNow = () => viewer.render(tour.camera, tour.pano);
+  viewer.onRestore = () => { loader.panos = {}; loader.pano(tour.pano, 0); redraw = true; wake(); };
   const screens = new Screens(anchors, viewer, goBack);
   const lightbox = document.getElementById('lightbox');
   const spots = new Hotspots(tour.camera, tour, (action) => { if (action.startsWith('cert:')) openCertificate(action.slice(5)); });
@@ -65,7 +67,7 @@ async function start() {
       screens.render(tour.camera, innerWidth, innerHeight);
       redraw = false;
       idle = 0;
-      document.body.classList.add('drawn');
+      if (!drawn) { drawn = true; document.body.classList.add('drawn'); }
     } else idle++;
     spots.update();
     // Nothing moving for a while (and nothing waiting): stop until an event wakes us.
@@ -89,10 +91,14 @@ async function start() {
     back.classList.toggle('on', spots.enabled && !tour.busy && p !== 'room' && p !== 'hall');
     back.textContent = tour.focus ? '← Back' : '← Stand up';
   };
-  tour.addEventListener('leave', () => { back.classList.remove('on'); screens.hide(); document.body.classList.add('flying'); });
+  // Moving: the arrows go at once; the screens stay until the flight covers them, and
+  // come back before it fades (hiding them any earlier shows black holes).
+  tour.addEventListener('leave', () => { back.classList.remove('on'); screens.hide(); document.body.classList.add('moving'); });
+  tour.addEventListener('covered', () => document.body.classList.add('covered'));
+  tour.addEventListener('uncovered', () => { document.body.classList.remove('covered'); redraw = true; wake(); });
   tour.addEventListener('arrive', (e) => {
     const p = e.detail.place;
-    document.body.classList.remove('flying');
+    document.body.classList.remove('moving', 'covered');
     syncHud();
     loader.pano(tour.view(p), 1);                 // this place, sharp
     loader.prefetch(p);                            // where you can go next

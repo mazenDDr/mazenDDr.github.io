@@ -15,26 +15,26 @@ cd web && python3 -m http.server 8765      # then open http://localhost:8765
 
 Deep links: `?place=couch|tv|desk|pc|bed|memo|certificates`, `?skip` (no knock).
 
-## How it works: pictures, not a 3D engine in your browser
+## How it works: two rooms, one for each kind of device
 
-A visitor never walks freely: they stand at a few places, look around a little,
-and fly between them. So the room is **rendered in advance**, the way Matterport
-tours, Street View and Apple's product pages work:
+A tiny check in the page's head (`src/tour/index.html`) picks, before anything big
+downloads:
 
-- **a panorama at every place**: a cube of pictures around the eye, turned to face
-  the default view (no back face: you never look there), at 1024/2048 px per face
-  and a 4096-px front for large high-DPI screens;
-- **a short video for every flight** between places (the same drone moves as the
-  real-time version, 60 fps), in AV1 for devices that decode it in hardware and
-  H.264 for everything else, at 1080p and 720p;
-- the **live pages** show through holes left in the pictures where the screens are,
-  each mapped onto its screen with one projective CSS matrix; the tube's glass
-  (rim darkening, reflections, dimming from across the room) is drawn over them.
+- **live** (capable computers: Apple Silicon, NVIDIA/AMD, Intel Iris/Arc): the
+  real-time 3D room in `engine/` (three.js, Cycles-baked light), sharp at any
+  resolution, flying freely. It starts from a small model (textures at most 256 px,
+  quarter-size light maps; about 8 MB over the wire) and streams the full textures
+  in while you knock, the landing first. If a machine turns out too slow even at
+  the lowest render size, a watchdog moves it to the pictures (and remembers).
+- **tour** (phones, tablets, weak GPUs, Save-Data or 2G/3G): the same room as
+  pictures, rendered in advance by the engine: a panorama at every place and a short
+  video for every flight (AV1 where the hardware decodes it, else H.264; 720p on
+  phones), shown by ~44 KB of plain WebGL 1 (`src/tour/`). Flights you can take are
+  fetched as soon as you arrive; if one isn't ready, the view dissolves there at once.
 
-The browser only shows pictures and plays videos (`src/tour/`: ~42 KB of script,
-plain WebGL 1, no libraries), so it runs on anything and never works a GPU hard.
-The pictures and videos are made by the real-time engine in `engine/` (the baked
-Cycles lighting of `design/blender/`), at full quality with no frame budget.
+`?mode=live` or `?mode=tour` forces one. In both, the live pages (TV, PC,
+pinboard) are mapped onto their screens with one projective CSS matrix each, which
+every browser draws (Safari won't draw three.js-style CSS3D scenes).
 
 ## What's where
 

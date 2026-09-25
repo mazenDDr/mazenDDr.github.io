@@ -35,7 +35,9 @@ export class Loader {
     const c = navigator.connection || {};
     this.light = !!c.saveData || /(^|-)(2g|3g)$/.test(c.effectiveType || '');
     this.dpr = Math.min(devicePixelRatio || 1, 2);
-    this.res = !this.light && Math.max(innerWidth, innerHeight) * this.dpr >= 1400 ? '1080' : '720';
+    // phones get 720p: a small screen can't show more, and older phones decode it smoothly
+    const phone = Math.min(screen.width, screen.height) < 600;
+    this.res = !this.light && !phone && Math.max(innerWidth, innerHeight) * this.dpr >= 1400 ? '1080' : '720';
     this.queue = [];
     this.running = 0;
     this.max = 4;
@@ -131,13 +133,14 @@ export class Loader {
     return all ? got / all : 1;
   }
 
-  /** After arriving somewhere: the flights you can take from here, and where they land. */
+  /** After arriving somewhere: the flights you can take from here come first (a click
+   *  should never wait for the network), then where they land. */
   prefetch(place) {
     const from = place === 'games' ? 'tv' : place;
     for (const [key, mv] of Object.entries(this.m.moves)) {
       if (mv.from !== from) continue;
-      this.pano(mv.to, 6, false);
-      if (!this.light) this.video(key, 8).catch(() => {});
+      if (!this.light) this.video(key, 2).catch(() => {});
+      this.pano(mv.to, 3, false);
     }
   }
 
