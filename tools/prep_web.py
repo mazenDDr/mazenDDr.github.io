@@ -38,8 +38,9 @@ OUTSIDE_WEIGHT = .08    # the city seen through the window
 t0 = time.time()
 bpy.ops.wm.open_mainfile(filepath=str(SRC))
 sys.path.insert(0, str(Path(__file__).parent))
-import realism
+import realism, books
 realism_report = realism.add_realism()
+realism_report['books'] = books.add_books()
 sc = bpy.context.scene
 dg = bpy.context.evaluated_depsgraph_get()
 
@@ -133,24 +134,69 @@ def box(name, lo, hi, color, strength=0.0, rough=.8, cols='hallway'):
     made.append(ob)
     return ob
 
-# ---- 3. a real door, closed in its frame
-# The scene's door was two floating panels and a flat plane, so build one:
-# a painted slab with raised panels and brass knobs on both faces, hinged on
-# the x=332 side. The page swings it DOOR_OPEN_DEG into the room.
+# ---- 3. Mazen's door (design/assets/door, "Door with Doorframe"), closed in its frame
+# The model is 2.6 m tall and the room 2.3 m, so it is scaled uniformly to a
+# normal 2.04 m door, and the doorway walls are rebuilt around its opening.
+# The page swings the leaf DOOR_OPEN_DEG into the room around its hinge.
 DOOR_OPEN_DEG = 72.0
-for o in [o for o in made if o['src'] in DOOR]:
+DOOR_GLB = ROOT / 'design/assets/door/source/Door with Doorframe.glb'
+DOOR_SCALE = 0.805
+DOOR_CX, WALL_Y0, WALL_Y1 = 2.90, 5.20, 5.32
+LEAF = {'Door', 'Door plank', 'Plane', 'Plane.001', 'Plane.002', 'Plane.003', 'Circle.003'}
+OLD_DOORWAY = ('door_leaf', 'door_panel', 'door_knob', 'door_arch', 'door_lining', 'wall_door_')
+wall_ma = next((o.data.materials[0] for o in made if o['src'] == 'wall_door_a' and o.data.materials), None)
+for o in [o for o in made if o['src'].startswith(OLD_DOORWAY)]:
     made.remove(o)
     bpy.data.objects.remove(o, do_unlink=True)
-paint, brass = (.72, .64, .53), (.62, .45, .2)
-X0, X1, Y0, Y1 = 2.565, 3.315, 5.205, 5.245        # slab: 75 x 4 cm, 2.02 m tall
-parts = [box('door_slab', (X0, Y0, 0.005), (X1, Y1, 2.025), paint, rough=.45, cols='door')]
-for side, (y0, y1) in (('in', (Y0 - .006, Y0)), ('out', (Y1, Y1 + .006))):
-    for i, (z0, z1) in enumerate(((.16, .90), (1.04, 1.88))):
-        parts.append(box(f'door_panel_{side}_{i}', (X0 + .09, y0, z0), (X1 - .09, y1, z1), paint, rough=.5, cols='door'))
-    yk = (y0 - .045, y0) if side == 'in' else (y1, y1 + .045)
-    parts.append(box(f'door_knob_{side}', (X0 + .055, yk[0], 1.0), (X0 + .105, yk[1], 1.05), brass, rough=.3, cols='door'))
-for o in parts:
-    o['door'] = True
+
+before = set(bpy.data.objects)
+bpy.ops.import_scene.gltf(filepath=str(DOOR_GLB))
+new = [o for o in bpy.data.objects if o not in before]
+place = Matrix.Translation((DOOR_CX, (WALL_Y0 + WALL_Y1) / 2, 0)) @ Matrix.Rotation(math.pi, 4, 'Z') @ Matrix.Scale(DOOR_SCALE, 4)
+bpy.context.view_layer.update()
+leaf_pts = []
+for o in new:
+    if o.type != 'MESH':
+        continue
+    me = o.data.copy()
+    me.transform(place @ o.matrix_world)
+    ob = bpy.data.objects.new('W_door_' + o.name.replace(' ', '_'), me)
+    ob['src'] = 'door_' + o.name
+    ob['src_cols'] = 'door'
+    col.objects.link(ob)
+    made.append(ob)
+    if o.name in LEAF:
+        ob['door'] = True
+        leaf_pts += [v.co.copy() for v in me.vertices]
+for o in new:
+    bpy.data.objects.remove(o, do_unlink=True)
+lo = Vector([min(v[i] for v in leaf_pts) for i in range(3)])
+hi = Vector([max(v[i] for v in leaf_pts) for i in range(3)])
+# The handle sits on the low-x side after the turn, so the hinge is the high-x edge,
+# on the room-side face so the leaf swings into the room without cutting the frame.
+door_leaf = [o for o in made if o.get('door') and o['src'] in ('door_Door', 'door_Door plank')]
+leaf_lo = Vector([min((v.co[i] for o in door_leaf for v in o.data.vertices)) for i in range(3)])
+leaf_hi = Vector([max((v.co[i] for o in door_leaf for v in o.data.vertices)) for i in range(3)])
+hinge = Vector((leaf_hi.x, leaf_lo.y, 0))
+opening = (leaf_lo.x, leaf_hi.x, leaf_hi.z)
+# Rebuild the doorway walls around the opening, in the wall's own plaster.
+if wall_ma is None:
+    wall_ma = bpy.data.materials.new('plaster_door_wall')
+for name, lo_, hi_ in (('wall_door_left', (0.0, WALL_Y0, 0.0), (opening[0], WALL_Y1, 2.30)),
+                       ('wall_door_right', (opening[1], WALL_Y0, 0.0), (3.40, WALL_Y1, 2.30)),
+                       ('wall_door_top', (opening[0], WALL_Y0, opening[2]), (opening[1], WALL_Y1, 2.30))):
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1)
+    for v in bm.verts:
+        v.co = Vector([lo_[i] + (v.co[i] + .5) * (hi_[i] - lo_[i]) for i in range(3)])
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    me.materials.append(wall_ma)
+    ob = bpy.data.objects.new('W_' + name, me)
+    ob['src'], ob['src_cols'] = name, '01_shell'
+    col.objects.link(ob)
+    made.append(ob)
 open_angle = math.radians(DOOR_OPEN_DEG)
 
 # ---- 4. the diploma on the certificate wall (x = 3.40 m, facing the room)
@@ -241,7 +287,8 @@ def colour_kind(ma):
 
 
 report = {'objects': len(made), 'tris_before': tris_before, 'tris_after': tris_after,
-          'door_open_angle_deg': math.degrees(open_angle), 'realism': realism_report,
+          'door_open_angle_deg': math.degrees(open_angle), 'door_hinge': [round(v, 4) for v in hinge],
+          'doorway': [round(v, 4) for v in opening], 'realism': realism_report,
           'groups': {}, 'chunks': []}
 items = []
 for ob in made:

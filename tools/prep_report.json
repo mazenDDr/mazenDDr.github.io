@@ -1,8 +1,18 @@
 {
- "objects": 2918,
- "tris_before": 2061003,
- "tris_after": 847083,
+ "objects": 2892,
+ "tris_before": 2043183,
+ "tris_after": 843167,
  "door_open_angle_deg": 72.0,
+ "door_hinge": [
+  3.3253,
+  5.1879,
+  0.0
+ ],
+ "doorway": [
+  2.4756,
+  3.3253,
+  2.04
+ ],
  "realism": {
   "props": [
    {
@@ -151,10 +161,27 @@
      51.7
     ]
    ]
-  ]
+  ],
+  "books": {
+   "removed": 31,
+   "books": [
+    "book_hands-on-ml",
+    "book_ai-engineering",
+    "book_hands-on-llms",
+    "book_practical-nlp",
+    "book_practical-mlops",
+    "book_llmops",
+    "book_ddia2",
+    "book_database-internals",
+    "book_storytelling-with-data",
+    "book_esl",
+    "book_cv-szeliski"
+   ],
+   "row_ends_y_cm": 246.9
+  }
  },
  "groups": {
-  "plain": 1312,
+  "plain": 1286,
   "special": 112,
   "glass": 2,
   "outside": 1222,
@@ -180,8 +207,8 @@
    "name": "door",
    "group": "door",
    "objects": 7,
-   "tris": 84,
-   "area_m2": 6.95
+   "tris": 4612,
+   "area_m2": 4.15
   },
   {
    "name": "glass",
@@ -200,51 +227,51 @@
   {
    "name": "p0",
    "group": "plain",
-   "objects": 173,
-   "tris": 86599,
-   "area_m2": 32.7
+   "objects": 176,
+   "tris": 90839,
+   "area_m2": 32.82
   },
   {
    "name": "p1",
    "group": "plain",
-   "objects": 259,
-   "tris": 75092,
-   "area_m2": 22.26
+   "objects": 256,
+   "tris": 70852,
+   "area_m2": 22.14
   },
   {
    "name": "p2",
    "group": "plain",
-   "objects": 346,
-   "tris": 115577,
-   "area_m2": 72.51
+   "objects": 357,
+   "tris": 116681,
+   "area_m2": 73.65
   },
   {
    "name": "p3",
    "group": "plain",
-   "objects": 36,
-   "tris": 8677,
-   "area_m2": 37.51
+   "objects": 1,
+   "tris": 12,
+   "area_m2": 37.08
   },
   {
    "name": "p4",
    "group": "plain",
-   "objects": 196,
-   "tris": 51404,
-   "area_m2": 45.41
+   "objects": 231,
+   "tris": 60069,
+   "area_m2": 45.84
   },
   {
    "name": "p5",
    "group": "plain",
-   "objects": 290,
-   "tris": 129339,
-   "area_m2": 33.04
+   "objects": 255,
+   "tris": 123671,
+   "area_m2": 30.09
   },
   {
    "name": "p6",
    "group": "plain",
-   "objects": 9,
-   "tris": 636,
-   "area_m2": 21.67
+   "objects": 7,
+   "tris": 182,
+   "area_m2": 22.55
   },
   {
    "name": "p7",
@@ -258,8 +285,8 @@
    "group": "special",
    "objects": 112,
    "tris": 101077,
-   "area_m2": 7.91
+   "area_m2": 13.12
   }
  ],
- "seconds": 645.7
+ "seconds": 659.3
 }

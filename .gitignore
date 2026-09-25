@@ -3,3 +3,4 @@ build/
 # intermediate bakes; the site loads the .webp copies
 public/bake/*.png
 .DS_Store
+__pycache__/

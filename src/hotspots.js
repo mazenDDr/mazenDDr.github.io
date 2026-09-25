@@ -9,6 +9,7 @@ import { Doodles } from './doodles.js';
 const SPOTS = [
   { place: 'couch', say: 'sit on the couch', box: [[4, 216, 0], [84, 410, 77]], marker: [78, 322, 48] },
   { place: 'tv', say: 'watch my projects', box: [[290, 261, 52], [337, 315, 105]], marker: [293, 288, 84] },
+  { place: 'games', say: 'play a game', box: [[300, 300, 35], [332, 346, 77]], marker: [312, 336, 58] },
   { place: 'desk', say: 'sit at my desk', box: [[57, 75, 0], [115, 133, 81]], marker: [86, 104, 70] },
   { place: 'pc', say: 'use the computer', box: [[75, 34, 74], [117, 72, 116]], marker: [96, 58, 104] },
   { place: 'bed', say: 'sit on the bed', box: [[228, 20, 0], [336, 193, 74]], marker: [270, 130, 60] },
@@ -18,7 +19,7 @@ const SPOTS = [
   { action: 'cert:bsc', say: 'take a closer look', onlyAt: 'certificates', label: 'View the diploma', box: [[334, 70, 121], [340, 138, 175]], marker: [338, 118, 160] },
 ];
 // Places reached from a screen's own seat go back to that seat, not the room.
-export const PARENT = { tv: 'couch', pc: 'desk', memo: 'bed' };
+export const PARENT = { tv: 'couch', games: 'couch', pc: 'desk', memo: 'bed' };
 
 export class Hotspots {
   constructor(camera, director, onAction = () => {}, root = document.body) {

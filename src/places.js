@@ -22,15 +22,16 @@ export const EDGES = [
 // Places: a floor node to walk to, then a final eye position (standing or
 // sitting) and what to look at. `focus` names a screen to zoom into afterwards.
 export const PLACES = {
-  hall: { node: 'hall', eye: B(294, 700, 162), look: B(294, 520, 138), hfov: 66, pose: 'stand', label: '' },
-  room: { node: 'front', eye: B(178, 470, 150), look: B(170, 120, 118), hfov: 84, pose: 'stand', label: 'Stand in the room' },
-  couch: { node: 'couchFront', eye: B(44, 300, 108), look: B(300, 288, 86), hfov: 66, pose: 'sit', label: 'Sit on the couch' },
-  tv: { node: 'couchFront', eye: B(44, 300, 108), look: B(300, 288, 86), hfov: 66, pose: 'sit', focus: 'tv', label: 'Watch TV' },
-  desk: { node: 'desk', eye: B(92, 122, 122), look: B(96, 57, 106), hfov: 66, pose: 'sit', label: 'Sit at the desk' },
-  pc: { node: 'desk', eye: B(92, 122, 122), look: B(96, 57, 106), hfov: 66, pose: 'sit', focus: 'pc', label: 'Use the computer' },
-  bed: { node: 'bedSide', eye: B(252, 112, 98), look: B(288, 0, 126), hfov: 70, pose: 'bed', label: 'Sit on the bed' },
-  memo: { node: 'bedSide', eye: B(252, 112, 98), look: B(288, 0, 126), hfov: 70, pose: 'bed', focus: 'memo', label: 'Read the pinboard' },
-  certificates: { node: 'bedSide', eye: B(196, 104, 150), look: B(340, 104, 146), hfov: 46, pose: 'stand', label: 'Look at the certificates' },
+  hall: { node: 'hall', eye: B(294, 700, 162), look: B(294, 520, 138), hfov: 70, pose: 'stand', label: '' },
+  room: { node: 'front', eye: B(190, 486, 158), look: B(170, 120, 112), hfov: 100, pose: 'stand', label: 'Stand in the room' },
+  couch: { node: 'couchFront', eye: B(40, 300, 110), look: B(300, 288, 90), hfov: 82, pose: 'sit', label: 'Sit on the couch' },
+  tv: { node: 'couchFront', eye: B(40, 300, 110), look: B(300, 288, 90), hfov: 82, pose: 'sit', focus: 'tv', label: 'Watch TV' },
+  desk: { node: 'desk', eye: B(94, 130, 124), look: B(96, 57, 104), hfov: 80, pose: 'sit', label: 'Sit at the desk' },
+  pc: { node: 'desk', eye: B(94, 130, 124), look: B(96, 57, 104), hfov: 80, pose: 'sit', focus: 'pc', label: 'Use the computer' },
+  bed: { node: 'bedSide', eye: B(252, 118, 100), look: B(288, 0, 126), hfov: 84, pose: 'bed', label: 'Sit on the bed' },
+  memo: { node: 'bedSide', eye: B(252, 118, 100), look: B(288, 0, 126), hfov: 84, pose: 'bed', focus: 'memo', label: 'Read the pinboard' },
+  games: { node: 'couchFront', eye: B(40, 300, 110), look: B(300, 288, 90), hfov: 82, pose: 'sit', focus: 'tv', app: 'games', label: 'Play a game' },
+  certificates: { node: 'bedSide', eye: B(190, 104, 152), look: B(340, 104, 146), hfov: 58, pose: 'stand', label: 'Look at the certificates' },
 };
 
 export function shortestPath(from, to) {

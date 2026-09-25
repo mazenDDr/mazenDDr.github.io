@@ -48,6 +48,9 @@ const avatar = (p, size = 150) => `<svg viewBox="0 0 100 100" width="${size}" he
 
 let person = null;
 try { person = PEOPLE.find((p) => p.id === sessionStorage.getItem('tv-person')) || null; } catch { /* private mode */ }
+// On the TV in the room, open straight onto the billboard so it plays from across
+// the room; the profile can still be switched from the avatar.
+if (!person && document.body.classList.contains('in-room')) person = PEOPLE[2];
 
 // ---------- sound: the two-hit "ta-dum" when a profile opens ----------
 function taDum() {

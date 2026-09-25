@@ -70,10 +70,11 @@ export async function loadRoom(renderer, onProgress = () => {}) {
   const texLoader = new THREE.TextureLoader();
   const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
-  let done = 0;
+  // The model is most of the download, so its bytes drive most of the bar.
+  let done = 0, glb = 0;
   const files = manifest.chunks.flatMap((c) => [c.file, c.albedo].filter(Boolean));
-  const total = files.length + 3;
-  const tick = () => onProgress(++done / total);
+  const report = () => onProgress(0.8 * glb + 0.2 * done / files.length);
+  const tick = () => { done++; report(); };
   const load = (file, srgb) => texLoader.loadAsync(`public/bake/${file}`).then((t) => {
     t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     t.flipY = false;                 // glTF UV convention
@@ -81,7 +82,8 @@ export async function loadRoom(renderer, onProgress = () => {}) {
     tick();
     return t;
   });
-  const gltfP = loader.loadAsync('public/room.glb').then((g) => { done += 3; onProgress(done / total); return g; });
+  const gltfP = loader.loadAsync('public/room.glb', (e) => { if (e.total) { glb = e.loaded / e.total; report(); } })
+    .then((g) => { glb = 1; report(); return g; });
   const chunkP = Promise.all(manifest.chunks.map(async (c) => [c.name, {
     ...c, light: await load(c.file, false), atlasTex: c.albedo ? await load(c.albedo, true) : null,
   }]));

@@ -8,17 +8,12 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const linkOk = (v) => v && !String(v).startsWith('TODO');
 if (new URLSearchParams(location.search).has('room')) document.body.classList.add('in-room');
 
-// ---------- pixel icons (32x32 grids drawn as SVG paths) ----------
-const px = (body, fill = '#fff') => `<svg viewBox="0 0 32 32" shape-rendering="crispEdges" aria-hidden="true">${body.replace(/FILL/g, fill)}</svg>`;
+// ---------- Mac OS 9 system icons (icons/, MIT: github.com/bearz314/MacOS9-icons) ----------
+const img = (name) => `<img src="icons/${name}.png" srcset="icons/${name}@2x.png 2x" alt="" draggable="false">`;
 const ICONS = {
-  disk: px('<path fill="#ddd" stroke="#000" stroke-width="2" d="M3 9h26v14H3z"/><path d="M6 18h4v2H6zM22 18h4v1h-4z"/><path fill="#6c6" d="M22 18h2v1h-2z"/>'),
-  folder: px('<path fill="FILL" stroke="#000" stroke-width="2" d="M3 8h10l2 3h14v16H3z"/><path d="M3 13h26v1H3z"/>', '#c9d4ff'),
-  doc: (c) => px(`<path fill="#fff" stroke="#000" stroke-width="2" d="M7 3h13l6 6v20H7z"/><path fill="none" stroke="#000" stroke-width="2" d="M19 3v7h7"/><path fill="${c}" d="M10 14h13v3H10z"/><path d="M10 20h13v1H10zM10 23h10v1H10z"/>`),
-  text: px('<path fill="#fff" stroke="#000" stroke-width="2" d="M7 3h13l6 6v20H7z"/><path fill="none" stroke="#000" stroke-width="2" d="M19 3v7h7"/><path d="M10 13h12v1H10zM10 16h13v1H10zM10 19h11v1H10zM10 22h13v1H10zM10 25h8v1h-8z"/>'),
-  term: px('<path fill="#222" stroke="#000" stroke-width="2" d="M3 5h26v20H3z"/><path fill="#3f6" d="M7 10h2v2H7zM9 12h2v2H9zM7 14h2v2H7zM13 16h6v2h-6z"/><path fill="#ddd" stroke="#000" stroke-width="2" d="M9 25h14v3H9z"/>'),
-  cert: px('<path fill="#fff8e6" stroke="#000" stroke-width="2" d="M3 6h26v18H3z"/><path d="M7 10h18v1H7zM9 13h14v1H9zM11 16h10v1H11z"/><circle cx="22" cy="21" r="4" fill="#e0b000" stroke="#000" stroke-width="1.5"/><path fill="#c00" d="M19 24l-1 6 3-2 1 2 1-5z"/>'),
-  mail: px('<path fill="#fff" stroke="#000" stroke-width="2" d="M3 8h26v17H3z"/><path fill="none" stroke="#000" stroke-width="2" d="M3 8l13 10L29 8"/>'),
-  trash: px('<path fill="#ddd" stroke="#000" stroke-width="2" d="M8 9h16l-2 20H10z"/><path fill="#fff" stroke="#000" stroke-width="2" d="M6 6h20v3H6zM13 3h6v3h-6z"/><path d="M12 12h1v14h-1zM16 12h1v14h-1zM20 12h1v14h-1z"/>'),
+  disk: img('disk'), folder: img('folder-docs'), doc: () => img('doc-text'), text: img('doc-readme'),
+  resume: img('doc-text'), term: img('window'), cert: img('folder-favorites'), mail: img('chat'),
+  trash: img('trash'), web: img('web'), games: img('games'), system: img('folder-system'),
 };
 
 // ---------- window manager ----------
@@ -38,11 +33,20 @@ function openWin({ id, title, w = 520, h = 400, x, y, body, cls = '', status = '
   y = Math.max(6, Math.min(y, H - h - 6));
   el.style.cssText = `width:${w}px;height:${h}px;left:${x}px;top:${y}px`;
   cascade++;
-  el.innerHTML = `<div class="bar"><button class="close" aria-label="Close ${esc(title)}"></button><b>${esc(title)}</b></div>
+  el.innerHTML = `<div class="bar"><button class="close" aria-label="Close ${esc(title)}"></button><b>${esc(title)}</b>
+      <button class="zoombox" aria-label="Zoom"></button><button class="shade" aria-label="Collapse"></button></div>
     <div class="body">${body}</div>${status ? `<div class="status">${status}</div>` : ''}`;
   desktop.append(el);
   zoomRects(el);
   el.querySelector('.close').addEventListener('click', () => el.remove());
+  // Platinum window widgets: collapse to the title bar, and zoom to fill the screen.
+  el.querySelector('.shade').addEventListener('click', () => el.classList.toggle('shaded'));
+  el.querySelector('.bar').addEventListener('dblclick', () => el.classList.toggle('shaded'));
+  el.querySelector('.zoombox').addEventListener('click', () => {
+    if (el.dataset.zoomed) { el.style.cssText = el.dataset.zoomed; delete el.dataset.zoomed; }
+    else { el.dataset.zoomed = el.style.cssText; Object.assign(el.style, { left: '6px', top: '6px', width: `${desktop.clientWidth - 120}px`, height: `${desktop.clientHeight - 12}px` }); }
+    focusWin(el);
+  });
   el.addEventListener('pointerdown', () => focusWin(el));
   drag(el);
   focusWin(el);
@@ -97,6 +101,15 @@ function icon(label, svg, open, extra = '') {
 }
 
 // ---------- apps ----------
+function disk() {
+  const win = openWin({ id: 'disk', title: 'Mazen HD', w: 460, h: 260, x: 60, y: 40, body: '<div class="folder"></div>',
+    status: '<span>6 items</span><span>1.2 GB available</span>' });
+  const f = win.querySelector('.folder');
+  if (!f.children.length) f.append(
+    icon('Projects', ICONS.folder, projectsFolder), icon('About Me', ICONS.text, aboutMe), icon('Resume', ICONS.resume, resume),
+    icon('Certificates', ICONS.cert, certificates), icon('Terminal', ICONS.term, terminal), icon('System Folder', ICONS.system, aboutComputer));
+}
+
 function projectsFolder() {
   const win = openWin({ id: 'projects', title: 'Projects', w: 540, h: 250, x: 24, y: 20, body: '<div class="folder"></div>',
     status: `<span>${data.projects.length} items</span><span>double-click to open</span>` });
@@ -253,10 +266,10 @@ addEventListener('keydown', (e) => {
 const icons = document.createElement('div');
 icons.className = 'icons';
 icons.append(
-  icon('Mazen HD', ICONS.disk, projectsFolder),
+  icon('Mazen HD', ICONS.disk, disk),
   icon('Projects', ICONS.folder, projectsFolder),
   icon('About Me.txt', ICONS.text, aboutMe),
-  icon('Résumé', ICONS.text, resume),
+  icon('Resume', ICONS.resume, resume),
   icon('Certificates', ICONS.cert, certificates),
   icon('Terminal', ICONS.term, terminal),
   icon('Contact', ICONS.mail, contact),

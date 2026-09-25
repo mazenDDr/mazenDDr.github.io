@@ -1,6 +1,6 @@
 {
- "built": "2026-09-25T07:00:12.836Z",
- "glb_kb": 20959,
+ "built": "2026-09-25T11:52:06.566Z",
+ "glb_kb": 21904,
  "chunks": [
   {
    "name": "d0",
@@ -8,10 +8,10 @@
    "file": "d0.webp",
    "size": 4096,
    "range": [
-    -12.0588,
-    3.9412
+    -12.0633,
+    3.9367
    ],
-   "kb": 2458,
+   "kb": 2459,
    "albedo": "d0_albedo.webp"
   },
   {
@@ -20,10 +20,10 @@
    "file": "d1.webp",
    "size": 4096,
    "range": [
-    -11.0496,
-    4.9504
+    -11.0479,
+    4.9521
    ],
-   "kb": 1640,
+   "kb": 1639,
    "albedo": "d1_albedo.webp"
   },
   {
@@ -32,10 +32,10 @@
    "file": "door.webp",
    "size": 1024,
    "range": [
-    -13.3191,
-    1.3495
+    -14.3844,
+    1.6156
    ],
-   "kb": 15
+   "kb": 20
   },
   {
    "name": "outside",
@@ -43,8 +43,8 @@
    "file": "outside.webp",
    "size": 1024,
    "range": [
-    -10.17,
-    5.83
+    -10.1708,
+    5.8292
    ],
    "kb": 76
   },
@@ -54,10 +54,10 @@
    "file": "p0.webp",
    "size": 2048,
    "range": [
-    -11.4216,
-    4.5784
+    -11.4576,
+    4.5424
    ],
-   "kb": 167
+   "kb": 205
   },
   {
    "name": "p1",
@@ -65,10 +65,10 @@
    "file": "p1.webp",
    "size": 2048,
    "range": [
-    -11.6276,
-    4.3724
+    -11.6505,
+    4.3495
    ],
-   "kb": 338
+   "kb": 334
   },
   {
    "name": "p2",
@@ -76,10 +76,10 @@
    "file": "p2.webp",
    "size": 2048,
    "range": [
-    -12.0518,
-    3.9482
+    -12.0207,
+    3.9793
    ],
-   "kb": 121
+   "kb": 125
   },
   {
    "name": "p3",
@@ -87,10 +87,10 @@
    "file": "p3.webp",
    "size": 2048,
    "range": [
-    -11.8747,
-    4.1253
+    -8.0197,
+    3.348
    ],
-   "kb": 91
+   "kb": 24
   },
   {
    "name": "p4",
@@ -98,10 +98,10 @@
    "file": "p4.webp",
    "size": 2048,
    "range": [
-    -12.1986,
-    3.8014
+    -11.8642,
+    4.1358
    ],
-   "kb": 262
+   "kb": 299
   },
   {
    "name": "p5",
@@ -109,10 +109,10 @@
    "file": "p5.webp",
    "size": 2048,
    "range": [
-    -10.5596,
-    5.4404
+    -10.6017,
+    5.3983
    ],
-   "kb": 291
+   "kb": 246
   },
   {
    "name": "p6",
@@ -120,10 +120,10 @@
    "file": "p6.webp",
    "size": 2048,
    "range": [
-    -10.3793,
-    5.6207
+    -10.4823,
+    5.5177
    ],
-   "kb": 54
+   "kb": 60
   },
   {
    "name": "p7",
@@ -131,10 +131,10 @@
    "file": "p7.webp",
    "size": 2048,
    "range": [
-    -12.5769,
-    3.4231
+    -12.5866,
+    3.4134
    ],
-   "kb": 27
+   "kb": 26
   },
   {
    "name": "special",
@@ -142,10 +142,10 @@
    "file": "special.webp",
    "size": 2048,
    "range": [
-    -9.1033,
-    6.8967
+    -9.129,
+    6.871
    ],
-   "kb": 432
+   "kb": 413
   }
  ],
  "materials": {
@@ -683,6 +683,442 @@
    ],
    "map": true
   },
+  "image|book_spine_ai-engineering": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_ai-engineering": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_ai-engineering": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|book_pages": {
+   "kind": "constant",
+   "color": [
+    0.93,
+    0.9,
+    0.82
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_hands-on-llms": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_hands-on-llms": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_hands-on-llms": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_practical-nlp": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_practical-nlp": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_practical-nlp": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_practical-mlops": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_practical-mlops": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_practical-mlops": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_llmops": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_llmops": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_llmops": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_ddia2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_ddia2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_ddia2": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_database-internals": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_database-internals": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_database-internals": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_storytelling-with-data": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_storytelling-with-data": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_storytelling-with-data": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_esl": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_esl": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_esl": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|book_spine_cv-szeliski": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_cv-szeliski": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_cv-szeliski": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|bookend_iron": {
+   "kind": "constant",
+   "color": [
+    0.05,
+    0.05,
+    0.05
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
   "constant|ceiling": {
    "kind": "constant",
    "color": [
@@ -694,162 +1130,6 @@
     0,
     0,
     0
-   ]
-  },
-  "constant|live_paper": {
-   "kind": "constant",
-   "color": [
-    0.90196,
-    0.88627,
-    0.81961
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_book_band_0": {
-   "kind": "constant",
-   "color": [
-    0.61961,
-    0.20784,
-    0.32549
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_ink": {
-   "kind": "constant",
-   "color": [
-    0.09412,
-    0.11373,
-    0.11765
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_book_band_1": {
-   "kind": "constant",
-   "color": [
-    0.17255,
-    0.41569,
-    0.52157
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_book_band_2": {
-   "kind": "constant",
-   "color": [
-    0.67451,
-    0.36471,
-    0.13333
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_book_band_3": {
-   "kind": "constant",
-   "color": [
-    0.30196,
-    0.46667,
-    0.31373
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_book_band_4": {
-   "kind": "constant",
-   "color": [
-    0.44314,
-    0.28627,
-    0.51765
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_felt_coaster": {
-   "kind": "constant",
-   "color": [
-    0.25882,
-    0.27059,
-    0.18824
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_amber_candle_cup": {
-   "kind": "constant",
-   "color": [
-    0.38824,
-    0.16471,
-    0.06275
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_beeswax": {
-   "kind": "constant",
-   "color": [
-    0.83922,
-    0.69412,
-    0.43137
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_wick": {
-   "kind": "constant",
-   "color": [
-    0.09412,
-    0.06667,
-    0.03529
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_candle_flame": {
-   "kind": "constant",
-   "color": [
-    1,
-    0.62745,
-    0.18824
-   ],
-   "emissive": [
-    18,
-    9.52941,
-    2.47059
    ]
   },
   "image|rug_art": {
@@ -1048,6 +1328,97 @@
    ],
    "map": true
   },
+  "constant|live_paper": {
+   "kind": "constant",
+   "color": [
+    0.90196,
+    0.88627,
+    0.81961
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_0": {
+   "kind": "constant",
+   "color": [
+    0.61961,
+    0.20784,
+    0.32549
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_ink": {
+   "kind": "constant",
+   "color": [
+    0.09412,
+    0.11373,
+    0.11765
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_1": {
+   "kind": "constant",
+   "color": [
+    0.17255,
+    0.41569,
+    0.52157
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_2": {
+   "kind": "constant",
+   "color": [
+    0.67451,
+    0.36471,
+    0.13333
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_3": {
+   "kind": "constant",
+   "color": [
+    0.30196,
+    0.46667,
+    0.31373
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_book_band_4": {
+   "kind": "constant",
+   "color": [
+    0.44314,
+    0.28627,
+    0.51765
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
   "constant|polish_warm_opal_diffuser": {
    "kind": "constant",
    "color": [
@@ -1059,6 +1430,71 @@
     2.4,
     1.71294,
     0.94118
+   ]
+  },
+  "constant|polish_felt_coaster": {
+   "kind": "constant",
+   "color": [
+    0.25882,
+    0.27059,
+    0.18824
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_amber_candle_cup": {
+   "kind": "constant",
+   "color": [
+    0.38824,
+    0.16471,
+    0.06275
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_beeswax": {
+   "kind": "constant",
+   "color": [
+    0.83922,
+    0.69412,
+    0.43137
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_wick": {
+   "kind": "constant",
+   "color": [
+    0.09412,
+    0.06667,
+    0.03529
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_candle_flame": {
+   "kind": "constant",
+   "color": [
+    1,
+    0.62745,
+    0.18824
+   ],
+   "emissive": [
+    18,
+    9.52941,
+    2.47059
    ]
   },
   "constant|Material.001": {
@@ -1164,6 +1600,417 @@
     0,
     0
    ]
+  },
+  "image|spine_2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_9": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_4": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_11": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|spine_6": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|post_a": {
+   "kind": "constant",
+   "color": [
+    0.6902,
+    0.2902,
+    0.24314
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|post_c": {
+   "kind": "constant",
+   "color": [
+    0.81569,
+    0.6902,
+    0.32941
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|desk_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|PC9801U.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|pc_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    5,
+    5,
+    5
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|PC9801UX.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|Lamp.001": {
+   "kind": "constant",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|lambert9": {
+   "kind": "constant",
+   "color": [
+    0.1752,
+    0.243,
+    0.10741
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|lambert6": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|lambert7": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|lambert5": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|tripo_material_668ca4ad-0823-48df-82b2-e6bfe641f3e1": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Material.004": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Dark Oak Wood": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|main_column": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_The Last of Us Part I": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_Portal 2": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|curated_oxblood": {
+   "kind": "constant",
+   "color": [
+    0.37255,
+    0.15294,
+    0.11765
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|plastic_gy": {
+   "kind": "constant",
+   "color": [
+    0.2902,
+    0.28235,
+    0.27451
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|curated_pencil_lacquer": {
+   "kind": "constant",
+   "color": [
+    0.78039,
+    0.52157,
+    0.15294
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|curated_pencil_ceramic": {
+   "kind": "constant",
+   "color": [
+    0.62353,
+    0.34118,
+    0.19216
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_desk_leather": {
+   "kind": "constant",
+   "color": [
+    0.23922,
+    0.30196,
+    0.2549
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_coffee": {
+   "kind": "constant",
+   "color": [
+    0.12941,
+    0.05882,
+    0.02745
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|Ukulele_01": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|stationery_supplies": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
   },
   "constant|card": {
    "kind": "constant",
@@ -1526,19 +2373,6 @@
     0
    ]
   },
-  "constant|plastic_gy": {
-   "kind": "constant",
-   "color": [
-    0.2902,
-    0.28235,
-    0.27451
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
   "image|curated_poster_Half-Life 2": {
    "kind": "image",
    "color": [
@@ -1580,20 +2414,6 @@
     0
    ]
   },
-  "image|Fluent_Python_display_print": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
   "image|wall_clock": {
    "kind": "image",
    "color": [
@@ -1634,455 +2454,46 @@
     0
    ]
   },
-  "constant|hall_floor": {
+  "image|book_spine_hands-on-ml": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_hands-on-ml": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_hands-on-ml": {
    "kind": "constant",
    "color": [
-    0.16,
-    0.09,
-    0.05
+    0.72,
+    0.7,
+    0.66
    ],
    "emissive": [
     0,
     0,
     0
    ]
-  },
-  "constant|hall_wall_l": {
-   "kind": "constant",
-   "color": [
-    0.55,
-    0.47,
-    0.38
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|hall_runner": {
-   "kind": "constant",
-   "color": [
-    0.28,
-    0.07,
-    0.05
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|hall_lamp": {
-   "kind": "constant",
-   "color": [
-    1,
-    0.75,
-    0.45
-   ],
-   "emissive": [
-    3,
-    2.25,
-    1.35
-   ]
-  },
-  "image|spine_2": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|spine_9": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|spine_4": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|spine_11": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|spine_6": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|post_a": {
-   "kind": "constant",
-   "color": [
-    0.6902,
-    0.2902,
-    0.24314
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|post_c": {
-   "kind": "constant",
-   "color": [
-    0.81569,
-    0.6902,
-    0.32941
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|desk_mat": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|PC9801U.001": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|pc_art": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    5,
-    5,
-    5
-   ],
-   "emissiveMap": true,
-   "map": true
-  },
-  "image|PC9801UX.001": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|Lamp.001": {
-   "kind": "constant",
-   "color": [
-    0.8,
-    0.8,
-    0.8
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|lambert9": {
-   "kind": "constant",
-   "color": [
-    0.1752,
-    0.243,
-    0.10741
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|lambert6": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|lambert7": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|lambert5": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|tripo_material_668ca4ad-0823-48df-82b2-e6bfe641f3e1": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|Material.004": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|Dark Oak Wood": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|main_column": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|curated_poster_The Last of Us Part I": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|curated_poster_Portal 2": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|curated_oxblood": {
-   "kind": "constant",
-   "color": [
-    0.37255,
-    0.15294,
-    0.11765
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|curated_pencil_lacquer": {
-   "kind": "constant",
-   "color": [
-    0.78039,
-    0.52157,
-    0.15294
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|curated_pencil_ceramic": {
-   "kind": "constant",
-   "color": [
-    0.62353,
-    0.34118,
-    0.19216
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_desk_leather": {
-   "kind": "constant",
-   "color": [
-    0.23922,
-    0.30196,
-    0.2549
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|live_coffee": {
-   "kind": "constant",
-   "color": [
-    0.12941,
-    0.05882,
-    0.02745
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|Ukulele_01": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|stationery_supplies": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
   },
   "special|brass": {
    "kind": "special",
@@ -3920,12 +4331,12 @@
     0
    ]
   },
-  "constant|door_slab": {
+  "constant|none": {
    "kind": "constant",
    "color": [
-    0.72,
-    0.64,
-    0.53
+    1,
+    1,
+    1
    ],
    "emissive": [
     0,
@@ -3933,12 +4344,82 @@
     0
    ]
   },
-  "constant|door_panel_in_0": {
+  "image|Poliigon_WoodVeneerOak_7760_4K": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Material": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Handle Bar": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Poliigon_MetalSteelBrushed_7174_2K": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|Material.011": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|hall_floor": {
    "kind": "constant",
    "color": [
-    0.72,
-    0.64,
-    0.53
+    0.16,
+    0.09,
+    0.05
    ],
    "emissive": [
     0,
@@ -3946,12 +4427,12 @@
     0
    ]
   },
-  "constant|door_panel_in_1": {
+  "constant|hall_wall_l": {
    "kind": "constant",
    "color": [
-    0.72,
-    0.64,
-    0.53
+    0.55,
+    0.47,
+    0.38
    ],
    "emissive": [
     0,
@@ -3959,12 +4440,12 @@
     0
    ]
   },
-  "constant|door_knob_in": {
+  "constant|hall_runner": {
    "kind": "constant",
    "color": [
-    0.62,
-    0.45,
-    0.2
+    0.28,
+    0.07,
+    0.05
    ],
    "emissive": [
     0,
@@ -3972,43 +4453,17 @@
     0
    ]
   },
-  "constant|door_panel_out_0": {
+  "constant|hall_lamp": {
    "kind": "constant",
    "color": [
-    0.72,
-    0.64,
-    0.53
+    1,
+    0.75,
+    0.45
    ],
    "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|door_panel_out_1": {
-   "kind": "constant",
-   "color": [
-    0.72,
-    0.64,
-    0.53
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|door_knob_out": {
-   "kind": "constant",
-   "color": [
-    0.62,
-    0.45,
-    0.2
-   ],
-   "emissive": [
-    0,
-    0,
-    0
+    3,
+    2.25,
+    1.35
    ]
   },
   "constant|hall_ceiling": {

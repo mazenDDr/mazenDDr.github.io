@@ -37,7 +37,7 @@ with sync_playwright() as p:
     pg.on('console', lambda m: m.type == 'error' and errors.append(m.text))
     pg.on('pageerror', lambda e: errors.append(f'pageerror: {e}'))
     pg.goto(url)
-    pg.wait_for_function('window.__room && window.__room.ready', timeout=60000)
+    pg.wait_for_function('window.__room && window.__room.director', timeout=60000)
 
     pg.evaluate('''() => { window.__log = []; for (const t of ['pointerdown', 'click'])
         addEventListener(t, (e) => { const m = document.querySelector('.spot.on.hot') || null;
@@ -85,10 +85,10 @@ with sync_playwright() as p:
 
     time.sleep(0.8)
     shot('hall', {'place': 'hall'})
-    pg.get_by_role('button', name='Knock').click()
+    pg.locator('#intro .knock').click()
     time.sleep(1.0); shot('knocking')
     time.sleep(1.6); shot('door_opening')
-    pg.wait_for_function('() => __room.spots.enabled', timeout=30000); time.sleep(0.3)
+    pg.wait_for_function('() => __room.ready && __room.spots.enabled', timeout=120000); time.sleep(0.3)
     shot('in_room', {'place': 'room', 'busy': False})
 
     click_spot('couch'); time.sleep(1.6); shot('walking_to_couch')
@@ -96,10 +96,18 @@ with sync_playwright() as p:
 
     click_spot('tv'); settle(); time.sleep(2.5); shot('tv', {'place': 'tv', 'focus': 'tv'})
     frame = pg.frame_locator('iframe[title="TV"]')
-    frame.locator('.person').first.click(); time.sleep(1.5); shot('tv_browse')
+    if frame.locator('.person').first.is_visible():        # the room TV opens on the billboard
+        frame.locator('.person').first.click(); time.sleep(1.5)
+    shot('tv_browse')
     frame.locator('.card[data-id="faceid-bench"]').first.click(); time.sleep(1.0); shot('tv_detail')
     pg.keyboard.press('Escape'); time.sleep(0.4)          # closes the modal inside the TV
     pg.keyboard.press('Escape'); until('couch'); time.sleep(0.4); shot('back_to_couch', {'place': 'couch', 'focus': None})
+
+    click_spot('games'); until('games', 'tv'); time.sleep(2.0)
+    src = pg.evaluate("() => document.querySelector('iframe[title=TV]').src")
+    shot('games', {'place': 'games', 'focus': 'tv'})
+    results[-1]['ok'] = results[-1]['ok'] and 'apps/games' in src
+    pg.keyboard.press('Escape'); until('couch'); time.sleep(0.4)
 
     pg.keyboard.press('Escape'); until('room'); time.sleep(0.3); shot('stood_up_from_couch', {'place': 'room'})
     click_spot('desk'); time.sleep(1.2); shot('walking_to_desk')

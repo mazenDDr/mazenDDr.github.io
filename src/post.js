@@ -14,7 +14,7 @@ export const LOOK = {
   // offset, saturation) were fitted by tools/calibrate_look.py so the hero view matches
   // the Cycles render on luma, saturation, warmth, p05/p95, contrast and dark area.
   exposure: -3.704,                     // view transform, stops
-  slope: [0.783, 1.0, 0.941],           // white balance
+  slope: [0.802, 1.0, 0.923],           // white balance
   offset: 0.07343,                      // shadow lift (linear): the bake has no glossy bounce light
   lift: [1.07, 1.06, 1.05], gamma: [1, 1, 1], gain: [1.30, 1.0, 0.88],
   saturation: 0.982,
@@ -40,7 +40,8 @@ const GradeShader = {
     vec3 toSrgb(vec3 c) { return mix(c * 12.92, 1.055 * pow(max(c, 0.0), vec3(1.0 / 2.4)) - 0.055, step(0.0031308, c)); }
     vec3 toLinear(vec3 c) { return mix(c / 12.92, pow((max(c, 0.0) + 0.055) / 1.055, vec3(2.4)), step(0.04045, c)); }
     void main() {
-      vec3 c = texture2D(tDiffuse, vUv).rgb * slope + offset;
+      vec4 src = texture2D(tDiffuse, vUv);
+      vec3 c = src.rgb * slope + offset * src.a;     // (alpha 0 = a hole for a live screen)
       // Blender's compositor Lift/Gamma/Gain (done on the sRGB curve, as Blender does)
       vec3 s = (toSrgb(c) - 1.0) * (2.0 - lift) + 1.0;
       c = pow(toLinear(max(s * gain, 0.0)), gammaInv);
@@ -53,7 +54,7 @@ const GradeShader = {
       float r = length((vUv - 0.5) / ellipse);
       float mask = 1.0 - smoothstep(0.72, 1.28, r);
       c *= mix(1.0, mask, vignette);
-      gl_FragColor = vec4(c, 1.0);
+      gl_FragColor = vec4(c, src.a);
     }`,
 };
 
@@ -76,11 +77,17 @@ const GrainShader = {
 export function createPost(renderer, scene, camera, look = LOOK) {
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
   const target = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: 4 });
+  renderer.setClearColor(0x000000, 0);           // transparent where the live screens show through
   const composer = new EffectComposer(renderer, target);
   composer.addPass(new RenderPass(scene, camera));
   const grade = new ShaderPass(GradeShader);
   composer.addPass(grade);
   const bloom = new UnrealBloomPass(new THREE.Vector2(size.x, size.y), look.glow.strength, look.glow.radius, look.glow.threshold);
+  // Glow adds light but must not fill the screen holes: leave alpha untouched.
+  bloom.blendMaterial.blending = THREE.CustomBlending;
+  bloom.blendMaterial.blendEquation = THREE.AddEquation;
+  bloom.blendMaterial.blendSrc = THREE.OneFactor; bloom.blendMaterial.blendDst = THREE.OneFactor;
+  bloom.blendMaterial.blendSrcAlpha = THREE.ZeroFactor; bloom.blendMaterial.blendDstAlpha = THREE.OneFactor;
   composer.addPass(bloom);
   composer.addPass(new OutputPass());          // AgX + exposure + sRGB, from renderer settings
   const grain = new ShaderPass(GrainShader);

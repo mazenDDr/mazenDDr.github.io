@@ -58,7 +58,7 @@ prep = json.loads(PREP.read_text())
 out = {
     'units': 'metres, three.js axes (Y up)',
     'screens': {'tv': plane('meshId3'), 'pc': plane('Monitor'), 'memo': plane('memo_board')},
-    'door': {'hinge': three(Vector((3.315, 5.225, 0))), 'open_angle_deg': round((prep['door_open_angle_deg'] + 180) % 360 - 180, 2),
+    'door': {'hinge': three(Vector(prep['door_hinge'])), 'open_angle_deg': round((prep['door_open_angle_deg'] + 180) % 360 - 180, 2),
              'nodes': ['B_door']},
     'certificate_wall': {'center': three(Vector((3.395, 1.035, 1.465))), 'normal': three(Vector((-1, 0, 0))),
                          'width': 1.47, 'height': 1.03},

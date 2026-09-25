@@ -64,11 +64,16 @@ body.still #intro, body.still #doodles, body.still #mute, body.still #hint { dis
 @media (prefers-reduced-motion: reduce) { .pen { transition: none !important; } .doodle.hot .hand { animation: none; } }
 
 /* Live screen apps, pinned onto the 3D screens */
-/* CSS3DRenderer's own full-screen divs must not catch clicks meant for the room. */
+/* Live screens sit behind the transparent canvas and show through holes the room
+   punches for them. CSS3DRenderer's own full-screen divs must not catch clicks. */
+#room { z-index: 2; }
 #screens, #screens div { pointer-events: none; }
-#screens { position: fixed !important; inset: 0; z-index: 2; }
-.screen-app { opacity: 0; visibility: hidden; transition: opacity .5s, visibility .5s; }
-#screens .screen-app.on { opacity: 1; visibility: visible; pointer-events: auto; }
+#screens { position: fixed !important; inset: 0; z-index: 1; }
+/* From across the room a screen sits in the room's light: dimmer, warmer, softer. */
+.screen-app { filter: brightness(.58) saturate(.85) sepia(.12) contrast(1.05) blur(.35px); transition: filter .6s; }
+.screen-app[data-name="memo"] { filter: brightness(.5) saturate(.9) sepia(.2) blur(.3px); }
+#screens .screen-app.on { filter: none; pointer-events: auto; }
+body.screen-focus #room { pointer-events: none; }
 
 /* Certificate lightbox */
 #lightbox { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; background: #0b0806e6; animation: fadein .3s both; }
