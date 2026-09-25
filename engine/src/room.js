@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { gradeUniforms, GRADE_GLSL } from './post.js';
+import { asset, fetchAsset } from '../../src/tour/cdn.js';
 
 const KIND = { constant: 0, image: 1, recipe: 2, special: 3, cutout: 3 };
 const SCREEN_GLASS = new Set(['image|crt_art', 'image|pc_art']);
@@ -100,14 +101,16 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
   const files = manifest.chunks.flatMap((c) => [lightFile(c), albedoFile(c)].filter(Boolean));
   const report = () => onProgress(0.8 * glb + 0.2 * done / files.length);
   const tick = () => { done++; report(); };
-  const load = (file, srgb) => texLoader.loadAsync(`public/bake/${file}`).then((t) => {
+  // from the CDN when there is one, else (or if it fails) from the site
+  const fromEither = (loaderOf, path, onProgress) => loaderOf.loadAsync(asset(path), onProgress).catch(() => loaderOf.loadAsync(path, onProgress));
+  const load = (file, srgb) => fromEither(texLoader, `public/bake/${file}`).then((t) => {
     t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     t.flipY = false;                 // glTF UV convention
     t.anisotropy = aniso;
     tick();
     return t;
   });
-  const gltfP = loader.loadAsync(lite ? 'public/room-lo.glb' : 'public/room.glb', (e) => { if (e.total) { glb = e.loaded / e.total; report(); } })
+  const gltfP = fromEither(loader, lite ? 'public/room-lo.glb' : 'public/room.glb', (e) => { if (e.total) { glb = e.loaded / e.total; report(); } })
     .then((g) => { glb = 1; report(); return g; });
   const chunkP = Promise.all(manifest.chunks.map(async (c) => [c.name, {
     ...c, light: await load(lightFile(c), false), atlasTex: c.albedo ? await load(albedoFile(c), true) : null,
@@ -197,7 +200,7 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
       while (next < jobs.length) {
         const [url, old] = jobs[next++];
         try {
-          const blob = await (await fetch(url)).blob();
+          const blob = await (await fetchAsset(url)).blob();
           const img = await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
           queue.push(() => swap(old, img));
         } catch { /* keep the small one */ }

@@ -14,6 +14,10 @@ import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import sharp from 'sharp';
 
 const hash = (b) => createHash('sha1').update(b).digest('hex').slice(0, 8);
+// --cdn <commit>: the heavy files are also served by jsDelivr from that commit of the
+// repository (tools/deploy.sh pushes them first); the page is told where.
+const cdnAt = process.argv.includes('--cdn') ? process.argv[process.argv.indexOf('--cdn') + 1] : '';
+const CDN = cdnAt ? `https://cdn.jsdelivr.net/gh/mazenDDr/mazenDDr.github.io@${cdnAt}/` : '';
 const OUT = 'public/tour';
 const manifest = JSON.parse(readFileSync(`${OUT}/manifest.json`, 'utf8'));
 const anchors = JSON.parse(readFileSync('public/anchors.json', 'utf8'));
@@ -36,7 +40,10 @@ const liveFile = `${OUT}/live-${hash(liveCode)}.js`;
 writeFileSync(liveFile, liveCode);
 
 // 2. the CSS, inlined
-const css = await build({ stdin: { contents: readFileSync('fonts/fonts.css', 'utf8') + readFileSync('src/tour/style.css', 'utf8'), loader: 'css' },
+// fonts from the CDN, with the site as the second source
+const fontsCss = readFileSync('fonts/fonts.css', 'utf8').replace(/src: url\((fonts\/[^)]+)\) format\('woff2'\)/g,
+  (all, f) => (CDN ? `src: url(${CDN}${f}) format('woff2'), url(${f}) format('woff2')` : all));
+const css = await build({ stdin: { contents: fontsCss + readFileSync('src/tour/style.css', 'utf8'), loader: 'css' },
   minify: true, write: false, target: ['safari13'] });
 
 // 3. the data, inlined (numbers rounded: millimetres are plenty)
@@ -60,10 +67,11 @@ const html = readFileSync('src/tour/index.html', 'utf8')
   .replace('{{css}}', css.outputFiles[0].text.trim())
   .replace('{{data}}', data)
   .replace('{{og}}', `https://mazenddr.github.io/${ogFile}`)
-  .replace('{{hallStrip}}', `${OUT}/${hall.strip.avif}`)
-  .replaceAll('{{hallFront}}', `${OUT}/${hall.front[1024].avif}`)
-  .replaceAll('{{hallFrontWebp}}', `${OUT}/${hall.front[1024].webp}`)
-  .replace('{{caveat}}', caveat);
+  .replace('{{cdn}}', CDN)
+  .replace('{{hallStrip}}', `${CDN}${OUT}/${hall.strip.avif}`)
+  .replaceAll('{{hallFront}}', `${CDN}${OUT}/${hall.front[1024].avif}`)
+  .replaceAll('{{hallFrontWebp}}', `${CDN}${OUT}/${hall.front[1024].webp}`)
+  .replace('fonts/{{caveat}}', `${CDN}fonts/${caveat}`);
 writeFileSync('index.html', html);
 
 // 6. the service worker: hashed files are immutable (cache first); the page and

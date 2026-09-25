@@ -20,6 +20,7 @@
    live: the real-time 3D room (sharp, flies freely) for capable computers.
    tour: the pre-rendered room (pictures and short videos) for phones and weak machines.
    ?mode=live|tour overrides; a computer too slow for live is remembered as tour. */
+window.ROOM_CDN = '{{cdn}}';
 (function () {
   function pick() {
     var n = navigator, c = n.connection || {}, ua = n.userAgent;
@@ -80,7 +81,8 @@
 <script id="tour-data" type="application/json">{{data}}</script>
 <script type="module">
   // the chosen room; if the live one can't start here, the pictures always can
-  import(window.ROOM_LIVE ? './{{live}}' : './{{app}}').catch((e) => {
+  const file = window.ROOM_LIVE ? '{{live}}' : '{{app}}';
+  (window.ROOM_CDN ? import(window.ROOM_CDN + file).catch(() => import('./' + file)) : import('./' + file)).catch((e) => {
     console.error(e);
     if (!window.ROOM_LIVE) return;
     try { localStorage.setItem('room-mode', 'tour'); } catch (e) { /* private mode */ }

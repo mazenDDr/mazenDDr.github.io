@@ -4,6 +4,8 @@
 // land, then sharper pictures. The size of each picture and video depends on the
 // screen and the connection (Save-Data and 2G/3G get the light versions, and
 // flights are fetched only when you point at an arrow).
+import { fetchAsset } from './cdn.js';
+
 const DIR = 'public/tour/';
 const AVIF = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=';
 
@@ -65,7 +67,7 @@ export class Loader {
       const e = this.queue.shift();
       this.running++;
       // Phones drop requests: try a few times before giving up on a file.
-      const attempt = (n) => fetch(DIR + e.file)
+      const attempt = (n) => fetchAsset(DIR + e.file)
         .then((r) => { if (!r.ok) throw new Error(`${r.status} ${e.file}`); return r.blob(); })
         .catch((err) => (n < 3 ? new Promise((res) => setTimeout(res, 400 * 2 ** n)).then(() => attempt(n + 1)) : Promise.reject(err)));
       attempt(0)
