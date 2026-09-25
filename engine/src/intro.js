@@ -225,6 +225,7 @@ export function playIntro({ room, progress, openAngle, director, doodles, camera
       shake(pattern);
       say(loaded ? 'coming!' : progress() > 0.6 ? 'footsteps…' : LINES[i % LINES.length]);
       await wait(pattern[pattern.length - 1] + 1.1);
+      if (loaded && !heard) break;                         // already here (a repeat visit, a fast line): no need to wait for footsteps
       if (!heard && (loaded || progress() > 0.6)) {        // someone's coming to the door
         heard = true;
         say('footsteps…');
