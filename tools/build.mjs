@@ -84,8 +84,11 @@ self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', (e) => {
   const r = e.request, url = new URL(r.url);
-  if (r.method !== 'GET' || url.origin !== location.origin || r.headers.has('range')) return;
-  if (/\\/public\\/tour\\/[^/]+-[0-9a-f]{8}\\.|\\/fonts\\//.test(url.pathname)) {
+  if (r.method !== 'GET' || r.headers.has('range')) return;
+  // never-changing files: named by hash, fonts, or pinned to a commit on jsDelivr
+  const cdn = url.hostname === 'cdn.jsdelivr.net';
+  if (!cdn && url.origin !== location.origin) return;
+  if (cdn || /\\/public\\/tour\\/[^/]+-[0-9a-f]{8}\\.|\\/fonts\\//.test(url.pathname)) {
     e.respondWith(caches.open(CACHE).then((c) => c.match(r).then((hit) => hit || fetch(r).then((res) => { if (res.ok) c.put(r, res.clone()); return res; }))));
     return;
   }

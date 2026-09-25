@@ -88,6 +88,8 @@ window.ROOM_CDN = '{{cdn}}';
     try { localStorage.setItem('room-mode', 'tour'); } catch (e) { /* private mode */ }
     location.replace(location.pathname + '?mode=tour');
   });
+  // both rooms: keep every never-changing file on the device, so a second visit is instant
+  if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 </script>
 </body>
 </html>
