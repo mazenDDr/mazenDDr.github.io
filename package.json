@@ -1,0 +1,14 @@
+{
+  "name": "room-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor": "node tools/vendor.mjs",
+    "pack": "gltf-transform meshopt design_room_raw.glb public/room.glb",
+    "serve": "python3 -m http.server 8765"
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.0",
+    "three": "^0.186.1"
+  }
+}

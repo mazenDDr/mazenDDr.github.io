@@ -1,0 +1,72 @@
+:root { --ink: #f3e6d3; --bg: #0b0806; --accent: #f0a45a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden;
+  font: 15px/1.4 ui-sans-serif, -apple-system, "Segoe UI", sans-serif; }
+#room { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+#loading { position: fixed; inset: 0; display: grid; place-content: center; gap: 12px; text-align: center;
+  background: var(--bg); transition: opacity .8s; z-index: 10; }
+#loading.done { opacity: 0; pointer-events: none; }
+#loading .bar { width: 220px; height: 3px; background: #2a1f17; border-radius: 3px; overflow: hidden; }
+#loading .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+#loading p { margin: 0; opacity: .7; letter-spacing: .04em; }
+
+/* Intro: hallway title card and knock prompt */
+#intro { position: fixed; inset: auto 0 9vh 0; display: grid; justify-items: center; gap: 8px; text-align: center;
+  z-index: 5; transition: opacity 1s, transform 1s; text-shadow: 0 2px 18px #000c; }
+#intro h1 { margin: 0; font: 600 clamp(28px, 4.2vw, 52px)/1.05 ui-serif, Georgia, serif; letter-spacing: .01em; }
+#intro p { margin: 0 0 10px; opacity: .8; }
+#intro button { font: inherit; font-weight: 600; color: #1a120c; background: var(--accent); border: 0; border-radius: 999px;
+  padding: 11px 26px; cursor: pointer; box-shadow: 0 6px 30px #f0a45a55; transition: transform .15s; }
+#intro button:hover { transform: translateY(-1px) scale(1.03); }
+#intro kbd { font: inherit; opacity: .55; margin-left: 6px; }
+#intro small { opacity: .5; }
+#intro.knocking button { animation: knock .34s 3; }
+#intro.gone { opacity: 0; transform: translateY(12px); pointer-events: none; }
+@keyframes knock { 40% { transform: translateX(-3px) scale(.98); } }
+
+/* Hotspot markers and hover label */
+#spots { position: fixed; inset: 0; pointer-events: none; z-index: 3; }
+.spot { position: absolute; left: -9px; top: -9px; width: 18px; height: 18px; border-radius: 50%; padding: 0;
+  border: 2px solid #fff6e8; background: #f0a45a66; box-shadow: 0 0 14px #f0a45acc; opacity: 0; cursor: pointer;
+  transition: opacity .4s, scale .2s; pointer-events: none; }
+.spot.on { opacity: .85; pointer-events: auto; animation: pulse 2.4s ease-in-out infinite; }
+.spot.hot { scale: 1.35; opacity: 1; }
+@keyframes pulse { 50% { box-shadow: 0 0 22px 4px #f0a45a99; } }
+#spot-label { position: fixed; left: 0; top: 0; z-index: 4; pointer-events: none; padding: 6px 12px; border-radius: 8px;
+  background: #140e0acc; border: 1px solid #f0a45a55; backdrop-filter: blur(6px); font-size: 14px; white-space: nowrap;
+  opacity: 0; transition: opacity .15s; }
+#spot-label.on { opacity: 1; }
+
+/* Back / stand up */
+#back { position: fixed; left: max(16px, env(safe-area-inset-left)); top: max(16px, env(safe-area-inset-top)); z-index: 6;
+  font: inherit; color: var(--ink); background: #140e0acc; border: 1px solid #f0a45a55; border-radius: 999px; padding: 8px 16px;
+  cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .3s; backdrop-filter: blur(6px); }
+#back.on { opacity: 1; pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) { .spot.on { animation: none; } }
+
+/* Live screen apps, pinned onto the 3D screens */
+/* CSS3DRenderer's own full-screen divs must not catch clicks meant for the room. */
+#screens, #screens div { pointer-events: none; }
+#screens { position: fixed !important; inset: 0; z-index: 2; }
+.screen-app { opacity: 0; visibility: hidden; transition: opacity .5s, visibility .5s; }
+#screens .screen-app.on { opacity: 1; visibility: visible; pointer-events: auto; }
+
+/* Certificate lightbox */
+#lightbox { position: fixed; inset: 0; z-index: 8; display: grid; place-items: center; background: #0b0806e6; animation: fadein .3s both; }
+#lightbox[hidden] { display: none; }
+#lightbox figure { margin: 0; max-width: min(92vw, 1100px); display: grid; gap: 14px; text-align: center; }
+#lightbox img { width: 100%; max-height: 78vh; object-fit: contain; box-shadow: 0 20px 60px #000; border-radius: 2px; }
+#lightbox button { position: fixed; right: 18px; top: 16px; width: 42px; height: 42px; border-radius: 50%; border: 1px solid #f0a45a66;
+  background: #140e0acc; color: var(--ink); font-size: 18px; cursor: pointer; }
+@keyframes fadein { from { opacity: 0; } }
+
+/* Phones: the focused app as a full-screen sheet */
+#app-sheet { position: fixed; inset: 0; z-index: 5; background: #000; opacity: 0; pointer-events: none; transition: opacity .35s;
+  padding: calc(56px + env(safe-area-inset-top)) 0 env(safe-area-inset-bottom); }
+#app-sheet.on { opacity: 1; pointer-events: auto; }
+#app-sheet iframe.flat { width: 100% !important; height: 100% !important; }
+
+#hint { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, 8px); z-index: 6; margin: 0;
+  max-width: calc(100vw - 32px); padding: 9px 16px; border-radius: 999px; background: #140e0acc; border: 1px solid #f0a45a44;
+  backdrop-filter: blur(6px); font-size: 14px; text-align: center; opacity: 0; pointer-events: none; transition: opacity .6s, transform .6s; }
+#hint.on { opacity: 1; transform: translate(-50%, 0); }

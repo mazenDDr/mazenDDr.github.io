@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MazenOS</title>
+<link rel="icon" href="../../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;600&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pc.css">
+</head>
+<body>
+<div id="boot">
+  <div class="happy" aria-hidden="true">
+    <svg viewBox="0 0 32 40" shape-rendering="crispEdges"><path fill="#fff" stroke="#000" stroke-width="2" d="M3 1h26v30H3z"/><path fill="#fff" stroke="#000" stroke-width="2" d="M7 5h18v16H7z"/><path d="M12 9h2v3h-2zM19 9h2v3h-2zM16 11h1v4h-2v-1h1zM12 17h1v1h6v-1h1v2h-8z"/><path fill="#fff" stroke="#000" stroke-width="2" d="M5 31h22v7H5z"/><path d="M8 26h8v1H8z"/></svg>
+  </div>
+  <div class="welcome"><b>Welcome to MazenOS</b><div class="progress"><i></i></div></div>
+</div>
+<header id="menubar">
+  <button class="logo" data-menu="logo" aria-label="MazenOS menu">◆</button>
+  <button data-menu="file">File</button><button data-menu="edit">Edit</button><button data-menu="view">View</button><button data-menu="special">Special</button>
+  <span id="clock"></span>
+</header>
+<main id="desktop"></main>
+<div class="scan" aria-hidden="true"></div>
+<script type="module" src="pc.js"></script>
+</body>
+</html>

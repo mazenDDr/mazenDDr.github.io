@@ -1,0 +1,366 @@
+{
+  "_about": "Single source for the TV, the PC and the pinboard. Numbers are copied from each repo's README (content/github/<repo>.md, 'Results at a glance'); re-check them there when a repo changes. Experience comes from Mazen's LinkedIn export (Profile.pdf, 2026-09-25).",
+  "person": {
+    "name": "Mazen Khaled",
+    "full_name": "Mazen Khaled Ahmed Yousef",
+    "headline": "AI engineer",
+    "one_liner": "I build ML systems and measure them honestly: every choice backed by a number with an interval.",
+    "links": {
+      "github": "https://github.com/mazenDDr",
+      "linkedin": "https://www.linkedin.com/in/mazen-khaled-1b8503218",
+      "researchgate": "https://www.researchgate.net/profile/Mazen-Khaled-2",
+      "huggingface": "https://huggingface.co/mazenDDr",
+      "email": "khaledmazen456@gmail.com"
+    },
+    "about": [
+      "I graduated from Zewail City (University of Science and Technology) with a BSc in Data Science and Artificial Intelligence in June 2026.",
+      "My projects share one habit: measure before deciding. I split data before tuning, report 95% intervals, check my graders against labels, and say plainly when the simple baseline wins.",
+      "I work with small open models that run on a laptop or one consumer GPU, so everything I publish can be reproduced for $0."
+    ],
+    "principles": [
+      "Measure before deciding.",
+      "Verify before claiming.",
+      "A difference is real only if its interval excludes zero.",
+      "Trace every failure to the first stage that broke.",
+      "Often the simplest baseline wins. Say so."
+    ]
+  },
+  "projects": [
+    {
+      "id": "crisis-triage",
+      "title": "Crisis Triage",
+      "hook": "Sure → sent. Unsure → a person.",
+      "logline": "After a disaster, messages arrive faster than anyone can read them. A small model triages them in six languages, and knows when it isn't sure.",
+      "stat": {
+        "value": "94.9%",
+        "label": "right on the 38% of new-disaster tweets it sends alone"
+      },
+      "findings": [
+        "After 17 minutes of fine-tuning, Laya sends 38% of tweets from new disasters on its own, and 94.9% of those are right. The other 62% go to a person.",
+        "Chat models are sure of almost everything: trusting Qwen3-4B's own \"≥ 95% sure\" sends 95% of tweets, but only 72% are right.",
+        "Fine-tuned on 40,737 examples from earlier disasters, Laya ties for best with a tuned e5 classifier (macro-F1 0.72) and has the lowest calibration error (0.010)."
+      ],
+      "tags": [
+        "Calibration",
+        "Multilingual NLP",
+        "Fine-tuning",
+        "Selective prediction"
+      ],
+      "year": 2026,
+      "genre": [
+        "Language",
+        "Trust & safety"
+      ],
+      "color": "#c2410c",
+      "art": "media/crisis-triage--desk.svg",
+      "links": {
+        "play": "https://mazenddr.github.io/crisis-triage/",
+        "code": "https://github.com/mazenDDr/crisis-triage",
+        "model": "https://huggingface.co/mazenDDr/laya-crisis-triage"
+      }
+    },
+    {
+      "id": "faceid-bench",
+      "title": "FaceID Bench",
+      "hook": "Face unlock on a Mac in 4.75 ms.",
+      "logline": "Face ID's two jobs, rebuilt with open models: find the face, then decide if it's you. Every stage chosen by measurement.",
+      "stat": {
+        "value": "99.48%",
+        "label": "right person accepted at 1 false accept in 100,000"
+      },
+      "findings": [
+        "Balanced pipeline (SCRFD-10G at 320 px + ResNet-50): TAR 0.9948 [0.9900, 0.9985] at FAR 1e-5, 4.75 ms median per attempt on an M4 Pro.",
+        "As accurate as the 640 px version (not a significant difference) in under half the time.",
+        "Laya, fine-tuned, ties Platt scaling on the final yes/no decision (paired +0.003 [-0.002, 0.008]), but costs 37.6 ms instead of 0.12 µs."
+      ],
+      "tags": [
+        "Face verification",
+        "Core ML",
+        "Calibration",
+        "Benchmarking"
+      ],
+      "year": 2026,
+      "genre": [
+        "Vision",
+        "On-device"
+      ],
+      "color": "#0e7490",
+      "art": "media/faceid-bench--hero.svg",
+      "links": {
+        "play": "https://mazenddr.github.io/faceid-bench/",
+        "code": "https://github.com/mazenDDr/faceid-bench"
+      }
+    },
+    {
+      "id": "contract-rag",
+      "title": "Contract RAG",
+      "hook": "Ask a real contract, get the clause.",
+      "logline": "Question answering over 100 real commercial contracts with small open models: the clause with a citation, or an honest \"the contract doesn't say\".",
+      "stat": {
+        "value": "+0.40",
+        "label": "MRR from one line: dropping the contract's name from the query"
+      },
+      "findings": [
+        "Plain BM25 over fixed 512-token chunks won search: recall@8 0.85, MRR 0.73, chosen from 189 setups on the dev split.",
+        "560 answers graded claim by claim: correctness 0.75 [0.64, 0.84], citation validity 0.87, abstention accuracy 0.94.",
+        "The grader was checked against labels first (κ 0.60). Fixing two grading rules cut failures from 282 to 185 without changing a single answer."
+      ],
+      "tags": [
+        "RAG",
+        "BM25",
+        "LLM evaluation",
+        "Legal NLP"
+      ],
+      "year": 2026,
+      "genre": [
+        "Language",
+        "Retrieval"
+      ],
+      "color": "#7c3aed",
+      "art": "media/Contract-rag--hero.svg",
+      "links": {
+        "play": "https://mazenddr.github.io/Contract-rag/demo/",
+        "guide": "https://mazenddr.github.io/Contract-rag/",
+        "code": "https://github.com/mazenDDr/Contract-rag"
+      }
+    },
+    {
+      "id": "receipt-vlm",
+      "title": "Receipt VLM",
+      "hook": "Photograph a receipt. Get JSON back.",
+      "logline": "A 3B vision-language model fine-tuned on one consumer GPU, quantized four ways, and measured at every step.",
+      "stat": {
+        "value": "0.44 → 0.84",
+        "label": "field F1 on 100 held-out receipts after QLoRA fine-tuning"
+      },
+      "findings": [
+        "Fine-tuning is the only change that moves accuracy much: paired gain +0.396 [+0.345, +0.442].",
+        "4-bit is free: AWQ W4A16 differs from bf16 by −0.005 [−0.026, +0.013].",
+        "The runtime matters more than the bit width: 13.22 s per receipt in transformers, 1.05 s as AWQ on vLLM."
+      ],
+      "tags": [
+        "Vision-language",
+        "QLoRA",
+        "Quantization",
+        "vLLM"
+      ],
+      "year": 2026,
+      "genre": [
+        "Vision",
+        "Fine-tuning"
+      ],
+      "color": "#15803d",
+      "art": "media/receipt-vlm--hero.svg",
+      "links": {
+        "play": "https://mazenddr.github.io/receipt-vlm/demo/",
+        "guide": "https://mazenddr.github.io/receipt-vlm/",
+        "code": "https://github.com/mazenDDr/receipt-vlm",
+        "model": "https://huggingface.co/mazenDDr/receipt-vlm-qwen2.5-vl-3b-awq"
+      }
+    },
+    {
+      "id": "pipeline-agents",
+      "title": "Pipeline Agents",
+      "hook": "Four agents vs one. The one won.",
+      "logline": "Give it data and a goal, get a pandas/sklearn pipeline, with a record of every plan, check and repair.",
+      "stat": {
+        "value": "0.88 vs 0.50",
+        "label": "success: single agent vs the four-role team, eight held-out tasks"
+      },
+      "findings": [
+        "Paired difference +0.38 [0.04, 0.71]: the simpler system won this comparison.",
+        "The critic was confident (1.0 on 179 of 181 calls) but agreed with labels only at κ 0.30.",
+        "6 of 6 runs passed on fresh data; the team used 8–9 times the model calls."
+      ],
+      "tags": [
+        "LLM agents",
+        "LangGraph",
+        "Ablations",
+        "Local LLMs"
+      ],
+      "year": 2026,
+      "genre": [
+        "Agents",
+        "Language"
+      ],
+      "color": "#b45309",
+      "art": "media/pipeline-agents--hero.svg",
+      "links": {
+        "play": "https://mazenddr.github.io/pipeline-agents/tour/",
+        "guide": "https://mazenddr.github.io/pipeline-agents/",
+        "code": "https://github.com/mazenDDr/pipeline-agents"
+      }
+    },
+    {
+      "id": "causal-uplift-marketing",
+      "title": "Causal Uplift",
+      "hook": "Likely to buy ≠ changed by the email.",
+      "logline": "Which customers should get a marketing email? Eight methods, a randomized experiment held back untouched, and training data confounded on purpose.",
+      "stat": {
+        "value": "$162",
+        "label": "more profit per 1,000 customers with uplift targeting (95% CI $28–$312)"
+      },
+      "findings": [
+        "The response model and the uplift tree each pick 852 customers and share only 76.",
+        "Causal adjustment sharply improves average-effect recovery under strong selection bias.",
+        "No individual ranking reaches a Qini interval that excludes zero, so the table is deliberately not a leaderboard."
+      ],
+      "tags": [
+        "Causal inference",
+        "Uplift modeling",
+        "Double ML",
+        "A/B testing"
+      ],
+      "year": 2026,
+      "genre": [
+        "Decisions",
+        "Causality"
+      ],
+      "color": "#be123c",
+      "art": "media/causal-uplift-marketing--hero.svg",
+      "links": {
+        "code": "https://github.com/mazenDDr/causal-uplift-marketing"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "title": "Measured, not guessed",
+      "ids": [
+        "crisis-triage",
+        "faceid-bench",
+        "contract-rag",
+        "receipt-vlm",
+        "pipeline-agents",
+        "causal-uplift-marketing"
+      ]
+    },
+    {
+      "title": "Language & agents",
+      "ids": [
+        "crisis-triage",
+        "contract-rag",
+        "pipeline-agents"
+      ]
+    },
+    {
+      "title": "Seeing things",
+      "ids": [
+        "faceid-bench",
+        "receipt-vlm"
+      ]
+    },
+    {
+      "title": "When the simple baseline won",
+      "ids": [
+        "pipeline-agents",
+        "contract-rag",
+        "causal-uplift-marketing"
+      ]
+    }
+  ],
+  "education": [
+    {
+      "title": "BSc, Data Science and Artificial Intelligence",
+      "school": "Zewail City — The University of Science and Technology",
+      "date": "2026-06-30",
+      "image": "content/certificates/bsc_datascience_ai_2026.jpg"
+    }
+  ],
+  "certificates": [
+    {
+      "id": "bsc",
+      "title": "Bachelor of Science in Data Science and Artificial Intelligence",
+      "issuer": "Zewail City — The University of Science and Technology",
+      "date": "2026-06-30",
+      "image": "content/certificates/bsc_datascience_ai_2026.jpg"
+    }
+  ],
+  "experience": [
+    {
+      "id": "capstone",
+      "role": "Graduation project (CSAI 498/499 capstone)",
+      "org": "Zewail City",
+      "dates": "Sep 2025 – May 2026",
+      "hook": "Automated call-center QA: 100% of calls scored, instead of the usual 2–5% checked by hand.",
+      "points": [
+        "A fully offline pipeline from raw call audio to a scored QA report grounded in the company’s own written policies.",
+        "Audio: resemble-enhance (denoising), pyannote (diarization), SenseVoice (transcription), Llama-3.1-8B (who is speaking), Audio2Emotion-v3.0 (emotion).",
+        "Scoring: an LLM engine rates calls on 7 weighted criteria against a Zettelkasten-style policy graph, and writes a LaTeX report.",
+        "Safety: a three-layer defence against prompt injection, and fully deterministic decoding.",
+        "Product: FastAPI (24 endpoints, JWT, role-based access, PostgreSQL) with a React + TypeScript dashboard for analysts, agents and admins."
+      ],
+      "tags": [
+        "Speech",
+        "LLMs",
+        "FastAPI",
+        "React"
+      ]
+    },
+    {
+      "id": "tanmeyah",
+      "role": "Data Scientist",
+      "org": "Tanmeyah",
+      "dates": "Jul 2025 – Sep 2025",
+      "hook": "Money-laundering detection and real-time brand-reputation monitoring.",
+      "points": [
+        "Built a machine-learning model for money-laundering detection.",
+        "Built an automated web-scraping pipeline to monitor brand reputation across social media in real time.",
+        "Designed a modular, interactive analytics dashboard for the Compliance and Governance sector."
+      ],
+      "tags": [
+        "Fraud detection",
+        "Web scraping",
+        "Dashboards"
+      ]
+    },
+    {
+      "id": "ta",
+      "role": "Teaching Assistant",
+      "org": "Zewail City (University of Science and Technology)",
+      "dates": "Jan 2024 – May 2024",
+      "hook": "Taught regression, neural networks and NLP to 50+ undergraduates.",
+      "points": [
+        "Mentored Python projects with TensorFlow, scikit-learn and pandas.",
+        "Wrote data-visualisation tutorials with Matplotlib and Seaborn.",
+        "Structured feedback contributed to a 15% improvement in average project performance."
+      ],
+      "tags": [
+        "Teaching",
+        "TensorFlow",
+        "scikit-learn"
+      ]
+    }
+  ],
+  "skills": {
+    "Modelling": [
+      "TensorFlow / Keras",
+      "Hugging Face transformers",
+      "scikit-learn",
+      "QLoRA / PEFT",
+      "Causal inference (EconML)"
+    ],
+    "LLMs & retrieval": [
+      "LangChain",
+      "RAG",
+      "BM25",
+      "LLM-as-judge",
+      "LangGraph agents",
+      "vLLM",
+      "llama.cpp"
+    ],
+    "Vision & speech": [
+      "Vision-language models",
+      "Face detection & verification",
+      "pyannote diarization",
+      "SenseVoice ASR",
+      "Core ML"
+    ],
+    "Evaluation": [
+      "Bootstrap intervals",
+      "Paired comparisons",
+      "Ablations",
+      "Failure taxonomies"
+    ]
+  }
+}

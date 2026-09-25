@@ -1,0 +1,160 @@
+:root {
+  --bg: #141414; --panel: #1f1f1f; --ink: #fff; --muted: #b3b3b3; --dim: #808080;
+  --red: #e50914; --green: #46d369;
+  --pad: 48px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden;
+  font: 16px/1.4 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+#app { height: 100%; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* In the room the TV is a CRT: faint scanlines and a darker rim. */
+.crt { position: fixed; inset: 0; pointer-events: none; z-index: 50; display: none;
+  background: repeating-linear-gradient(0deg, #0000 0 2px, #0000001a 2px 3px),
+              radial-gradient(ellipse at center, #0000 60%, #000a 100%); }
+body.in-room .crt { display: block; }
+
+.wordmark { font: 400 44px/1 'Bebas Neue', Impact, sans-serif; color: var(--red); letter-spacing: 1px;
+  text-shadow: 0 2px 0 #0006; }
+
+/* ---------- Who's watching ---------- */
+.gate { height: 100%; display: grid; place-content: center; justify-items: center; gap: 36px;
+  animation: fade .6s ease both; }
+.gate h1 { margin: 0; font-weight: 500; font-size: 48px; }
+.gate .people { display: flex; gap: 32px; }
+.gate .person { background: none; border: 0; display: grid; justify-items: center; gap: 12px; color: var(--muted); }
+.gate .avatar { width: 150px; height: 150px; border-radius: 6px; display: grid; place-items: center; font-size: 64px;
+  border: 4px solid transparent; transition: border-color .15s, transform .15s; }
+.gate .person:hover .avatar, .gate .person:focus-visible .avatar { border-color: #fff; transform: scale(1.04); }
+.gate .person:hover, .gate .person:focus-visible { color: #fff; outline: none; }
+.gate .person span { font-size: 20px; }
+.gate small { color: var(--dim); }
+
+/* ---------- Browse ---------- */
+.browse { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; animation: fade .6s ease both; }
+.browse::-webkit-scrollbar { display: none; }
+header.top { position: fixed; inset: 0 0 auto 0; z-index: 20; display: flex; align-items: center; gap: 28px;
+  padding: 18px var(--pad); background: linear-gradient(#000b, #0000); transition: background .3s; }
+header.top.solid { background: var(--bg); }
+header.top nav { display: flex; gap: 20px; font-size: 15px; }
+header.top nav button { background: none; border: 0; padding: 0; color: #e5e5e5; }
+header.top nav button.on { font-weight: 700; color: #fff; }
+header.top .who { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--muted);
+  background: none; border: 0; }
+header.top .who i { width: 32px; height: 32px; border-radius: 4px; display: grid; place-items: center; font-style: normal; font-size: 18px; }
+
+.billboard { position: relative; height: 72vh; min-height: 520px; display: flex; align-items: flex-end;
+  padding: 0 var(--pad) 12vh; overflow: hidden; }
+.billboard .art { position: absolute; inset: 0; background-size: cover; background-position: center right;
+  transition: opacity .8s; }
+.billboard .art img { position: absolute; right: 0; top: 50%; width: 72%; transform: translateY(-50%);
+  filter: saturate(1.1) brightness(.7); opacity: .95; }
+.billboard::after { content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, #141414 18%, #141414cc 38%, #14141400 70%), linear-gradient(0deg, #141414 2%, #14141400 30%); }
+.billboard .info { position: relative; z-index: 2; max-width: 46%; animation: rise .7s ease both; }
+.billboard .kicker { display: flex; align-items: center; gap: 8px; font: 600 14px/1 Inter; letter-spacing: 3px; color: #ddd; }
+.billboard .kicker b { color: var(--red); font: 400 26px/1 'Bebas Neue'; letter-spacing: 1px; }
+.billboard h2 { margin: 10px 0 12px; font: 400 76px/0.92 'Bebas Neue', Impact, sans-serif; letter-spacing: .5px; }
+.billboard .hook { font-size: 22px; font-weight: 600; margin: 0 0 10px; }
+.billboard .logline { color: #ddd; font-size: 17px; margin: 0 0 18px; text-shadow: 0 1px 4px #0008; }
+.meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 14px; color: var(--muted); margin-bottom: 18px; }
+.meta .match { color: var(--green); font-weight: 700; }
+.meta .rating { border: 1px solid #888; padding: 0 6px; font-size: 12px; }
+.actions { display: flex; gap: 12px; }
+.btn { display: inline-flex; align-items: center; gap: 10px; border: 0; border-radius: 4px; padding: 11px 26px;
+  font-size: 18px; font-weight: 700; text-decoration: none; transition: background .15s; }
+.btn.play { background: #fff; color: #000; }
+.btn.play:hover { background: #ffffffbf; }
+.btn.more { background: #6d6d6eb3; color: #fff; }
+.btn.more:hover { background: #6d6d6e66; }
+.btn svg { width: 22px; height: 22px; }
+
+.rows { position: relative; z-index: 3; margin-top: -9vh; padding-bottom: 60px; }
+.row { margin: 0 0 34px; }
+.row h3 { margin: 0 var(--pad) 10px; font-size: 21px; font-weight: 700; color: #e5e5e5; }
+.track { display: flex; gap: 8px; padding: 18px var(--pad); margin: -18px 0; overflow-x: auto; scroll-behavior: smooth;
+  scrollbar-width: none; }
+.track::-webkit-scrollbar { display: none; }
+.card { position: relative; flex: 0 0 290px; aspect-ratio: 16/9; border: 0; padding: 0; border-radius: 4px; overflow: visible;
+  background: var(--panel); transition: transform .25s ease, box-shadow .25s; text-align: left; }
+.card .thumb { position: absolute; inset: 0; border-radius: 4px; overflow: hidden; background: var(--c, #333); }
+.card .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: left center; filter: brightness(.8); }
+.card .thumb::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #000d 0%, #0000 60%); }
+.card .name { position: absolute; left: 12px; bottom: 10px; z-index: 2; font: 400 30px/0.95 'Bebas Neue', Impact; letter-spacing: .5px;
+  text-shadow: 0 2px 6px #000; }
+.card .n { position: absolute; left: 8px; top: 6px; z-index: 2; font: 400 18px/1 'Bebas Neue'; color: var(--red); }
+.card .peek { position: absolute; left: 0; right: 0; top: 100%; background: #181818; border-radius: 0 0 6px 6px; padding: 10px 12px 12px;
+  opacity: 0; transform: translateY(-8px); pointer-events: none; transition: opacity .2s, transform .2s; box-shadow: 0 10px 24px #000a; }
+.card .peek b { display: block; font-size: 24px; color: var(--green); }
+.card .peek span { display: block; font-size: 12.5px; color: #ccc; line-height: 1.3; }
+.card:hover, .card:focus-visible { transform: scale(1.12) translateY(-8px); z-index: 10; box-shadow: 0 14px 30px #000c; outline: none; }
+.card:hover .peek, .card:focus-visible .peek { opacity: 1; transform: none; }
+.card.person-card .thumb { display: grid; place-items: center; background: linear-gradient(135deg, #2b1a10, #0e0e0e); }
+.card.person-card .thumb img { object-fit: contain; opacity: 1; background: #f5f1e8; }
+
+/* ---------- Detail ---------- */
+.modal { position: fixed; inset: 0; z-index: 40; display: grid; place-items: start center; padding: 40px 0; overflow-y: auto;
+  background: #000b; animation: fade .25s ease both; scrollbar-width: none; }
+.modal .sheet { width: min(860px, 92vw); background: #181818; border-radius: 8px; overflow: hidden; box-shadow: 0 20px 60px #000;
+  animation: pop .3s ease both; }
+.modal .hero { position: relative; aspect-ratio: 16/7; background: var(--c); overflow: hidden; }
+.modal .hero img { width: 100%; height: 100%; object-fit: cover; object-position: center; filter: brightness(.55) saturate(1.1); }
+.modal .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #181818 0%, #181818aa 35%, #18181800 75%); }
+.modal .hero .title { position: absolute; left: 40px; bottom: 26px; z-index: 2; }
+.modal .hero h2 { margin: 0 0 14px; font: 400 64px/0.9 'Bebas Neue', Impact; }
+.modal .close { position: absolute; right: 14px; top: 14px; z-index: 3; width: 38px; height: 38px; border-radius: 50%; border: 0;
+  background: #181818; font-size: 22px; }
+.modal .body { display: grid; grid-template-columns: 1.6fr 1fr; gap: 28px; padding: 6px 40px 36px; }
+.modal .stat { font: 400 46px/1 'Bebas Neue'; color: var(--green); }
+.modal .stat + p { margin: 2px 0 16px; color: #ccc; }
+.modal ul { margin: 0; padding-left: 18px; color: #ddd; }
+.modal li { margin: 0 0 10px; }
+.modal .side { font-size: 14px; color: var(--dim); }
+.modal .side p { margin: 0 0 12px; }
+.modal .side span { color: #ddd; }
+.modal .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.modal .links a { font-size: 14px; padding: 7px 12px; border: 1px solid #555; border-radius: 4px; text-decoration: none; color: #eee; }
+.modal .links a:hover { border-color: #fff; }
+
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+@keyframes pop { from { opacity: 0; transform: scale(.96); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Phones */
+@media (max-width: 700px) {
+  :root { --pad: 16px; }
+  .wordmark { font-size: 32px; }
+  header.top { gap: 14px; padding: 12px var(--pad); }
+  header.top nav { gap: 12px; font-size: 13px; }
+  header.top .who span { display: none; }
+  .billboard { height: 70vh; min-height: 460px; padding-bottom: 14vh; }
+  .billboard .art img { width: 130%; right: -30%; top: 30%; opacity: .6; }
+  .billboard::after { background: linear-gradient(0deg, #141414 25%, #14141488 60%, #14141433); }
+  .billboard .info { max-width: 100%; }
+  .billboard h2 { font-size: 52px; }
+  .billboard .hook { font-size: 18px; }
+  .billboard .logline { font-size: 14.5px; }
+  .btn { padding: 9px 18px; font-size: 16px; }
+  .card { flex-basis: 210px; }
+  .card:hover, .card:focus-visible { transform: none; }
+  .card .peek { display: none; }
+  .gate h1 { font-size: 30px; }
+  .gate .people { flex-wrap: wrap; justify-content: center; gap: 18px; }
+  .gate .avatar { width: 96px; height: 96px; font-size: 44px; }
+  .modal { padding: 0; }
+  .modal .sheet { width: 100vw; min-height: 100%; border-radius: 0; }
+  .modal .hero h2 { font-size: 44px; }
+  .modal .hero .title { left: 18px; }
+  .modal .body { grid-template-columns: 1fr; padding: 6px 18px 30px; gap: 16px; }
+}
+
+.card.job .thumb { background: linear-gradient(135deg, #3b2616, #1b1310); }
+.job-face { position: absolute; inset: 0; padding: 14px 16px; display: grid; align-content: end; gap: 2px; z-index: 2; }
+.job-face small { color: #f0a45a; font-weight: 600; font-size: 12px; letter-spacing: .5px; }
+.job-face b { font: 400 30px/0.95 'Bebas Neue', Impact, sans-serif; letter-spacing: .5px; }
+.job-face span { font-size: 13px; color: #ddd; }
+.card.job .peek span { font-size: 13px; }

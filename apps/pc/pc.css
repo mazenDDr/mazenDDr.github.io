@@ -1,0 +1,91 @@
+:root { --ui: 'Pixelify Sans', 'Chicago', system-ui, sans-serif; --doc: 'IBM Plex Mono', ui-monospace, monospace;
+  --desk: #5b6e9e; --line: #000; --face: #ddd; --hi: #fff; --lo: #888; --sel: #1d2d8a; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--desk); color: #000; font: 16px/1.35 var(--ui);
+  -webkit-font-smoothing: none; user-select: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: default; }
+a { color: var(--sel); }
+:focus-visible { outline: 2px dotted #000; outline-offset: 1px; }
+
+/* A dithered desktop pattern, like the old 8x8 patterns. */
+#desktop { position: absolute; inset: 26px 0 0 0;
+  background-color: var(--desk);
+  background-image: radial-gradient(#ffffff22 1px, #0000 1.2px); background-size: 4px 4px; }
+.scan { position: fixed; inset: 0; pointer-events: none; z-index: 999; display: none;
+  background: repeating-linear-gradient(0deg, #0000 0 2px, #00000014 2px 3px), radial-gradient(ellipse, #0000 62%, #0007 100%); }
+body.in-room .scan { display: block; }
+
+/* ---------- boot ---------- */
+#boot { position: fixed; inset: 0; z-index: 100; background: #c0c0c0;
+  background-image: radial-gradient(#0002 1px, #0000 1.2px); background-size: 3px 3px;
+  display: grid; place-content: center; justify-items: center; gap: 24px; transition: opacity .35s; }
+#boot .happy svg { width: 64px; height: 80px; }
+#boot .welcome { background: #fff; border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 16px 28px; display: grid; gap: 12px;
+  justify-items: center; font-size: 20px; }
+#boot .progress { width: 220px; height: 14px; border: 2px solid #000; }
+#boot .progress i { display: block; height: 100%; width: 0; background: #000; animation: boot 1.3s steps(12) forwards; }
+#boot.done { opacity: 0; pointer-events: none; }
+@keyframes boot { to { width: 100%; } }
+
+/* ---------- menu bar ---------- */
+#menubar { position: fixed; inset: 0 0 auto 0; height: 26px; z-index: 50; display: flex; align-items: center; gap: 2px; padding: 0 10px;
+  background: #fff; border-bottom: 2px solid #000; font-size: 17px; }
+#menubar > button { padding: 0 10px; height: 100%; }
+#menubar > button:hover, #menubar > button.open { background: #000; color: #fff; }
+#menubar .logo { font-size: 18px; color: var(--sel); }
+#menubar .logo:hover { color: #fff; }
+#clock { margin-left: auto; }
+.menu { position: fixed; z-index: 60; min-width: 220px; background: #fff; border: 2px solid #000; box-shadow: 3px 3px 0 #000; padding: 2px 0; }
+.menu button { display: block; width: 100%; text-align: left; padding: 2px 18px; }
+.menu button:hover { background: #000; color: #fff; }
+.menu hr { border: 0; border-top: 1px dotted #000; margin: 2px 0; }
+.menu .dim { color: #999; pointer-events: none; }
+
+/* ---------- desktop icons ---------- */
+.icons { position: absolute; top: 14px; right: 14px; display: grid; gap: 14px; justify-items: center; }
+.icon { width: 96px; display: grid; justify-items: center; gap: 4px; text-align: center; font-size: 15px; }
+.icon svg { width: 44px; height: 44px; image-rendering: pixelated; }
+.icon span { padding: 0 3px; background: #fff; }
+.icon.sel span, .icon:focus-visible span { background: #000; color: #fff; }
+.icon.sel svg { filter: invert(1) hue-rotate(180deg); }
+.win .icon span { background: none; }
+
+/* ---------- windows ---------- */
+.win { position: absolute; background: #fff; border: 2px solid #000; box-shadow: 3px 3px 0 #000; display: flex; flex-direction: column;
+  min-width: 260px; animation: zoom .18s steps(4) both; }
+.win .bar { position: relative; flex: none; height: 24px; display: flex; align-items: center; justify-content: center; border-bottom: 2px solid #000;
+  cursor: grab; touch-action: none; }
+.win.active .bar { background: repeating-linear-gradient(#fff 0 2px, #000 2px 3px) 0 4px / 100% 15px no-repeat; }
+.win .bar b { position: relative; padding: 0 10px; background: #fff; font-weight: 600; font-size: 16px; white-space: nowrap; }
+.win .close { position: absolute; left: 8px; top: 4px; width: 15px; height: 15px; background: #fff; border: 2px solid #000; }
+.win .close:hover { background: #000; }
+.win .body { flex: 1; overflow: auto; padding: 14px 16px; user-select: text; }
+.win .body::-webkit-scrollbar { width: 16px; background: repeating-conic-gradient(#ccc 0 25%, #fff 0 50%) 0 0 / 4px 4px; border-left: 2px solid #000; }
+.win .body::-webkit-scrollbar-thumb { background: #fff; border: 2px solid #000; }
+.win .status { flex: none; border-top: 2px solid #000; font-size: 13px; padding: 1px 10px; display: flex; justify-content: space-between; }
+@keyframes zoom { from { transform: scale(.4); opacity: 0; } }
+
+.folder { display: flex; flex-wrap: wrap; gap: 18px 10px; align-content: flex-start; }
+.doc { font: 14.5px/1.55 var(--doc); }
+.doc h1 { font: 600 26px/1.1 var(--ui); margin: 0 0 4px; }
+.doc .hook { font-weight: 600; margin: 0 0 12px; }
+.doc .stat { display: inline-block; border: 2px solid #000; padding: 4px 10px; margin: 0 0 12px; box-shadow: 2px 2px 0 #000; }
+.doc .stat b { font: 600 24px/1 var(--ui); margin-right: 8px; }
+.doc ul { padding-left: 20px; margin: 0 0 14px; }
+.doc li { margin-bottom: 6px; }
+.doc .tags { color: #555; font-size: 13px; }
+.doc .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.pbtn { display: inline-block; font: 15px var(--ui); color: #000; text-decoration: none; padding: 4px 16px; border: 2px solid #000;
+  border-radius: 8px; background: #fff; cursor: pointer; }
+.pbtn.default { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #000; }
+.pbtn:hover { background: #000; color: #fff; }
+.cert img { width: 100%; border: 2px solid #000; display: block; }
+
+/* terminal */
+.term .body { background: #0c0c0c; color: #33ff66; font: 20px/1.15 'VT323', ui-monospace, monospace; padding: 10px 12px; }
+.term .body a { color: #7dfcff; }
+.term .line { white-space: pre-wrap; }
+.term .prompt { display: flex; gap: 8px; }
+.term input { flex: 1; background: none; border: 0; outline: none; color: inherit; font: inherit; caret-color: #33ff66; padding: 0; }
+
+@media (prefers-reduced-motion: reduce) { .win { animation: none; } #boot .progress i { animation-duration: .01s; } }

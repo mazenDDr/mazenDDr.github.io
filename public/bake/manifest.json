@@ -1,0 +1,66 @@
+{
+ "built": "2026-09-25T03:39:53.648Z",
+ "glb_kb": 7422,
+ "chunks": [
+  {
+   "name": "c0",
+   "file": "c0.webp",
+   "size": 4096,
+   "kb": 827
+  },
+  {
+   "name": "c1",
+   "file": "c1.webp",
+   "size": 4096,
+   "kb": 422
+  },
+  {
+   "name": "c2",
+   "file": "c2.webp",
+   "size": 4096,
+   "kb": 277
+  },
+  {
+   "name": "c3",
+   "file": "c3.webp",
+   "size": 4096,
+   "kb": 297
+  },
+  {
+   "name": "c4",
+   "file": "c4.webp",
+   "size": 4096,
+   "kb": 689
+  },
+  {
+   "name": "c5",
+   "file": "c5.webp",
+   "size": 4096,
+   "kb": 237
+  },
+  {
+   "name": "c6",
+   "file": "c6.webp",
+   "size": 2048,
+   "kb": 232
+  },
+  {
+   "name": "c7",
+   "file": "c7.webp",
+   "size": 2048,
+   "kb": 31
+  },
+  {
+   "name": "door",
+   "file": "door.webp",
+   "size": 1024,
+   "kb": 16
+  },
+  {
+   "name": "outside",
+   "file": "outside.webp",
+   "size": 2048,
+   "kb": 534
+  }
+ ]
+}

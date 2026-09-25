@@ -1,0 +1,73 @@
+{
+ "objects": 2892,
+ "tris_before": 1996887,
+ "tris_after": 618283,
+ "door_open_angle_deg": 72.0,
+ "cutout": [
+  "W_win_glass",
+  "W_PCKD854n"
+ ],
+ "chunks": [
+  {
+   "name": "c0",
+   "objects": 241,
+   "tris": 85590,
+   "area_m2": 42.1
+  },
+  {
+   "name": "c1",
+   "objects": 103,
+   "tris": 51635,
+   "area_m2": 29.94
+  },
+  {
+   "name": "c2",
+   "objects": 596,
+   "tris": 147234,
+   "area_m2": 49.59
+  },
+  {
+   "name": "c3",
+   "objects": 42,
+   "tris": 36428,
+   "area_m2": 79.11
+  },
+  {
+   "name": "c4",
+   "objects": 277,
+   "tris": 86791,
+   "area_m2": 55.34
+  },
+  {
+   "name": "c5",
+   "objects": 277,
+   "tris": 108297,
+   "area_m2": 26.69
+  },
+  {
+   "name": "c6",
+   "objects": 122,
+   "tris": 31646,
+   "area_m2": 42.31
+  },
+  {
+   "name": "c7",
+   "objects": 5,
+   "tris": 60,
+   "area_m2": 29.4
+  },
+  {
+   "name": "door",
+   "objects": 7,
+   "tris": 84,
+   "area_m2": 6.95
+  },
+  {
+   "name": "outside",
+   "objects": 1222,
+   "tris": 69200,
+   "area_m2": 810.49
+  }
+ ],
+ "seconds": 75.4
+}
