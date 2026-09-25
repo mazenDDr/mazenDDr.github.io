@@ -239,3 +239,37 @@ def add_realism():
             if min(ov) > 0.01 and 'plank' not in n and not n.startswith(('floor', 'wall', 'rug')):
                 report['overlaps'].append([p['name'], n, [round(v * 100, 1) for v in ov]])
     return report
+
+
+# The landing outside the door (prep_web.py builds its walls and paintings):
+# a bench under a painting and two plants, so it reads as a lived-in home.
+LANDING = [
+    ('painted_wooden_bench', (4.25, 5.62), 180, 'under the wheat-field painting, against the wall'),
+    ('potted_plant_02', (5.35, 5.62), 30, 'past the bench, framing the view on the left'),
+    ('potted_plant_01', (0.78, 5.62), 0, 'past the starry night, framing the view on the right'),
+]
+
+
+def add_landing():
+    """Floor props on the landing, in the 'hallway' collection (its own light-map chunk)."""
+    sc = bpy.context.scene
+    col = bpy.data.collections.new('hallway')
+    sc.collection.children.link(col)
+    report = []
+    for name, (x, y), rot, where in LANDING:
+        root, meshes = import_prop(name, None)
+        for o in meshes:
+            for c in o.users_collection:
+                c.objects.unlink(o)
+            col.objects.link(o)
+        root.rotation_euler.z = math.radians(rot)
+        root.location = (x, y, 0)
+        bpy.context.view_layer.update()
+        lo, hi = bounds(meshes)
+        if lo.y < 5.345:                    # keep it off the wall and its skirting
+            root.location.y += 5.345 - lo.y
+            bpy.context.view_layer.update()
+            lo, hi = bounds(meshes)
+        report.append({'name': root.name, 'where': where, 'min_cm': [round(v * 100, 1) for v in lo],
+                       'max_cm': [round(v * 100, 1) for v in hi]})
+    return report

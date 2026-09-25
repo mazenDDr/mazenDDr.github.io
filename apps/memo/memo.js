@@ -1,5 +1,7 @@
 // The pinboard above the bed: how I work, skills, the diploma, a few projects
 // and how to reach me. Laid out on a fixed 1300x900 stage scaled to fit.
+// In the room, a screen nobody is looking at stops animating (the room says when).
+addEventListener('message', (e) => { if (e.data?.type === 'room-focus') document.documentElement.classList.toggle('asleep', !e.data.on); });
 const ROOT = '../../';
 const data = await (await fetch(ROOT + 'content/portfolio.json')).json();
 const P = data.person;
@@ -87,3 +89,4 @@ addEventListener('keydown', (e) => {
   if (!zoomEl.hidden) zoomEl.hidden = true;
   else parent.postMessage({ type: 'room-back' }, '*');
 });
+

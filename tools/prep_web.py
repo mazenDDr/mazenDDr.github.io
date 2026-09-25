@@ -41,6 +41,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import realism, books
 realism_report = realism.add_realism()
 realism_report['books'] = books.add_books()
+realism_report['landing'] = realism.add_landing()
 sc = bpy.context.scene
 dg = bpy.context.evaluated_depsgraph_get()
 
@@ -110,7 +111,14 @@ for ob in made:
             bpy.ops.object.modifier_apply(modifier='dec')
 tris_after = sum(tri_count(o.data) for o in made)
 
-def box(name, lo, hi, color, strength=0.0, rough=.8, cols='hallway'):
+# Cycles shades both sides of a face, so a shell modelled inside out looks fine in
+# Blender but disappears in the browser (and bakes its light from the inside).
+FLIP = {'styled_teapot_lid'}
+for ob in made:
+    if ob['src'] in FLIP:
+        ob.data.flip_normals()
+
+def box(name, lo, hi, color, strength=0.0, rough=.8, cols='hallway', mat=None):
     bm = bmesh.new()
     bmesh.ops.create_cube(bm, size=1)
     for v in bm.verts:
@@ -118,14 +126,16 @@ def box(name, lo, hi, color, strength=0.0, rough=.8, cols='hallway'):
     me = bpy.data.meshes.new(name)
     bm.to_mesh(me)
     bm.free()
-    ma = bpy.data.materials.new(name)
-    ma.use_nodes = True
-    bs = ma.node_tree.nodes['Principled BSDF']
-    bs.inputs['Base Color'].default_value = (*color, 1)
-    bs.inputs['Roughness'].default_value = rough
-    if strength:
-        bs.inputs['Emission Color'].default_value = (*color, 1)
-        bs.inputs['Emission Strength'].default_value = strength
+    ma = mat
+    if ma is None:
+        ma = bpy.data.materials.new(name)
+        ma.use_nodes = True
+        bs = ma.node_tree.nodes['Principled BSDF']
+        bs.inputs['Base Color'].default_value = (*color, 1)
+        bs.inputs['Roughness'].default_value = rough
+        if strength:
+            bs.inputs['Emission Color'].default_value = (*color, 1)
+            bs.inputs['Emission Strength'].default_value = strength
     me.materials.append(ma)
     ob = bpy.data.objects.new(name, me)
     ob['src'] = name
@@ -237,22 +247,96 @@ def framed(name, image, y, z, width):
 
 framed('cert_bsc', ROOT / 'design/assets/certificates/bsc_datascience_ai_2026.png', y=1.04, z=1.48, width=.50)
 
-# ---- 5. hallway outside the door (seen during the knock intro)
+# ---- 5. the landing outside the door (seen during the knock intro)
+# Not a corridor: the door sits in one long wall of a wide, taller landing, with
+# paintings on either side under warm picture lights. Everything here is its own
+# light-map chunk ('hall'), so it never takes texture space from the room.
 plaster = (.55, .47, .38)
-# A 1.14 m corridor that seals against the door wall (x 2.38-3.52) under the room's 2.3 m ceiling.
-box('hall_floor', (2.38, 5.32, -.02), (3.52, 7.6, 0), (.16, .09, .05))
-box('hall_ceiling', (2.38, 5.32, 2.3), (3.52, 7.6, 2.32), plaster)
-box('hall_wall_l', (2.36, 5.32, 0), (2.38, 7.6, 2.3), plaster)
-box('hall_wall_r', (3.52, 5.32, 0), (3.54, 7.6, 2.3), plaster)
-box('hall_wall_back', (2.38, 7.6, 0), (3.52, 7.62, 2.3), plaster)
-box('hall_runner', (2.62, 5.4, 0), (3.28, 7.4, .006), (.28, .07, .05))
-box('hall_lamp', (2.84, 5.98, 2.26), (3.04, 6.18, 2.3), (1, .75, .45), strength=3)
-lamp = bpy.data.lights.new('hall_light', 'POINT')
-lamp.energy = 40
-lamp.color = (1, .78, .52)
-lamp.shadow_soft_size = .12
-lo = bpy.data.objects.new('hall_light', lamp)
-lo.location = (2.94, 6.08, 2.18)
+HX0, HX1, HY1, HZ = -3.2, 8.6, 9.2, 2.9           # landing extent (x, back wall y) and ceiling height
+FRAME_X = (2.438, 3.362)                           # the door frame; the skirting stops at it
+# One continuous plaster face over the whole landing wall, 1 cm proud of the room's
+# wall, with the doorway cut out: everything seen here is one surface in one light
+# map, so no seam shows where the room's own wall would meet the landing's.
+HY0 = WALL_Y1 + .01
+box('hall_wall_w', (HX0, WALL_Y1, 0), (FRAME_X[0], HY0, HZ), plaster, mat=wall_ma)
+box('hall_wall_e', (FRAME_X[1], WALL_Y1, 0), (HX1, HY0, HZ), plaster, mat=wall_ma)
+box('hall_wall_over', (FRAME_X[0], WALL_Y1, 2.099), (FRAME_X[1], HY0, HZ), plaster, mat=wall_ma)
+box('hall_floor', (HX0, HY0, -.02), (HX1, HY1, 0), (.13, .075, .04), rough=.5)
+box('hall_ceiling', (HX0, HY0, HZ), (HX1, HY1, HZ + .02), (.62, .56, .48))
+box('hall_wall_back', (HX0, HY1, 0), (HX1, HY1 + .02, HZ), plaster, mat=wall_ma)
+box('hall_end_w', (HX0 - .02, HY0, 0), (HX0, HY1, HZ), plaster, mat=wall_ma)
+box('hall_end_e', (HX1, HY0, 0), (HX1 + .02, HY1, HZ), plaster, mat=wall_ma)
+for k, (x0, x1) in enumerate(((HX0, FRAME_X[0]), (FRAME_X[1], HX1))):
+    box(f'hall_skirting_{k}', (x0, HY0, 0), (x1, HY0 + .015, .11), (.78, .74, .68), rough=.5)
+box('hall_runner', (2.45, 5.45, 0), (3.35, 8.4, .006), (.30, .08, .05))
+
+
+def hall_painting(name, image, cx, cz, width):
+    """A framed canvas on the landing wall, facing the hall (+y), with a brass picture light."""
+    im = bpy.data.images.load(str(image))
+    h = width * im.size[1] / im.size[0]
+    y, fr, d = HY0, .045, .035
+    box(name + '_frame', (cx - width / 2 - fr, y, cz - h / 2 - fr), (cx + width / 2 + fr, y + d, cz + h / 2 + fr),
+        (.07, .045, .03), rough=.35)
+    bm = bmesh.new()
+    yy = y + d + .002
+    vs = [bm.verts.new(v) for v in ((cx - width / 2, yy, cz - h / 2), (cx + width / 2, yy, cz - h / 2),
+                                    (cx + width / 2, yy, cz + h / 2), (cx - width / 2, yy, cz + h / 2))]
+    f = bm.faces.new(vs)
+    uvl = bm.loops.layers.uv.new('UVMap')
+    for loop, uv in zip(f.loops, ((1, 0), (0, 0), (0, 1), (1, 1))):   # seen from the hall, +u runs toward -x
+        loop[uvl].uv = uv
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    if me.polygons[0].normal.y < 0:
+        me.flip_normals()
+    ma = bpy.data.materials.new(name)
+    ma.use_nodes = True
+    nt = ma.node_tree
+    tex = nt.nodes.new('ShaderNodeTexImage')
+    tex.image = im
+    bs = nt.nodes['Principled BSDF']
+    nt.links.new(tex.outputs['Color'], bs.inputs['Base Color'])
+    bs.inputs['Roughness'].default_value = .6
+    me.materials.append(ma)
+    ob = bpy.data.objects.new(name, me)
+    ob['src'], ob['src_cols'] = name, 'hallway'
+    col.objects.link(ob)
+    made.append(ob)
+    # the picture light: a brass bar over the frame, and the spot it throws down the canvas
+    top = cz + h / 2 + fr
+    box(name + '_lamp', (cx - .16, y + .02, top + .07), (cx + .16, y + .10, top + .11), (.55, .38, .16), rough=.3)
+    L = bpy.data.lights.new(name + '_spot', 'SPOT')
+    L.energy, L.color, L.spot_size, L.spot_blend, L.shadow_soft_size = 60, (1, .80, .56), math.radians(95), .8, .05
+    lo = bpy.data.objects.new(name + '_spot', L)
+    lo.location = (cx, y + .16, top + .08)
+    lo.rotation_euler = (math.radians(-28), 0, 0)            # points down, tipped toward the wall (-y)
+    sc.collection.objects.link(lo)
+
+
+P = ROOT / 'design/assets/paintings'
+for name, file, cx, width in (
+        ('art_milkmaid', 'Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg', -1.35, .62),
+        ('art_wave', 'Tsunami_by_hokusai_19th_century.jpg', .15, .95),
+        ('art_starry', 'Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg', 1.55, .88),
+        ('art_wheat', 'Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project.jpg', 4.25, .88),
+        ('art_wanderer', 'Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg', 5.6, .58),
+        ('art_lilies', 'Claude_Monet_-_Water_Lilies_-_1906,_Ryerson.jpg', 6.95, .78)):
+    hall_painting(name, P / file, cx, 1.55, width)
+# soft ceiling light over where you stand, so the landing reads warm, not dark
+for k, (x, y) in enumerate(((2.9, 7.6), (0.2, 7.0), (5.6, 7.0))):
+    box(f'hall_downlight_{k}', (x - .07, y - .07, HZ - .01), (x + .07, y + .07, HZ), (1, .82, .6), strength=4)
+    L = bpy.data.lights.new(f'hall_light_{k}', 'SPOT')
+    L.energy, L.color, L.spot_size, L.spot_blend, L.shadow_soft_size = (260 if k == 0 else 182), (1, .78, .52), math.radians(110), 1, .1
+    lo = bpy.data.objects.new(f'hall_light_{k}', L)
+    lo.location = (x, y, HZ - .03)
+    sc.collection.objects.link(lo)
+# a soft wash down the long wall (levels matched to the room's walls in Cycles previews)
+L = bpy.data.lights.new('hall_wash', 'AREA')
+L.shape, L.size, L.size_y, L.energy, L.color = 'RECTANGLE', 6.0, .4, 350, (1, .8, .58)
+lo = bpy.data.objects.new('hall_wash', L)
+lo.location, lo.rotation_euler = (2.9, 6.3, 2.82), (math.radians(-40), 0, 0)
 sc.collection.objects.link(lo)
 
 # ---- 6. classify and chunk
@@ -302,6 +386,8 @@ for ob in made:
             s_.material['web_kind'] = colour_kind(s_.material)
     if ob.get('door'):
         group = 'door'
+    elif cols == 'hallway' and not kinds & {'special', 'glass'}:   # (leaves with cut-outs bake as 'special')
+        group = 'hall'
     elif c.y < -.2:                    # beyond the window wall: sky and city
         group = 'outside'
     elif kinds == {'glass'}:
@@ -332,7 +418,7 @@ def split(group, n, prefix):
 split('plain', PLAIN_CHUNKS, 'p')
 split('detail', DETAIL_CHUNKS, 'd')
 for ob, _, _ in items:
-    if ob['group'] in ('special', 'outside', 'door', 'glass'):
+    if ob['group'] in ('special', 'outside', 'door', 'glass', 'hall'):
         ob['chunk'] = ob['group']
 
 for name in sorted({o['chunk'] for o in made}):

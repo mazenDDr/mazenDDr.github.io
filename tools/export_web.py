@@ -30,6 +30,10 @@ HINGE = Vector(json.loads((Path(__file__).with_name('prep_report.json')).read_te
 MAX_TEX = 1024          # most textures; printed art (posters, covers) gets BIG_TEX
 BIG_TEX = 2048
 ART = ('poster', 'art', 'cover', 'book', 'spine')
+# Measured by tools/texture_needs.py: the most texels per UV unit any pixel can show,
+# from every place a visitor can be, at 4K. Textures shrink to that (+25%), never grow.
+NEEDS_FILE = Path(__file__).with_name('texture_needs.json')
+NEEDS = json.loads(NEEDS_FILE.read_text())['needs'] if NEEDS_FILE.exists() else {}
 
 bpy.ops.wm.open_mainfile(filepath=str(BAKED))
 sc = bpy.context.scene
@@ -48,6 +52,17 @@ def linked_image(sock):
         return None
     n = sock.links[0].from_node
     return n.image if n.type == 'TEX_IMAGE' and n.image else None
+
+
+def fit(img, limit):
+    """Downscale to the size cap and to what can actually be seen (texture_needs.json)."""
+    w, h = img.size
+    k = min(1.0, limit / max(w, h))
+    need = NEEDS.get(img.name, NEEDS.get(Path(img.name).stem))
+    if need is not None:
+        k = min(k, max(64, need * 1.25) / min(w, h))
+    if k < 1:
+        img.scale(max(1, round(w * k)), max(1, round(h * k)))
 
 
 def rebuild(ma, kind, area):
@@ -71,18 +86,14 @@ def rebuild(ma, kind, area):
         if e > 0 and (eimg or any(ec.default_value[:3])):
             entry['emissive'] = [round(v * e, 5) for v in (ec.default_value[:3] if not eimg else (1, 1, 1))]
             if eimg:
-                limit = MAX_TEX
-                if max(eimg.size) > limit:
-                    eimg.scale(*[max(1, int(v * limit / max(eimg.size))) for v in eimg.size])
+                fit(eimg, MAX_TEX)
                 t = nt.nodes.new('ShaderNodeTexImage')
                 t.image = eimg
                 nt.links.new(t.outputs['Color'], nb.inputs['Emission Color'])
                 nb.inputs['Emission Strength'].default_value = 1
                 entry['emissiveMap'] = True
     if img:
-        limit = BIG_TEX if any(k in (ma.name if ma else '').lower() for k in ART) else MAX_TEX
-        if max(img.size) > limit:
-            img.scale(*[max(1, int(v * limit / max(img.size))) for v in img.size])
+        fit(img, BIG_TEX if any(k in (ma.name if ma else '').lower() for k in ART) else MAX_TEX)
         t = nt.nodes.new('ShaderNodeTexImage')
         t.image = img
         nt.links.new(t.outputs['Color'], nb.inputs['Base Color'])

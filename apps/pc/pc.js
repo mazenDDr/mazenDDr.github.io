@@ -1,5 +1,7 @@
 // MazenOS: the computer on the desk. A small window manager plus a few apps,
 // all reading content/portfolio.json.
+// In the room, a screen nobody is looking at stops animating (the room says when).
+addEventListener('message', (e) => { if (e.data?.type === 'room-focus') document.documentElement.classList.toggle('asleep', !e.data.on); });
 const ROOT = '../../';
 const data = await (await fetch(ROOT + 'content/portfolio.json')).json();
 const P = data.person;
@@ -292,3 +294,4 @@ function chime() {
 }
 addEventListener('pointerdown', chime, { once: true });
 setTimeout(() => { document.getElementById('boot').classList.add('done'); projectsFolder(); aboutMe(); }, 1500);
+

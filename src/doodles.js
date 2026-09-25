@@ -113,7 +113,8 @@ export class Doodles {
       it.label.setAttribute('text-anchor', right ? 'start' : 'end');
       it.tail = s.tail;
     }
-    it.g.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)})`);
+    const t = `translate(${x.toFixed(1)},${y.toFixed(1)})`;
+    if (t !== it.at) { it.at = t; it.g.setAttribute('transform', t); }   // a still view writes nothing
   }
 
   /** Draw the arrows in, one after another. */

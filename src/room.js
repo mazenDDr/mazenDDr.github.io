@@ -5,8 +5,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { gradeUniforms, GRADE_GLSL } from './post.js';
 
 const KIND = { constant: 0, image: 1, recipe: 2, special: 3, cutout: 3 };
+const SCREEN_GLASS = new Set(['image|crt_art', 'image|pc_art']);
 
 const vertexShader = /* glsl */ `
   attribute vec2 uv1;
@@ -21,8 +23,9 @@ const vertexShader = /* glsl */ `
     #include <logdepthbuf_vertex>
   }`;
 
+// Each kind of surface gets its own compiled variant (KIND, CUTOUT, EMISSIVE_MAP),
+// so a pixel only fetches the textures it uses: on a weak GPU every fetch counts.
 const fragmentShader = /* glsl */ `
-  uniform int kind;               // 0 colour, 1 texture, 2 colour atlas, 3 baked result
   uniform vec3 color;
   uniform sampler2D map;          // the object's own texture (sRGB, decoded by the GPU)
   uniform sampler2D atlas;        // the chunk's baked colour atlas (sRGB)
@@ -30,41 +33,57 @@ const fragmentShader = /* glsl */ `
   uniform vec2 lightRange;        // log2 range the light map was encoded with
   uniform vec3 emissive;
   uniform sampler2D emissiveMap;
-  uniform bool useEmissiveMap;
-  uniform bool cutout;
   varying vec2 vUv;
   varying vec2 vUv1;
-  #include <common>
-  #include <logdepthbuf_pars_fragment>
+  ${GRADE_GLSL}
   void main() {
-    #include <logdepthbuf_fragment>
-    vec4 tex = texture2D(map, vUv);
-    if (cutout && tex.a < 0.5) discard;
+    #if KIND == 1 || CUTOUT
+      vec4 tex = texture2D(map, vUv);
+    #endif
+    #if CUTOUT
+      if (tex.a < 0.5) discard;
+    #endif
     // Half a step of noise before decoding hides the 8-bit steps in smooth light.
     float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
     vec3 enc = texture2D(lightMap, vUv1).rgb + n / 255.0;
     vec3 light = exp2(mix(vec3(lightRange.x), vec3(lightRange.y), enc));
-    vec3 albedo = kind == 1 ? tex.rgb * color : kind == 2 ? texture2D(atlas, vUv1).rgb : color;
-    vec3 c = kind == 3 ? light : albedo * light;
-    c += emissive * (useEmissiveMap ? texture2D(emissiveMap, vUv).rgb : vec3(1.0));
-    gl_FragColor = vec4(c, 1.0);
+    #if KIND == 3
+      vec3 c = light;             // the bake already holds colour and light
+    #elif KIND == 1
+      vec3 c = tex.rgb * color * light;
+    #elif KIND == 2
+      vec3 c = texture2D(atlas, vUv1).rgb * light;
+    #else
+      vec3 c = color * light;
+    #endif
+    #if EMISSIVE_MAP
+      c += emissive * texture2D(emissiveMap, vUv).rgb;
+    #else
+      c += emissive;
+    #endif
+    // Drawn already graded (post.js): saves a full-screen pass.
+    gl_FragColor = vec4(grade(c), 1.0);
   }`;
 
 export function roomMaterial({ kind, color, map, atlas, lightMap, range, emissive, emissiveMap, cutout }) {
   return new THREE.ShaderMaterial({
     vertexShader, fragmentShader,
+    defines: { KIND: kind, CUTOUT: cutout ? 1 : 0, EMISSIVE_MAP: emissiveMap ? 1 : 0 },
     uniforms: {
-      kind: { value: kind }, color: { value: new THREE.Color(...(color || [1, 1, 1])) },
+      ...gradeUniforms,
+      color: { value: new THREE.Color(...(color || [1, 1, 1])) },
       map: { value: map || null }, atlas: { value: atlas || null },
       lightMap: { value: lightMap }, lightRange: { value: new THREE.Vector2(...range) },
       emissive: { value: new THREE.Color(...(emissive || [0, 0, 0])) },
-      emissiveMap: { value: emissiveMap || null }, useEmissiveMap: { value: !!emissiveMap },
-      cutout: { value: !!cutout },
+      emissiveMap: { value: emissiveMap || null },
     },
+    // Many downloaded models are single shells (lamp shades) or built inside out
+    // (the teapot lid); Cycles shows both sides, so the browser must too.
+    side: THREE.DoubleSide,
   });
 }
 
-export async function loadRoom(renderer, onProgress = () => {}) {
+export async function loadRoom(renderer, onProgress = () => {}, hinge = null) {
   const manifest = await (await fetch('public/bake/manifest.json')).json();
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
   const texLoader = new THREE.TextureLoader();
@@ -102,6 +121,9 @@ export async function loadRoom(renderer, onProgress = () => {}) {
     parts[chunkName] = node;
     const src = o.material;
     const entry = manifest.materials[src.name] || { kind: 'constant' };
+    // The tubes' baked glass: the live page shows there instead (screens.js draws the
+    // glass from the original mesh). Drawing both makes them fight for the same depth.
+    if (SCREEN_GLASS.has(src.name)) { o.visible = false; return; }
     if (entry.kind === 'glass') {
       o.material = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.6, 1.7, 1.8), transparent: true, opacity: 0.05, depthWrite: false });
       return;
@@ -117,7 +139,20 @@ export async function loadRoom(renderer, onProgress = () => {}) {
     });
     src.dispose();
   });
+  // Packing re-centres each node on its bounds (meshopt quantization), so the door
+  // would spin about its middle. Hang it on a pivot at the measured hinge instead.
+  if (parts.door && hinge) {
+    const pivot = new THREE.Group();
+    pivot.name = 'door';
+    pivot.position.fromArray(hinge);
+    room.add(pivot);
+    room.updateMatrixWorld(true);
+    pivot.attach(parts.door);
+    parts.door = pivot;
+  }
   // Only the door moves; freeze everything else's matrices.
-  room.traverse((o) => { if (o !== room && o !== parts.door && !parts.door?.children.includes(o)) { o.updateMatrix(); o.matrixAutoUpdate = false; } });
+  room.traverse((o) => { if (o !== room && !isDoor(o)) { o.updateMatrix(); o.matrixAutoUpdate = false; } });
   return { room, parts };
+
+  function isDoor(o) { for (; o; o = o.parent) if (o === parts.door) return true; return false; }
 }

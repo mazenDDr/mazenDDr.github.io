@@ -115,3 +115,6 @@ body.in-room .scan { display: block; }
 .zoomrect { position: absolute; z-index: 400; border: 1px dotted #000; pointer-events: none; opacity: 0; animation: zr .2s steps(2) both; }
 @keyframes zr { 0% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .win { animation: none; } #boot .progress i { animation-duration: .01s; } }
+
+/* asleep: on the room's wall, not being looked at */
+.asleep *, .asleep *::before, .asleep *::after { animation-play-state: paused !important; }

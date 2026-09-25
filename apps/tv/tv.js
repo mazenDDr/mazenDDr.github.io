@@ -1,6 +1,19 @@
 // Mazenflix: the TV in the room. Everything shown comes from content/portfolio.json;
 // the key art is drawn per title in art.js.
-import { artUrl } from './art.js';
+import { keyArt } from './art.js';
+// In the room, a screen nobody is looking at stops animating (the room says when):
+// CSS animations pause, and the key art (animated SVG) swaps to a still copy.
+let still = false;
+const swapArt = new Map();                        // animated url <-> still url
+addEventListener('message', (e) => {
+  if (e.data?.type !== 'room-focus') return;
+  still = !e.data.on;
+  document.documentElement.classList.toggle('asleep', still);
+  for (const img of document.querySelectorAll('img')) {
+    const other = swapArt.get(img.getAttribute('src'));
+    if (other && other.still === still) img.setAttribute('src', other.url);
+  }
+});
 
 const ROOT = '../../';
 const data = await (await fetch(ROOT + 'content/portfolio.json')).json();
@@ -18,7 +31,17 @@ const titles = [
 ];
 const byId = Object.fromEntries(titles.map((t) => [t.id, t]));
 const art = {};
-const artOf = (t, kind) => (art[t.id + kind] ||= artUrl(t, kind, false));
+const svgUrl = (svg) => 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+function artOf(t, kind) {
+  if (!art[t.id + kind]) {
+    const svg = keyArt(t, kind, false);
+    const moving = svgUrl(svg), fixed = svgUrl(svg.replace(/<animate\w*\b[^>]*\/>/g, ''));
+    art[t.id + kind] = { moving, fixed };
+    swapArt.set(moving, { url: fixed, still: true });
+    swapArt.set(fixed, { url: moving, still: false });
+  }
+  return still ? art[t.id + kind].fixed : art[t.id + kind].moving;
+}
 
 const PEOPLE = [
   { id: 'recruiter', name: 'Recruiter', color: '#e50914', face: 0, first: 'Measured, not guessed', pick: ['crisis-triage', 'contract-rag', 'capstone'] },
@@ -335,3 +358,4 @@ addEventListener('keydown', (e) => {
 });
 
 person ? browse() : gate();
+

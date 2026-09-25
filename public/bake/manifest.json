@@ -1,6 +1,6 @@
 {
- "built": "2026-09-25T11:52:06.566Z",
- "glb_kb": 21904,
+ "built": "2026-09-25T14:41:07.792Z",
+ "glb_kb": 25184,
  "chunks": [
   {
    "name": "d0",
@@ -8,10 +8,10 @@
    "file": "d0.webp",
    "size": 4096,
    "range": [
-    -12.0633,
-    3.9367
+    -12.1246,
+    3.8754
    ],
-   "kb": 2459,
+   "kb": 2492,
    "albedo": "d0_albedo.webp"
   },
   {
@@ -20,10 +20,10 @@
    "file": "d1.webp",
    "size": 4096,
    "range": [
-    -11.0479,
-    4.9521
+    -11.0503,
+    4.9497
    ],
-   "kb": 1639,
+   "kb": 1694,
    "albedo": "d1_albedo.webp"
   },
   {
@@ -32,10 +32,21 @@
    "file": "door.webp",
    "size": 1024,
    "range": [
-    -14.3844,
-    1.6156
+    -13.137,
+    2.863
    ],
-   "kb": 20
+   "kb": 18
+  },
+  {
+   "name": "hall",
+   "group": "hall",
+   "file": "hall.webp",
+   "size": 2048,
+   "range": [
+    -10.7214,
+    5.2786
+   ],
+   "kb": 298
   },
   {
    "name": "outside",
@@ -43,10 +54,10 @@
    "file": "outside.webp",
    "size": 1024,
    "range": [
-    -10.1708,
-    5.8292
+    -10.1683,
+    5.8317
    ],
-   "kb": 76
+   "kb": 75
   },
   {
    "name": "p0",
@@ -54,10 +65,10 @@
    "file": "p0.webp",
    "size": 2048,
    "range": [
-    -11.4576,
-    4.5424
+    -11.4688,
+    4.5312
    ],
-   "kb": 205
+   "kb": 185
   },
   {
    "name": "p1",
@@ -65,10 +76,10 @@
    "file": "p1.webp",
    "size": 2048,
    "range": [
-    -11.6505,
-    4.3495
+    -11.6112,
+    4.3888
    ],
-   "kb": 334
+   "kb": 333
   },
   {
    "name": "p2",
@@ -76,10 +87,10 @@
    "file": "p2.webp",
    "size": 2048,
    "range": [
-    -12.0207,
-    3.9793
+    -12.1601,
+    3.8399
    ],
-   "kb": 125
+   "kb": 221
   },
   {
    "name": "p3",
@@ -87,10 +98,10 @@
    "file": "p3.webp",
    "size": 2048,
    "range": [
-    -8.0197,
-    3.348
+    -11.7112,
+    4.2888
    ],
-   "kb": 24
+   "kb": 177
   },
   {
    "name": "p4",
@@ -98,10 +109,10 @@
    "file": "p4.webp",
    "size": 2048,
    "range": [
-    -11.8642,
-    4.1358
+    -3.5015,
+    3.3456
    ],
-   "kb": 299
+   "kb": 32
   },
   {
    "name": "p5",
@@ -109,10 +120,10 @@
    "file": "p5.webp",
    "size": 2048,
    "range": [
-    -10.6017,
-    5.3983
+    -11.7497,
+    4.2503
    ],
-   "kb": 246
+   "kb": 166
   },
   {
    "name": "p6",
@@ -120,10 +131,10 @@
    "file": "p6.webp",
    "size": 2048,
    "range": [
-    -10.4823,
-    5.5177
+    -12.3305,
+    3.6695
    ],
-   "kb": 60
+   "kb": 351
   },
   {
    "name": "p7",
@@ -131,10 +142,10 @@
    "file": "p7.webp",
    "size": 2048,
    "range": [
-    -12.5866,
-    3.4134
+    -10.6515,
+    5.3485
    ],
-   "kb": 26
+   "kb": 225
   },
   {
    "name": "special",
@@ -142,10 +153,10 @@
    "file": "special.webp",
    "size": 2048,
    "range": [
-    -9.129,
-    6.871
+    -9.1294,
+    6.8706
    ],
-   "kb": 413
+   "kb": 438
   }
  ],
  "materials": {
@@ -155,19 +166,6 @@
     0.13725,
     0.0902,
     0.05882
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|plaster": {
-   "kind": "constant",
-   "color": [
-    0.92549,
-    0.86275,
-    0.75294
    ],
    "emissive": [
     0,
@@ -187,172 +185,6 @@
     0,
     0
    ]
-  },
-  "constant|rug_cream": {
-   "kind": "constant",
-   "color": [
-    0.8549,
-    0.76863,
-    0.64314
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|black": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|brownwood": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|darkwood": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|membrane cooper": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|koc": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|no_material": {
-   "kind": "constant",
-   "color": [
-    0.8,
-    0.8,
-    0.8
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|membrane": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|lightgray": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|darkgraymetal": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|cinchhl": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|red": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
   },
   "image|Material.002": {
    "kind": "image",
@@ -434,46 +266,6 @@
     2.76078
    ]
   },
-  "constant|curated_warm_paper": {
-   "kind": "constant",
-   "color": [
-    0.8902,
-    0.85882,
-    0.76863
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|curated_poster_Blade Runner": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|curated_charcoal": {
-   "kind": "constant",
-   "color": [
-    0.10196,
-    0.1098,
-    0.10588
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
   "constant|linen": {
    "kind": "constant",
    "color": [
@@ -506,230 +298,6 @@
     0.81961,
     0.7451,
     0.58039
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_ridged_terracotta": {
-   "kind": "constant",
-   "color": [
-    0.52157,
-    0.2549,
-    0.1451
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_terracotta_rim": {
-   "kind": "constant",
-   "color": [
-    0.60784,
-    0.32549,
-    0.19608
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_dark_potting_soil": {
-   "kind": "constant",
-   "color": [
-    0.1098,
-    0.08235,
-    0.04706
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_soil_mineral": {
-   "kind": "constant",
-   "color": [
-    0.6549,
-    0.59216,
-    0.45098
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_tree_bark": {
-   "kind": "constant",
-   "color": [
-    0.28235,
-    0.19216,
-    0.11373
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_leaf_1": {
-   "kind": "constant",
-   "color": [
-    0.12157,
-    0.26275,
-    0.08235
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_leaf_midrib": {
-   "kind": "constant",
-   "color": [
-    0.34902,
-    0.42353,
-    0.15294
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_leaf_2": {
-   "kind": "constant",
-   "color": [
-    0.13725,
-    0.28627,
-    0.0902
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_leaf_3": {
-   "kind": "constant",
-   "color": [
-    0.15294,
-    0.3098,
-    0.09804
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_leaf_0": {
-   "kind": "constant",
-   "color": [
-    0.10588,
-    0.23922,
-    0.07451
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_rubber_leaf_4": {
-   "kind": "constant",
-   "color": [
-    0.16863,
-    0.33333,
-    0.10588
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|polish_new_leaf_burgundy": {
-   "kind": "constant",
-   "color": [
-    0.35686,
-    0.12157,
-    0.07843
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|wicker_basket_02": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|book_spine_ai-engineering": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|book_cover_ai-engineering": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|book_back_ai-engineering": {
-   "kind": "constant",
-   "color": [
-    0.72,
-    0.7,
-    0.66
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|book_pages": {
-   "kind": "constant",
-   "color": [
-    0.93,
-    0.9,
-    0.82
    ],
    "emissive": [
     0,
@@ -771,6 +339,19 @@
     0.72,
     0.7,
     0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|book_pages": {
+   "kind": "constant",
+   "color": [
+    0.93,
+    0.9,
+    0.82
    ],
    "emissive": [
     0,
@@ -1132,19 +713,18 @@
     0
    ]
   },
-  "image|rug_art": {
-   "kind": "image",
+  "constant|plaster": {
+   "kind": "constant",
    "color": [
-    1,
-    1,
-    1
+    0.92549,
+    0.86275,
+    0.75294
    ],
    "emissive": [
     0,
     0,
     0
-   ],
-   "map": true
+   ]
   },
   "image|crt_tv_mat": {
    "kind": "image",
@@ -1159,118 +739,6 @@
     0
    ],
    "map": true
-  },
-  "image|coffee_table_mat": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|arch_books__3_": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|arch_books_front": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|arch_books__4_": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|arch_books_rear": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|g0": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|figure_5_ironman_mat": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    1,
-    1,
-    1
-   ],
-   "emissiveMap": true,
-   "map": true
-  },
-  "constant|web_default_clay": {
-   "kind": "constant",
-   "color": [
-    0.8,
-    0.8,
-    0.8
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
   },
   "image|salt_lamp_mat": {
    "kind": "image",
@@ -1287,7 +755,7 @@
    "emissiveMap": true,
    "map": true
   },
-  "image|cork_art": {
+  "image|g0": {
    "kind": "image",
    "color": [
     1,
@@ -1301,12 +769,12 @@
    ],
    "map": true
   },
-  "constant|styled_tea": {
+  "constant|curated_warm_paper": {
    "kind": "constant",
    "color": [
-    0.16078,
-    0.07451,
-    0.03137
+    0.8902,
+    0.85882,
+    0.76863
    ],
    "emissive": [
     0,
@@ -1327,6 +795,19 @@
     0
    ],
    "map": true
+  },
+  "constant|curated_charcoal": {
+   "kind": "constant",
+   "color": [
+    0.10196,
+    0.1098,
+    0.10588
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
   },
   "constant|live_paper": {
    "kind": "constant",
@@ -1419,19 +900,6 @@
     0
    ]
   },
-  "constant|polish_warm_opal_diffuser": {
-   "kind": "constant",
-   "color": [
-    0.86667,
-    0.72157,
-    0.47843
-   ],
-   "emissive": [
-    2.4,
-    1.71294,
-    0.94118
-   ]
-  },
   "constant|polish_felt_coaster": {
    "kind": "constant",
    "color": [
@@ -1497,12 +965,12 @@
     2.47059
    ]
   },
-  "constant|Material.001": {
+  "constant|rug_cream": {
    "kind": "constant",
    "color": [
-    0.99221,
-    0.49878,
-    0
+    0.8549,
+    0.76863,
+    0.64314
    ],
    "emissive": [
     0,
@@ -1510,12 +978,82 @@
     0
    ]
   },
-  "constant|Material.009": {
+  "image|black": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|brownwood": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|darkwood": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|membrane cooper": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|koc": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|no_material": {
    "kind": "constant",
    "color": [
-    0.00356,
-    0.00645,
-    0.01038
+    0.8,
+    0.8,
+    0.8
    ],
    "emissive": [
     0,
@@ -1523,12 +1061,110 @@
     0
    ]
   },
-  "constant|Material.008": {
+  "image|membrane": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|lightgray": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|darkgraymetal": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cinchhl": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|red": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_Blade Runner": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|curated_poster_Spirited Away": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|curated_oxblood": {
    "kind": "constant",
    "color": [
-    0.2149,
-    0.24128,
-    0.24128
+    0.37255,
+    0.15294,
+    0.11765
    ],
    "emissive": [
     0,
@@ -1536,12 +1172,12 @@
     0
    ]
   },
-  "constant|Material.005": {
+  "constant|curated_oat_linen": {
    "kind": "constant",
    "color": [
-    0.83879,
-    0.14996,
-    0.02122
+    0.66275,
+    0.59216,
+    0.44314
    ],
    "emissive": [
     0,
@@ -1549,12 +1185,12 @@
     0
    ]
   },
-  "constant|Material.006": {
+  "constant|polish_ridged_terracotta": {
    "kind": "constant",
    "color": [
-    0.62397,
-    0.02416,
-    0.02416
+    0.52157,
+    0.2549,
+    0.1451
    ],
    "emissive": [
     0,
@@ -1562,12 +1198,12 @@
     0
    ]
   },
-  "constant|Material.007": {
+  "constant|polish_terracotta_rim": {
    "kind": "constant",
    "color": [
-    0.11603,
-    0.02398,
-    0.0033
+    0.60784,
+    0.32549,
+    0.19608
    ],
    "emissive": [
     0,
@@ -1575,12 +1211,12 @@
     0
    ]
   },
-  "constant|Material.010": {
+  "constant|polish_dark_potting_soil": {
    "kind": "constant",
    "color": [
-    0.04204,
-    0.02639,
-    0.19361
+    0.1098,
+    0.08235,
+    0.04706
    ],
    "emissive": [
     0,
@@ -1588,18 +1224,231 @@
     0
    ]
   },
-  "constant|polish_ivory_ceramic_cat": {
+  "constant|polish_soil_mineral": {
    "kind": "constant",
    "color": [
-    0.75686,
-    0.7098,
-    0.60392
+    0.6549,
+    0.59216,
+    0.45098
    ],
    "emissive": [
     0,
     0,
     0
    ]
+  },
+  "constant|polish_rubber_tree_bark": {
+   "kind": "constant",
+   "color": [
+    0.28235,
+    0.19216,
+    0.11373
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_1": {
+   "kind": "constant",
+   "color": [
+    0.12157,
+    0.26275,
+    0.08235
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_midrib": {
+   "kind": "constant",
+   "color": [
+    0.34902,
+    0.42353,
+    0.15294
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_2": {
+   "kind": "constant",
+   "color": [
+    0.13725,
+    0.28627,
+    0.0902
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_3": {
+   "kind": "constant",
+   "color": [
+    0.15294,
+    0.3098,
+    0.09804
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_0": {
+   "kind": "constant",
+   "color": [
+    0.10588,
+    0.23922,
+    0.07451
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_rubber_leaf_4": {
+   "kind": "constant",
+   "color": [
+    0.16863,
+    0.33333,
+    0.10588
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_new_leaf_burgundy": {
+   "kind": "constant",
+   "color": [
+    0.35686,
+    0.12157,
+    0.07843
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|wicker_basket_02": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_spine_ai-engineering": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|book_cover_ai-engineering": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|book_back_ai-engineering": {
+   "kind": "constant",
+   "color": [
+    0.72,
+    0.7,
+    0.66
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|cert_bsc_frame": {
+   "kind": "constant",
+   "color": [
+    0.09,
+    0.055,
+    0.035
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|cert_bsc_mat": {
+   "kind": "constant",
+   "color": [
+    0.86,
+    0.82,
+    0.74
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|cert_bsc": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|cork_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
   },
   "image|spine_2": {
    "kind": "image",
@@ -1711,62 +1560,6 @@
    ],
    "map": true
   },
-  "image|PC9801U.001": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|pc_art": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    5,
-    5,
-    5
-   ],
-   "emissiveMap": true,
-   "map": true
-  },
-  "image|PC9801UX.001": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "constant|Lamp.001": {
-   "kind": "constant",
-   "color": [
-    0.8,
-    0.8,
-    0.8
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
   "constant|lambert9": {
    "kind": "constant",
    "color": [
@@ -1864,20 +1657,6 @@
    ],
    "map": true
   },
-  "image|main_column": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
   "image|curated_poster_The Last of Us Part I": {
    "kind": "image",
    "color": [
@@ -1905,19 +1684,6 @@
     0
    ],
    "map": true
-  },
-  "constant|curated_oxblood": {
-   "kind": "constant",
-   "color": [
-    0.37255,
-    0.15294,
-    0.11765
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
   },
   "constant|plastic_gy": {
    "kind": "constant",
@@ -2103,49 +1869,6 @@
     0,
     0
    ],
-   "map": true
-  },
-  "image|curated_poster_Spirited Away": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|tv_stand_mat": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
-  "image|crt_art": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    2.6,
-    2.6,
-    2.6
-   ],
-   "emissiveMap": true,
    "map": true
   },
   "image|floor_lamp_2_mat": {
@@ -2360,19 +2083,6 @@
    "emissiveMap": true,
    "map": true
   },
-  "constant|blinn6": {
-   "kind": "constant",
-   "color": [
-    0.5,
-    0.5,
-    0.5
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
   "image|curated_poster_Half-Life 2": {
    "kind": "image",
    "color": [
@@ -2400,19 +2110,6 @@
     0
    ],
    "map": true
-  },
-  "constant|live_PS_blue": {
-   "kind": "constant",
-   "color": [
-    0.08627,
-    0.25098,
-    0.61569
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
   },
   "image|wall_clock": {
    "kind": "image",
@@ -2494,6 +2191,20 @@
     0,
     0
    ]
+  },
+  "image|Material.011": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
   },
   "special|brass": {
    "kind": "special",
@@ -3029,6 +2740,34 @@
     0,
     0
    ]
+  },
+  "cutout|potted_plant_02_leaves": {
+   "kind": "cutout",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "cutout|potted_plant_01_leaves": {
+   "kind": "cutout",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
   },
   "special|sky": {
    "kind": "special",
@@ -4115,6 +3854,62 @@
    ],
    "map": true
   },
+  "image|PC9801U.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|pc_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    5,
+    5,
+    5
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|PC9801UX.001": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|Lamp.001": {
+   "kind": "constant",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
   "image|OldPCMAT": {
    "kind": "image",
    "color": [
@@ -4157,18 +3952,19 @@
    ],
    "map": true
   },
-  "constant|curated_oat_linen": {
-   "kind": "constant",
+  "image|main_column": {
+   "kind": "image",
    "color": [
-    0.66275,
-    0.59216,
-    0.44314
+    1,
+    1,
+    1
    ],
    "emissive": [
     0,
     0,
     0
-   ]
+   ],
+   "map": true
   },
   "constant|live_pillow_linen": {
    "kind": "constant",
@@ -4239,46 +4035,6 @@
    ],
    "map": true
   },
-  "constant|cert_bsc_frame": {
-   "kind": "constant",
-   "color": [
-    0.09,
-    0.055,
-    0.035
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "constant|cert_bsc_mat": {
-   "kind": "constant",
-   "color": [
-    0.86,
-    0.82,
-    0.74
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ]
-  },
-  "image|cert_bsc": {
-   "kind": "image",
-   "color": [
-    1,
-    1,
-    1
-   ],
-   "emissive": [
-    0,
-    0,
-    0
-   ],
-   "map": true
-  },
   "recipe|polish_side_table_walnut": {
    "kind": "recipe",
    "color": [
@@ -4324,6 +4080,303 @@
     1,
     1,
     1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|rug_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|tv_stand_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|crt_art": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    2.6,
+    2.6,
+    2.6
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "image|coffee_table_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books__3_": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books_front": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books__4_": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|arch_books_rear": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|figure_5_ironman_mat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    1,
+    1,
+    1
+   ],
+   "emissiveMap": true,
+   "map": true
+  },
+  "constant|web_default_clay": {
+   "kind": "constant",
+   "color": [
+    0.8,
+    0.8,
+    0.8
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|blinn6": {
+   "kind": "constant",
+   "color": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|styled_tea": {
+   "kind": "constant",
+   "color": [
+    0.16078,
+    0.07451,
+    0.03137
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|live_PS_blue": {
+   "kind": "constant",
+   "color": [
+    0.08627,
+    0.25098,
+    0.61569
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_warm_opal_diffuser": {
+   "kind": "constant",
+   "color": [
+    0.86667,
+    0.72157,
+    0.47843
+   ],
+   "emissive": [
+    2.4,
+    1.71294,
+    0.94118
+   ]
+  },
+  "constant|Material.001": {
+   "kind": "constant",
+   "color": [
+    0.99221,
+    0.49878,
+    0
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.009": {
+   "kind": "constant",
+   "color": [
+    0.00356,
+    0.00645,
+    0.01038
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.008": {
+   "kind": "constant",
+   "color": [
+    0.2149,
+    0.24128,
+    0.24128
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.005": {
+   "kind": "constant",
+   "color": [
+    0.83879,
+    0.14996,
+    0.02122
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.006": {
+   "kind": "constant",
+   "color": [
+    0.62397,
+    0.02416,
+    0.02416
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.007": {
+   "kind": "constant",
+   "color": [
+    0.11603,
+    0.02398,
+    0.0033
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|Material.010": {
+   "kind": "constant",
+   "color": [
+    0.04204,
+    0.02639,
+    0.19361
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|polish_ivory_ceramic_cat": {
+   "kind": "constant",
+   "color": [
+    0.75686,
+    0.7098,
+    0.60392
    ],
    "emissive": [
     0,
@@ -4400,7 +4453,7 @@
    ],
    "map": true
   },
-  "image|Material.011": {
+  "image|potted_plant_02_pot": {
    "kind": "image",
    "color": [
     1,
@@ -4414,12 +4467,40 @@
    ],
    "map": true
   },
-  "constant|hall_floor": {
+  "image|potted_plant_01_pot": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "image|painted_wooden_bench": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|plaster.001": {
    "kind": "constant",
    "color": [
-    0.16,
-    0.09,
-    0.05
+    0.92549,
+    0.86275,
+    0.75294
    ],
    "emissive": [
     0,
@@ -4427,12 +4508,25 @@
     0
    ]
   },
-  "constant|hall_wall_l": {
+  "constant|hall_skirting_1": {
    "kind": "constant",
    "color": [
-    0.55,
-    0.47,
-    0.38
+    0.78,
+    0.74,
+    0.68
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_skirting_0": {
+   "kind": "constant",
+   "color": [
+    0.78,
+    0.74,
+    0.68
    ],
    "emissive": [
     0,
@@ -4443,8 +4537,8 @@
   "constant|hall_runner": {
    "kind": "constant",
    "color": [
-    0.28,
-    0.07,
+    0.3,
+    0.08,
     0.05
    ],
    "emissive": [
@@ -4453,25 +4547,64 @@
     0
    ]
   },
-  "constant|hall_lamp": {
+  "constant|hall_floor": {
+   "kind": "constant",
+   "color": [
+    0.13,
+    0.075,
+    0.04
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|hall_downlight_2": {
    "kind": "constant",
    "color": [
     1,
-    0.75,
-    0.45
+    0.82,
+    0.6
    ],
    "emissive": [
-    3,
-    2.25,
-    1.35
+    4,
+    3.28,
+    2.4
+   ]
+  },
+  "constant|hall_downlight_1": {
+   "kind": "constant",
+   "color": [
+    1,
+    0.82,
+    0.6
+   ],
+   "emissive": [
+    4,
+    3.28,
+    2.4
+   ]
+  },
+  "constant|hall_downlight_0": {
+   "kind": "constant",
+   "color": [
+    1,
+    0.82,
+    0.6
+   ],
+   "emissive": [
+    4,
+    3.28,
+    2.4
    ]
   },
   "constant|hall_ceiling": {
    "kind": "constant",
    "color": [
-    0.55,
-    0.47,
-    0.38
+    0.62,
+    0.56,
+    0.48
    ],
    "emissive": [
     0,
@@ -4479,12 +4612,12 @@
     0
    ]
   },
-  "constant|hall_wall_r": {
+  "constant|art_wheat_lamp": {
    "kind": "constant",
    "color": [
     0.55,
-    0.47,
-    0.38
+    0.38,
+    0.16
    ],
    "emissive": [
     0,
@@ -4492,18 +4625,232 @@
     0
    ]
   },
-  "constant|hall_wall_back": {
+  "constant|art_wheat_frame": {
    "kind": "constant",
    "color": [
-    0.55,
-    0.47,
-    0.38
+    0.07,
+    0.045,
+    0.03
    ],
    "emissive": [
     0,
     0,
     0
    ]
+  },
+  "image|art_wheat": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|art_wave_lamp": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.38,
+    0.16
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|art_wave_frame": {
+   "kind": "constant",
+   "color": [
+    0.07,
+    0.045,
+    0.03
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|art_wave": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|art_wanderer_lamp": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.38,
+    0.16
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|art_wanderer_frame": {
+   "kind": "constant",
+   "color": [
+    0.07,
+    0.045,
+    0.03
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|art_wanderer": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|art_starry_lamp": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.38,
+    0.16
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|art_starry_frame": {
+   "kind": "constant",
+   "color": [
+    0.07,
+    0.045,
+    0.03
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|art_starry": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|art_milkmaid_lamp": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.38,
+    0.16
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|art_milkmaid_frame": {
+   "kind": "constant",
+   "color": [
+    0.07,
+    0.045,
+    0.03
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|art_milkmaid": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
+  },
+  "constant|art_lilies_lamp": {
+   "kind": "constant",
+   "color": [
+    0.55,
+    0.38,
+    0.16
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "constant|art_lilies_frame": {
+   "kind": "constant",
+   "color": [
+    0.07,
+    0.045,
+    0.03
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ]
+  },
+  "image|art_lilies": {
+   "kind": "image",
+   "color": [
+    1,
+    1,
+    1
+   ],
+   "emissive": [
+    0,
+    0,
+    0
+   ],
+   "map": true
   },
   "glass|pane": {
    "kind": "glass"

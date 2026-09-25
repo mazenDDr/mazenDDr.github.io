@@ -1,7 +1,7 @@
 {
- "objects": 2892,
- "tris_before": 2043183,
- "tris_after": 843167,
+ "objects": 2925,
+ "tris_before": 2289845,
+ "tris_after": 916898,
  "door_open_angle_deg": 72.0,
  "door_hinge": [
   3.3253,
@@ -178,14 +178,59 @@
     "book_cv-szeliski"
    ],
    "row_ends_y_cm": 246.9
-  }
+  },
+  "landing": [
+   {
+    "name": "real_painted_wooden_bench",
+    "where": "under the wheat-field painting, against the wall",
+    "min_cm": [
+     366.8,
+     537.2,
+     0.0
+    ],
+    "max_cm": [
+     483.2,
+     586.8,
+     88.9
+    ]
+   },
+   {
+    "name": "real_potted_plant_02",
+    "where": "past the bench, framing the view on the left",
+    "min_cm": [
+     488.2,
+     534.5,
+     0.0
+    ],
+    "max_cm": [
+     581.1,
+     625.3,
+     84.1
+    ]
+   },
+   {
+    "name": "real_potted_plant_01",
+    "where": "past the starry night, framing the view on the right",
+    "min_cm": [
+     48.6,
+     534.5,
+     0.0
+    ],
+    "max_cm": [
+     107.4,
+     597.9,
+     135.0
+    ]
+   }
+  ]
  },
  "groups": {
-  "plain": 1286,
-  "special": 112,
+  "plain": 1279,
+  "special": 114,
   "glass": 2,
   "outside": 1222,
   "detail": 263,
+  "hall": 38,
   "door": 7
  },
  "chunks": [
@@ -218,6 +263,13 @@
    "area_m2": 2.22
   },
   {
+   "name": "hall",
+   "group": "hall",
+   "objects": 38,
+   "tris": 52027,
+   "area_m2": 393.6
+  },
+  {
    "name": "outside",
    "group": "outside",
    "objects": 1222,
@@ -227,66 +279,66 @@
   {
    "name": "p0",
    "group": "plain",
-   "objects": 176,
-   "tris": 90839,
-   "area_m2": 32.82
+   "objects": 168,
+   "tris": 70468,
+   "area_m2": 32.08
   },
   {
    "name": "p1",
    "group": "plain",
-   "objects": 256,
-   "tris": 70852,
-   "area_m2": 22.14
+   "objects": 48,
+   "tris": 60520,
+   "area_m2": 18.89
   },
   {
    "name": "p2",
    "group": "plain",
-   "objects": 357,
-   "tris": 116681,
-   "area_m2": 73.65
+   "objects": 526,
+   "tris": 129884,
+   "area_m2": 36.45
   },
   {
    "name": "p3",
+   "group": "plain",
+   "objects": 47,
+   "tris": 17500,
+   "area_m2": 41.19
+  },
+  {
+   "name": "p4",
    "group": "plain",
    "objects": 1,
    "tris": 12,
    "area_m2": 37.08
   },
   {
-   "name": "p4",
-   "group": "plain",
-   "objects": 231,
-   "tris": 60069,
-   "area_m2": 45.84
-  },
-  {
    "name": "p5",
    "group": "plain",
-   "objects": 255,
-   "tris": 123671,
-   "area_m2": 30.09
+   "objects": 69,
+   "tris": 21027,
+   "area_m2": 32.85
   },
   {
    "name": "p6",
    "group": "plain",
-   "objects": 7,
-   "tris": 182,
-   "area_m2": 22.55
+   "objects": 232,
+   "tris": 71281,
+   "area_m2": 19.93
   },
   {
    "name": "p7",
    "group": "plain",
-   "objects": 3,
-   "tris": 36,
-   "area_m2": 21.39
+   "objects": 188,
+   "tris": 91566,
+   "area_m2": 26.91
   },
   {
    "name": "special",
    "group": "special",
-   "objects": 112,
-   "tris": 101077,
-   "area_m2": 13.12
+   "objects": 114,
+   "tris": 123105,
+   "area_m2": 14.07
   }
  ],
- "seconds": 659.3
+ "seconds": 845.0
 }

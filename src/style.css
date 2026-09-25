@@ -70,9 +70,13 @@ body.still #intro, body.still #doodles, body.still #mute, body.still #hint { dis
 #screens, #screens div { pointer-events: none; }
 #screens { position: fixed !important; inset: 0; z-index: 1; }
 /* From across the room a screen sits in the room's light: dimmer, warmer, softer. */
-.screen-app { filter: brightness(.58) saturate(.85) sepia(.12) contrast(1.05) blur(.35px); transition: filter .6s; }
-.screen-app[data-name="memo"] { filter: brightness(.5) saturate(.9) sepia(.2) blur(.3px); }
-#screens .screen-app.on { filter: none; pointer-events: auto; }
+/* The dimming and the tube's glass are drawn in WebGL over the page (screens.js);
+   a CSS filter here would make the browser redraw the whole page every frame. */
+.screen-app.crt { background: #050403; }
+.screen-app.crt iframe { display: block; }
+.screen-app.crt::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, .16) 2px 4px); }
+#screens .screen-app.on { pointer-events: auto; }
 body.screen-focus #room { pointer-events: none; }
 
 /* Certificate lightbox */
@@ -94,3 +98,20 @@ body.screen-focus #room { pointer-events: none; }
   max-width: calc(100vw - 32px); padding: 9px 16px; border-radius: 999px; background: #140e0acc; border: 1px solid #f0a45a44;
   backdrop-filter: blur(6px); font-size: 14px; text-align: center; opacity: 0; pointer-events: none; transition: opacity .6s, transform .6s; }
 #hint.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* Phones held upright: ask for landscape, where the room is framed for. Goes away
+   by itself when the phone turns; "Continue anyway" keeps portrait. */
+#rotate { display: none; }
+@media (orientation: portrait) and (pointer: coarse) and (max-width: 900px) {
+  body:not(.rotate-ok) #rotate { position: fixed; inset: 0; z-index: 60; display: grid; place-content: center; justify-items: center;
+    gap: 14px; padding: 24px; text-align: center; color: var(--ink); background: #0b0806eb; font: 400 15px/1.45 Inter, system-ui, sans-serif; }
+}
+#rotate .rotate-title { margin: 8px 0 0; font: 700 34px/1.05 Caveat, cursive; color: #ffd9a3; }
+#rotate p { margin: 0; max-width: 260px; }
+#rotate button { font: 500 14px Inter, sans-serif; color: var(--ink); background: #0000; border: 1px solid #f3e6d366; border-radius: 999px; padding: 10px 20px; }
+#rotate .turn { background: #f3e6d3; color: #1a0f06; border-color: #f3e6d3; margin-top: 8px; }
+#rotate .stay { border-color: #0000; opacity: .75; }
+#rotate .phone { width: 46px; height: 80px; border: 3px solid var(--ink); border-radius: 9px; position: relative; animation: turn-phone 2.4s ease-in-out infinite; }
+#rotate .phone i { position: absolute; left: 50%; bottom: 5px; width: 10px; height: 3px; margin-left: -5px; border-radius: 2px; background: var(--ink); }
+@keyframes turn-phone { 0%, 20% { transform: rotate(0); } 50%, 75% { transform: rotate(-90deg); } 100% { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) { #rotate .phone { animation: none; transform: rotate(-90deg); } }

@@ -46,6 +46,22 @@ def plane(name):
             'width': round(max(us) - min(us), 4), 'height': round(max(vs) - min(vs), 4)}
 
 
+def glass(name):
+    """The tube's real glass as a small mesh: the page shows exactly inside its
+    outline and its curvature catches reflections (src/screens.js)."""
+    ob = bpy.data.objects[name]
+    me = ob.evaluated_get(dg).to_mesh()
+    me.calc_loop_triangles()
+    mw, nm = ob.matrix_world, ob.matrix_world.to_3x3().inverted().transposed()
+    pos, nor = [], []
+    for v in me.vertices:
+        pos += three(mw @ v.co)
+        nor += three((nm @ v.normal).normalized())
+    idx = [i for t in me.loop_triangles for i in t.vertices]
+    ob.evaluated_get(dg).to_mesh_clear()
+    return {'position': pos, 'normal': nor, 'index': idx}
+
+
 def camera(name):
     cam = bpy.data.objects[name]
     d = cam.matrix_world.to_quaternion() @ Vector((0, 0, -1))
@@ -58,6 +74,7 @@ prep = json.loads(PREP.read_text())
 out = {
     'units': 'metres, three.js axes (Y up)',
     'screens': {'tv': plane('meshId3'), 'pc': plane('Monitor'), 'memo': plane('memo_board')},
+    'glass': {'tv': glass('meshId3'), 'pc': glass('Monitor')},
     'door': {'hinge': three(Vector(prep['door_hinge'])), 'open_angle_deg': round((prep['door_open_angle_deg'] + 180) % 360 - 180, 2),
              'nodes': ['B_door']},
     'certificate_wall': {'center': three(Vector((3.395, 1.035, 1.465))), 'normal': three(Vector((-1, 0, 0))),

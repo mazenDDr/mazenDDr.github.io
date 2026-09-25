@@ -123,7 +123,8 @@ export class Hotspots {
       const x = (v.x + 1) / 2 * innerWidth, y = (1 - v.y) / 2 * innerHeight;
       this.doodles.place(s.key, x, y, on);
       if (!on) continue;
-      s.el.style.transform = `translate(${x}px, ${y}px)`;
+      const t = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+      if (t !== s.at) { s.at = t; s.el.style.transform = t; }         // a still view writes nothing
       near = Math.min(near, Math.hypot(x - this.pointer.x, y - this.pointer.y));
     }
     // Once the camera has settled for a moment, draw the arrows in, left to right.

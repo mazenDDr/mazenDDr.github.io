@@ -247,3 +247,6 @@ footer .links a:hover { color: #fff; background: none; text-decoration: underlin
   .search-results .grid { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* asleep: on the room's wall, not being looked at */
+.asleep *, .asleep *::before, .asleep *::after { animation-play-state: paused !important; }

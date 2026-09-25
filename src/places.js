@@ -9,7 +9,7 @@ export const EYE = { stand: 1.6, sit: 1.08, bed: 0.98 };
 
 // Walkable floor graph: aisles between the furniture. Node -> [x, y] in cm.
 export const NODES = {
-  hall: [294, 640], door: [294, 512], entry: [236, 452], front: [168, 440],
+  hall: [294, 740], door: [294, 512], entry: [236, 452], front: [168, 440],
   couchFront: [112, 318], rightNorth: [112, 205], north: [190, 200],
   aisle: [226, 318], desk: [136, 150], bedSide: [206, 112],
 };
@@ -22,7 +22,7 @@ export const EDGES = [
 // Places: a floor node to walk to, then a final eye position (standing or
 // sitting) and what to look at. `focus` names a screen to zoom into afterwards.
 export const PLACES = {
-  hall: { node: 'hall', eye: B(294, 700, 162), look: B(294, 520, 138), hfov: 70, pose: 'stand', label: '' },
+  hall: { node: 'hall', eye: B(294, 800, 162), look: B(294, 520, 138), hfov: 76, pose: 'stand', label: '' },
   room: { node: 'front', eye: B(190, 486, 158), look: B(170, 120, 112), hfov: 100, pose: 'stand', label: 'Stand in the room' },
   couch: { node: 'couchFront', eye: B(40, 300, 110), look: B(300, 288, 90), hfov: 82, pose: 'sit', label: 'Sit on the couch' },
   tv: { node: 'couchFront', eye: B(40, 300, 110), look: B(300, 288, 90), hfov: 82, pose: 'sit', focus: 'tv', label: 'Watch TV' },

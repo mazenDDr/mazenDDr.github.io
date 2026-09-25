@@ -29,7 +29,7 @@ RAW = ROOT / 'design/export/lightmaps'
 WEB = ROOT / 'web/public/bake'
 LOG = Path(__file__).with_name('bake_report.json')
 NO_BAKE = {'W_win_glass'}   # transparent in the browser
-RES = {'plain': 2048, 'detail': 4096, 'special': 2048, 'outside': 1024, 'door': 1024}
+RES = {'plain': 2048, 'detail': 4096, 'special': 2048, 'outside': 1024, 'door': 1024, 'hall': 2048}
 DETAIL = ('poster', 'art', 'book', 'spine', 'cover', 'title', 'frame', 'figure', 'collectible')
 
 ap = argparse.ArgumentParser()
@@ -41,7 +41,10 @@ args = ap.parse_args(sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv els
 
 RAW.mkdir(parents=True, exist_ok=True)
 WEB.mkdir(parents=True, exist_ok=True)
-bpy.ops.wm.open_mainfile(filepath=str(BAKED if BAKED.exists() else PREP))
+# Resume only a bake of the current prep: after prep_web.py runs again, the old
+# web_baked.blend holds the previous scene and must not be picked up.
+resume = BAKED.exists() and BAKED.stat().st_mtime > PREP.stat().st_mtime
+bpy.ops.wm.open_mainfile(filepath=str(BAKED if resume else PREP))
 sc = bpy.context.scene
 sc.render.engine = 'CYCLES'
 cy = sc.cycles
@@ -56,7 +59,7 @@ bk = sc.render.bake
 bk.margin = 8
 bk.margin_type = 'EXTEND'
 
-report = json.loads(LOG.read_text()) if LOG.exists() else {}
+report = json.loads(LOG.read_text()) if LOG.exists() and resume else {}
 col = bpy.data.collections['WEB']
 names = sorted({o['chunk'] for o in col.objects if 'chunk' in o})
 todo = [n for n in names if n != 'glass' and (not args.chunks or n in args.chunks.split(','))]
