@@ -6,10 +6,10 @@ html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); 
 body.still #intro, body.still #doodles, body.still #mute, body.still #hint { display: none !important; }
 /* While the room loads, a still of the hallway (captured from the 3D view) shows at once. */
 #loading { position: fixed; inset: 0; display: grid; place-content: end center; padding-bottom: 3px; text-align: center;
-  background: #0b0806 url(../public/hall.webp) center / cover no-repeat; transition: opacity .8s; z-index: 10; }
+  background: #0b0806 url(../../public/hall.webp) center / cover no-repeat; transition: opacity .8s; z-index: 10; }
 #loading.done { opacity: 0; pointer-events: none; }
 #loading .bar { width: 100vw; height: 2px; background: #0000; overflow: hidden; }
-@media (orientation: portrait) { #loading { background-image: url(../public/hall-portrait.webp); } }
+@media (orientation: portrait) { #loading { background-image: url(../../public/hall-portrait.webp); } }
 #loading .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .2s; }
 #loading .hand-title { display: none; }
 

@@ -4,6 +4,8 @@ how smooth it is, and how hard it works the device.
   first_paint_s     first pixels on screen (First Contentful Paint)
   interactive_s     the page answers (the knock button works)
   in_room_s         knock at once, then time until standing in the room
+  extra_knock_s     how much longer than the knock itself (one knock, the door, the way in:
+                    5.6 s) the visitor waited for the room
   mb_to_room        megabytes downloaded by then
   idle_frames_s     frames the browser draws per second while you just look (0 is ideal)
   flight_fps        page frame rate while flying to another place
@@ -33,10 +35,31 @@ ap.add_argument('--repeat', action='store_true', help='also time a second visit 
 ap.add_argument('--mobile', action='store_true', help='touch phone viewport')
 ap.add_argument('--mode', default='', help='force live or tour')
 ap.add_argument('--cpu', type=float, default=1, help='CPU slowdown (4 = a mid phone, 6 = a cheap one)')
+ap.add_argument('--gzip', action='store_true', help='serve compressed, as GitHub Pages does')
+ap.add_argument('--read', type=float, default=0, help='seconds spent reading the title card before knocking')
 args = ap.parse_args()
 root = Path(args.root) if args.root else WEB
 
-H = type('Quiet', (http.server.SimpleHTTPRequestHandler,), {'log_message': lambda *a: None})
+class H(http.server.SimpleHTTPRequestHandler):
+    log_message = lambda *a: None
+    packed = {}
+
+    def send_head(self):
+        # compressed like GitHub Pages (gzip) when asked for; everything else as usual
+        path = Path(self.translate_path(self.path))
+        if not args.gzip or 'gzip' not in self.headers.get('Accept-Encoding', '') or not path.is_file():
+            return super().send_head()
+        if path not in H.packed:
+            import gzip
+            H.packed[path] = gzip.compress(path.read_bytes(), 6)
+        body = H.packed[path]
+        self.send_response(200)
+        self.send_header('Content-Type', self.guess_type(str(path)))
+        self.send_header('Content-Encoding', 'gzip')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        import io
+        return io.BytesIO(body)
 srv = type('Srv', (socketserver.ThreadingTCPServer,), {'request_queue_size': 64})(('127.0.0.1', 0), functools.partial(H, directory=str(root)))
 srv.daemon_threads = True
 threading.Thread(target=srv.serve_forever, daemon=True).start()
@@ -50,7 +73,8 @@ w, h = map(int, args.size.split('x'))
 flags = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] if args.swiftshader else []
 with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome', args=flags)
-    ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=args.dpr, is_mobile=args.mobile, has_touch=args.mobile)
+    ua = {'user_agent': 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36'} if args.mobile else {}
+    ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=args.dpr, is_mobile=args.mobile, has_touch=args.mobile, **ua)
     pg = ctx.new_page()
     errors = []
     pg.on('pageerror', lambda e: errors.append(str(e)))
@@ -65,10 +89,14 @@ with sync_playwright() as p:
     pg.goto(url, wait_until='commit')
     pg.wait_for_function('window.__room && window.__room.director', timeout=180000)
     interactive = time.time() - t0
-    pg.locator('#intro .knock').click()
+    time.sleep(args.read)
+    (pg.locator('#intro .knock').tap() if args.mobile else pg.locator('#intro .knock').click())
+    knocked = time.time() - t0
     pg.wait_for_function("__room.director.place === 'room' && !__room.director.busy", timeout=600000)
     in_room = time.time() - t0
     mb = pg.evaluate(BYTES) / 2**20
+    marks = pg.evaluate("""Object.fromEntries(performance.getEntriesByType('mark').map((m) => [m.name, Math.round(m.startTime) / 1000]))""")
+    big = pg.evaluate("""performance.getEntriesByType('resource').filter((e) => /room-lo\.glb|live-.*\.js/.test(e.name)).map((e) => [e.name.split('/').pop(), Math.round(e.startTime) / 1000, Math.round(e.responseEnd) / 1000])""")
     fcp = pg.evaluate("performance.getEntriesByName('first-contentful-paint')[0]?.startTime / 1000")
     time.sleep(3)
     pg.mouse.move(w / 2, h / 2)
@@ -95,9 +123,9 @@ with sync_playwright() as p:
     gpu = pg.evaluate("""(() => { const v = __room.viewer; if (!v) return null; let b = 0;
       for (const p of Object.values(v.panos)) { for (const f of Object.values(p.faces)) if (f) b += f.size * f.size * 4 * 4 / 3; if (p.strip) b += 1280 * 256 * 4; }
       return b / 1048576; })()""")
-    out = {'page': args.page, 'mode': pg.evaluate('window.ROOM_MODE || null'), 'net': args.net, 'cpu': args.cpu, 'gpu': 'swiftshader' if args.swiftshader else 'real', 'viewport': args.size, 'dpr': args.dpr,
-           'first_paint_s': round(fcp, 2) if fcp else None, 'interactive_s': round(interactive, 2), 'in_room_s': round(in_room, 2),
-           'mb_to_room': round(mb, 1), 'idle_frames_s': round(idle, 1), 'flight_fps': round(flight, 1), 'frame_ms': round(frame, 2),
+    out = {'page': args.page, 'mode': pg.evaluate('window.ROOM_MODE || null'), 'tier': pg.evaluate('window.ROOM_TIER || null'), 'net': args.net, 'cpu': args.cpu, 'gpu': 'swiftshader' if args.swiftshader else 'real', 'viewport': args.size, 'dpr': args.dpr,
+           'first_paint_s': round(fcp, 2) if fcp else None, 'interactive_s': round(interactive, 2), 'in_room_s': round(in_room, 2), 'extra_knock_s': round(in_room - knocked - 5.57, 2),
+           'mb_to_room': round(mb, 1), 'marks': marks, 'files': big, 'idle_frames_s': round(idle, 1), 'flight_fps': round(flight, 1), 'frame_ms': round(frame, 2),
            'gpu_mb': round(gpu) if gpu is not None else None, 'errors': errors}
     if args.repeat:                                     # a second visit, same browser: from the cache
         t0 = time.time()

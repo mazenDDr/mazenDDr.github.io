@@ -1,10 +1,13 @@
 """Walk through the whole visit in real Chrome with real mouse clicks and keys,
 saving a frame at each step and a short video of the run.
 
-  /tmp/t16-pw-venv/bin/python web/tools/flow_test.py OUT_DIR [--size 1440x900]
+  /tmp/t16-pw-venv/bin/python web/tools/flow_test.py OUT_DIR [--size 1440x900] [--mobile]
+
+--mobile: a phone held sideways (844x390 at 3x, touch): taps instead of clicks and the
+Back button instead of Esc.
 
 Checks, per step: the place the director reports, whether it is still moving,
-and console errors. Exits non-zero if a step ends somewhere unexpected.
+and console errors (WebGL's warnings count: a bad upload is only a warning in Chrome). Exits non-zero if a step ends somewhere unexpected.
 """
 import argparse, functools, http.server, json, socketserver, sys, threading, time
 from pathlib import Path
@@ -16,7 +19,10 @@ ap.add_argument('out')
 ap.add_argument('--size', default='1440x900')
 ap.add_argument('--url', default='', help='test a deployed site instead of a local server')
 ap.add_argument('--mode', default='', help='live or tour (default: what the page picks for this machine)')
+ap.add_argument('--mobile', action='store_true', help='a phone: touch, 3x pixels, taps and the Back button')
 args = ap.parse_args()
+if args.mobile and args.size == '1440x900':
+    args.size = '844x390'
 out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
 W, H = map(int, args.size.split('x'))
 
@@ -35,9 +41,11 @@ errors, results = [], []
 
 with sync_playwright() as p:
     b = p.chromium.launch(channel='chrome', headless=True, args=['--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required'])
-    ctx = b.new_context(viewport={'width': W, 'height': H}, record_video_dir=str(out), record_video_size={'width': 960, 'height': 600})
+    phone = dict(device_scale_factor=3, is_mobile=True, has_touch=True,
+                 user_agent='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36') if args.mobile else {}
+    ctx = b.new_context(viewport={'width': W, 'height': H}, record_video_dir=str(out), record_video_size={'width': 960, 'height': 600}, **phone)
     pg = ctx.new_page()
-    pg.on('console', lambda m: m.type == 'error' and errors.append(m.text))
+    pg.on('console', lambda m: (m.type == 'error' or (m.type == 'warning' and 'WebGL' in m.text)) and errors.append(m.text))   # WebGL only warns
     pg.on('pageerror', lambda e: errors.append(f'pageerror: {e}'))
     pg.goto(url)
     pg.wait_for_function('window.__room && window.__room.director', timeout=60000)
@@ -66,10 +74,16 @@ with sync_playwright() as p:
 
     def click_spot(place):
         # Aim at the object's marker like a visitor: the view drifts a little with
-        # the pointer, so follow the marker until it is hovered, then click.
+        # the pointer, so follow the marker until it is hovered, then click (a phone: tap it).
         where = f'''() => {{ const s = __room.spots.spots.find(s => (s.place || s.action) === '{place}');
             const v = s.anchor.isVector3 ? s.anchor.clone().project(__room.camera) : (([x, y]) => ({{ x, y }}))(__room.camera.project(s.anchor));
             return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight, __room.spots.hover === s]; }}'''
+        if args.mobile:
+            x, y, _ = pg.evaluate(where)
+            pg.touchscreen.tap(x, y)
+            if not place.startswith('cert:'):
+                pg.wait_for_function(f"() => __room.director.busy || __room.director.place === '{place}'", timeout=3000)
+            return
         for _ in range(8):
             x, y, hovered = pg.evaluate(where)
             if hovered:
@@ -88,46 +102,77 @@ with sync_playwright() as p:
                     busy: __room.director.busy, enabled: __room.spots.enabled, place: __room.director.place, mk: __room.spots.spots.find(s => s.place === 'tv').el.className + ' ' + __room.spots.spots.find(s => s.place === 'tv').el.style.transform, vis: __room.spots.visibleSpots().map(s => s.place) }})'''))
                 raise
 
-    time.sleep(0.8)
-    shot('hall', {'place': 'hall'})
-    pg.locator('#intro .knock').click()
-    time.sleep(1.0); shot('knocking')
-    time.sleep(1.6); shot('door_opening')
-    pg.wait_for_function('() => __room.ready && __room.spots.enabled', timeout=120000); time.sleep(0.3)
-    shot('in_room', {'place': 'room', 'busy': False})
+    if args.mobile:
+        def back(place, focus='null'):
+            pg.locator('#back.on').tap(); until(place, focus); time.sleep(0.3)
 
-    click_spot('couch'); time.sleep(1.6); shot('walking_to_couch')
-    settle(); time.sleep(0.4); shot('couch', {'place': 'couch', 'busy': False})
+        time.sleep(0.8)
+        shot('hall', {'place': 'hall'})
+        pg.locator('#intro .knock').tap()
+        time.sleep(1.0); shot('knocking')
+        pg.wait_for_function('() => __room.ready && __room.spots.enabled', timeout=120000); time.sleep(0.3)
+        shot('in_room', {'place': 'room', 'busy': False})
+        # look around with a finger: the view turns and the place stays
+        pg.evaluate('''() => { const c = document.getElementById('room'), o = { bubbles: true, pointerType: 'touch', pointerId: 7, isPrimary: true };
+            c.dispatchEvent(new PointerEvent('pointerdown', { ...o, clientX: 500, clientY: 200 }));
+            for (let i = 1; i <= 10; i++) dispatchEvent(new PointerEvent('pointermove', { ...o, clientX: 500 - i * 20, clientY: 200 }));
+            dispatchEvent(new PointerEvent('pointerup', o)); }'''); time.sleep(1.0)
+        shot('looked_around', {'place': 'room'})
+        click_spot('couch'); settle(); time.sleep(0.4); shot('couch', {'place': 'couch', 'busy': False})
+        click_spot('tv'); settle(); time.sleep(2.5); shot('tv', {'place': 'tv', 'focus': 'tv'})
+        back('couch')
+        back('room')
+        click_spot('desk'); settle(); time.sleep(0.4); shot('desk', {'place': 'desk'})
+        click_spot('pc'); settle(); time.sleep(3.0); shot('pc', {'focus': 'pc'})
+        back('desk'); back('room')
+        click_spot('certificates'); settle(); time.sleep(0.4); shot('certificates', {'place': 'certificates'})
+        click_spot('cert:bsc'); time.sleep(0.8); shot('diploma_lightbox')
+        pg.locator('#lightbox button').tap(); time.sleep(0.3)
+        back('room')
+        click_spot('memo'); settle(); time.sleep(2.5); shot('memo', {'focus': 'memo'})
+        back('bed'); back('room')
+        shot('stood_up', {'place': 'room'})
+    else:
+        time.sleep(0.8)
+        shot('hall', {'place': 'hall'})
+        pg.locator('#intro .knock').click()
+        time.sleep(1.0); shot('knocking')
+        time.sleep(1.6); shot('door_opening')
+        pg.wait_for_function('() => __room.ready && __room.spots.enabled', timeout=120000); time.sleep(0.3)
+        shot('in_room', {'place': 'room', 'busy': False})
 
-    click_spot('tv'); settle(); time.sleep(2.5); shot('tv', {'place': 'tv', 'focus': 'tv'})
-    frame = pg.frame_locator('iframe[title="TV"]')
-    if frame.locator('.person').first.is_visible():        # the room TV opens on the billboard
-        frame.locator('.person').first.click(); time.sleep(1.5)
-    shot('tv_browse')
-    frame.locator('.card[data-id="faceid-bench"]').first.click(); time.sleep(1.0); shot('tv_detail')
-    pg.keyboard.press('Escape'); time.sleep(0.4)          # closes the modal inside the TV
-    pg.keyboard.press('Escape'); until('couch'); time.sleep(0.4); shot('back_to_couch', {'place': 'couch', 'focus': None})
+        click_spot('couch'); time.sleep(1.6); shot('walking_to_couch')
+        settle(); time.sleep(0.4); shot('couch', {'place': 'couch', 'busy': False})
 
-    click_spot('games'); until('games', 'tv'); time.sleep(2.0)
-    src = pg.evaluate("() => document.querySelector('iframe[title=TV]').src")
-    shot('games', {'place': 'games', 'focus': 'tv'})
-    results[-1]['ok'] = results[-1]['ok'] and 'apps/games' in src
-    pg.keyboard.press('Escape'); until('couch'); time.sleep(0.4)
+        click_spot('tv'); settle(); time.sleep(2.5); shot('tv', {'place': 'tv', 'focus': 'tv'})
+        frame = pg.frame_locator('iframe[title="TV"]')
+        if frame.locator('.person').first.is_visible():        # the room TV opens on the billboard
+            frame.locator('.person').first.click(); time.sleep(1.5)
+        shot('tv_browse')
+        frame.locator('.card[data-id="faceid-bench"]').first.click(); time.sleep(1.0); shot('tv_detail')
+        pg.keyboard.press('Escape'); time.sleep(0.4)          # closes the modal inside the TV
+        pg.keyboard.press('Escape'); until('couch'); time.sleep(0.4); shot('back_to_couch', {'place': 'couch', 'focus': None})
 
-    pg.keyboard.press('Escape'); until('room'); time.sleep(0.3); shot('stood_up_from_couch', {'place': 'room'})
-    click_spot('desk'); time.sleep(1.2); shot('walking_to_desk')
-    settle(); time.sleep(0.4); shot('desk', {'place': 'desk'})
-    click_spot('pc'); settle(); time.sleep(3.0); shot('pc', {'focus': 'pc'})
-    pg.get_by_role('button', name='← Back').click(); until('desk'); time.sleep(0.3)
+        click_spot('games'); until('games', 'tv'); time.sleep(2.0)
+        src = pg.evaluate("() => document.querySelector('iframe[title=TV]').src")
+        shot('games', {'place': 'games', 'focus': 'tv'})
+        results[-1]['ok'] = results[-1]['ok'] and 'apps/games' in src
+        pg.keyboard.press('Escape'); until('couch'); time.sleep(0.4)
 
-    pg.keyboard.press('Escape'); until('room')
-    click_spot('certificates'); settle(); time.sleep(0.4); shot('certificates', {'place': 'certificates'})
-    click_spot('cert:bsc'); time.sleep(0.8); shot('diploma_lightbox')
-    pg.keyboard.press('Escape'); time.sleep(0.3)
-    pg.keyboard.press('Escape'); until('room')
-    click_spot('memo'); settle(); time.sleep(2.5); shot('memo', {'focus': 'memo'})
-    pg.keyboard.press('Escape'); until('bed'); pg.keyboard.press('Escape'); until('room'); time.sleep(0.3)
-    shot('stood_up', {'place': 'room'})
+        pg.keyboard.press('Escape'); until('room'); time.sleep(0.3); shot('stood_up_from_couch', {'place': 'room'})
+        click_spot('desk'); time.sleep(1.2); shot('walking_to_desk')
+        settle(); time.sleep(0.4); shot('desk', {'place': 'desk'})
+        click_spot('pc'); settle(); time.sleep(3.0); shot('pc', {'focus': 'pc'})
+        pg.get_by_role('button', name='← Back').click(); until('desk'); time.sleep(0.3)
+
+        pg.keyboard.press('Escape'); until('room')
+        click_spot('certificates'); settle(); time.sleep(0.4); shot('certificates', {'place': 'certificates'})
+        click_spot('cert:bsc'); time.sleep(0.8); shot('diploma_lightbox')
+        pg.keyboard.press('Escape'); time.sleep(0.3)
+        pg.keyboard.press('Escape'); until('room')
+        click_spot('memo'); settle(); time.sleep(2.5); shot('memo', {'focus': 'memo'})
+        pg.keyboard.press('Escape'); until('bed'); pg.keyboard.press('Escape'); until('room'); time.sleep(0.3)
+        shot('stood_up', {'place': 'room'})
     fps = pg.evaluate('''() => new Promise(r => { let n = 0, t0 = performance.now();
         const f = () => (++n < 120 ? requestAnimationFrame(f) : r(1000 / ((performance.now() - t0) / 120))); requestAnimationFrame(f); })''')
     ctx.close(); b.close()

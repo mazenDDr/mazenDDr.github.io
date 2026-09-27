@@ -4,6 +4,9 @@
 //                    -> public/room-lo.glb (the same with textures of at most 256 px: what the
 //                       live room loads first) + public/tex/<name>-<hash>.webp (the full
 //                       textures, streamed in once you're inside)
+// Both models first go through tools/slim_room.mjs (only what the shader reads, simplified
+// only where it can't be seen), then meshopt with 16-bit positions: at 14 bits a chunk's
+// grid is 0.4-1.3 mm, enough to merge thin labels into what they lie on (they flickered).
 // bake/*.png -> *.webp and a quarter-size *-lo.webp; manifest = light ranges + material kinds.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -13,9 +16,16 @@ import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import sharp from 'sharp';
 
 const kb = (f) => Math.round(statSync(f).size / 1024);
-execFileSync('npx', ['gltf-transform', 'meshopt', 'build/room_raw.glb', 'public/room.glb', '--level', 'medium'], { stdio: 'inherit' });
+const compress = (raw, out) => {
+  const slim = raw.replace('_raw.glb', '_slim.glb');
+  execFileSync('node', ['tools/slim_room.mjs', raw, slim], { stdio: 'inherit' });
+  execFileSync('npx', ['gltf-transform', 'meshopt', slim, out, '--level', 'medium', '--quantize-position', '16'], { stdio: 'inherit' });
+};
+compress('build/room_raw.glb', 'public/room.glb');
 
-// The live room starts with small textures and streams the full ones in afterwards.
+// The live room starts with small textures and streams sharper ones in afterwards: the full
+// ones on computers, copies of at most 512 px on phones and tablets (whose graphics memory
+// can't hold every full texture: 667 MB of them, 145 MB at 512 px).
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
 const doc = await io.read('build/room_raw.glb');
 rmSync('public/tex', { recursive: true, force: true });
@@ -29,12 +39,17 @@ for (const t of doc.getRoot().listTextures()) {
   writeFileSync(`public/tex/${file}`, img);
   const { width, height } = await sharp(img).metadata();
   textures[name] = { file, size: [width, height] };
+  if (Math.max(width, height) > 512) {
+    const md = file.replace(/\.\w+$/, '-512.webp');
+    await sharp(img).resize(512, 512, { fit: 'inside' }).webp({ quality: 84, alphaQuality: 90, effort: 6 }).toFile(`public/tex/${md}`);
+    textures[name].md = md;
+  }
   if (Math.max(width, height) > 256) {
     t.setImage(await sharp(img).resize(256, 256, { fit: 'inside' }).webp({ quality: 80, alphaQuality: 90 }).toBuffer()).setMimeType('image/webp');
   }
 }
 await io.write('build/room_lo_raw.glb', doc);
-execFileSync('npx', ['gltf-transform', 'meshopt', 'build/room_lo_raw.glb', 'public/room-lo.glb', '--level', 'medium'], { stdio: 'inherit' });
+compress('build/room_lo_raw.glb', 'public/room-lo.glb');
 
 const dir = 'public/bake';
 const report = JSON.parse(readFileSync('tools/bake_report.json', 'utf8'));
@@ -46,14 +61,18 @@ for (const f of readdirSync(dir).filter((f) => f.endsWith('.png') && !f.endsWith
   if (!r) continue;
   // Light is smooth: high-quality lossy WebP holds it well. Colour atlases get more care.
   await sharp(`${dir}/${f}`).webp({ quality: 86, effort: 6 }).toFile(`${dir}/${name}.webp`);
-  // and a quarter-size copy the live room starts with (light is smooth: it hardly shows)
+  // and a quarter-size copy the live room starts with (light is smooth: it hardly shows),
+  // and a half-size one that phones and tablets keep
   await sharp(`${dir}/${f}`).resize(Math.round(r.res / 4)).webp({ quality: 86, effort: 6 }).toFile(`${dir}/${name}-lo.webp`);
-  const entry = { name, group: r.group, file: `${name}.webp`, lo: `${name}-lo.webp`, size: r.res, range: r.range, kb: kb(`${dir}/${name}.webp`) };
+  await sharp(`${dir}/${f}`).resize(Math.round(r.res / 2)).webp({ quality: 86, effort: 6 }).toFile(`${dir}/${name}-md.webp`);
+  const entry = { name, group: r.group, file: `${name}.webp`, lo: `${name}-lo.webp`, md: `${name}-md.webp`, size: r.res, range: r.range, kb: kb(`${dir}/${name}.webp`) };
   if (r.albedo) {
     await sharp(`${dir}/${name}_albedo.png`).webp({ quality: 84, effort: 6 }).toFile(`${dir}/${name}_albedo.webp`);
     entry.albedo = `${name}_albedo.webp`;
     await sharp(`${dir}/${name}_albedo.png`).resize(Math.round(r.res / 4)).webp({ quality: 84, effort: 6 }).toFile(`${dir}/${name}_albedo-lo.webp`);
     entry.albedoLo = `${name}_albedo-lo.webp`;
+    await sharp(`${dir}/${name}_albedo.png`).resize(Math.round(r.res / 2)).webp({ quality: 84, effort: 6 }).toFile(`${dir}/${name}_albedo-md.webp`);
+    entry.albedoMd = `${name}_albedo-md.webp`;
     entry.kb += kb(`${dir}/${name}_albedo.webp`);
   }
   chunks.push(entry);

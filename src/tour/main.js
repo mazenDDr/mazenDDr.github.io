@@ -167,7 +167,8 @@ async function start() {
       ...manifest.views.room.faces.map((f) => [manifest.views.room.files[f][1024][loader.ext], manifest.views.room.files[f][1024].kb])];
     const ready = Promise.all([loader.video('hall>room', 2), loader.pano('room', 2)]);
     ready.then(() => screens.load());
-    playIntro({ ready, progress: () => loader.progress(needs), tour, doodles: spots.doodles, enter: () => tour.goTo('room'), onDone: enterRoom });
+    const intro = playIntro({ ready, progress: () => loader.progress(needs), tour, doodles: spots.doodles, enter: () => tour.goTo('room'), onDone: enterRoom });
+    if (params.has('knocked')) intro.knock();       // sent here by the live room mid-knock: carry on knocking
   }
   window.__room.ready = true;
   wake();

@@ -1,13 +1,14 @@
 {
- "built": "2026-09-25T19:48:03.971Z",
- "glb_kb": 25184,
- "lo_kb": 12544,
+ "built": "2026-09-27T22:07:59.576Z",
+ "glb_kb": 20392,
+ "lo_kb": 7752,
  "chunks": [
   {
    "name": "d0",
    "group": "detail",
    "file": "d0.webp",
    "lo": "d0-lo.webp",
+   "md": "d0-md.webp",
    "size": 4096,
    "range": [
     -12.1246,
@@ -15,13 +16,15 @@
    ],
    "kb": 2492,
    "albedo": "d0_albedo.webp",
-   "albedoLo": "d0_albedo-lo.webp"
+   "albedoLo": "d0_albedo-lo.webp",
+   "albedoMd": "d0_albedo-md.webp"
   },
   {
    "name": "d1",
    "group": "detail",
    "file": "d1.webp",
    "lo": "d1-lo.webp",
+   "md": "d1-md.webp",
    "size": 4096,
    "range": [
     -11.0503,
@@ -29,13 +32,15 @@
    ],
    "kb": 1694,
    "albedo": "d1_albedo.webp",
-   "albedoLo": "d1_albedo-lo.webp"
+   "albedoLo": "d1_albedo-lo.webp",
+   "albedoMd": "d1_albedo-md.webp"
   },
   {
    "name": "door",
    "group": "door",
    "file": "door.webp",
    "lo": "door-lo.webp",
+   "md": "door-md.webp",
    "size": 1024,
    "range": [
     -13.137,
@@ -48,6 +53,7 @@
    "group": "hall",
    "file": "hall.webp",
    "lo": "hall-lo.webp",
+   "md": "hall-md.webp",
    "size": 2048,
    "range": [
     -10.7214,
@@ -60,6 +66,7 @@
    "group": "outside",
    "file": "outside.webp",
    "lo": "outside-lo.webp",
+   "md": "outside-md.webp",
    "size": 1024,
    "range": [
     -10.1683,
@@ -72,6 +79,7 @@
    "group": "plain",
    "file": "p0.webp",
    "lo": "p0-lo.webp",
+   "md": "p0-md.webp",
    "size": 2048,
    "range": [
     -11.4688,
@@ -84,6 +92,7 @@
    "group": "plain",
    "file": "p1.webp",
    "lo": "p1-lo.webp",
+   "md": "p1-md.webp",
    "size": 2048,
    "range": [
     -11.6112,
@@ -96,6 +105,7 @@
    "group": "plain",
    "file": "p2.webp",
    "lo": "p2-lo.webp",
+   "md": "p2-md.webp",
    "size": 2048,
    "range": [
     -12.1601,
@@ -108,6 +118,7 @@
    "group": "plain",
    "file": "p3.webp",
    "lo": "p3-lo.webp",
+   "md": "p3-md.webp",
    "size": 2048,
    "range": [
     -11.7112,
@@ -120,6 +131,7 @@
    "group": "plain",
    "file": "p4.webp",
    "lo": "p4-lo.webp",
+   "md": "p4-md.webp",
    "size": 2048,
    "range": [
     -3.5015,
@@ -132,6 +144,7 @@
    "group": "plain",
    "file": "p5.webp",
    "lo": "p5-lo.webp",
+   "md": "p5-md.webp",
    "size": 2048,
    "range": [
     -11.7497,
@@ -144,6 +157,7 @@
    "group": "plain",
    "file": "p6.webp",
    "lo": "p6-lo.webp",
+   "md": "p6-md.webp",
    "size": 2048,
    "range": [
     -12.3305,
@@ -156,6 +170,7 @@
    "group": "plain",
    "file": "p7.webp",
    "lo": "p7-lo.webp",
+   "md": "p7-md.webp",
    "size": 2048,
    "range": [
     -10.6515,
@@ -168,6 +183,7 @@
    "group": "special",
    "file": "special.webp",
    "lo": "special-lo.webp",
+   "md": "special-md.webp",
    "size": 2048,
    "range": [
     -9.1294,
@@ -182,371 +198,424 @@
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "10-92e03146-512.webp"
   },
   "11": {
    "file": "11-482b8452.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "11-482b8452-512.webp"
   },
   "12": {
    "file": "12-1c2ddd7f.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "12-1c2ddd7f-512.webp"
   },
   "13": {
    "file": "13-241d484c.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "13-241d484c-512.webp"
   },
   "14": {
    "file": "14-754a875d.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "14-754a875d-512.webp"
   },
   "15": {
    "file": "15-64f4f069.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "15-64f4f069-512.webp"
   },
   "16": {
    "file": "16-2c43f4b1.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "16-2c43f4b1-512.webp"
   },
   "17": {
    "file": "17-40a1b049.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "17-40a1b049-512.webp"
   },
   "18": {
    "file": "18-52f264af.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "18-52f264af-512.webp"
   },
   "19": {
    "file": "19-648f1781.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "19-648f1781-512.webp"
   },
   "20": {
    "file": "20-dbc7bce1.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "20-dbc7bce1-512.webp"
   },
   "21": {
    "file": "21-32abeb98.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "21-32abeb98-512.webp"
   },
   "22": {
    "file": "22-04e3bc60.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "22-04e3bc60-512.webp"
   },
   "23": {
    "file": "23-e9fabe62.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "23-e9fabe62-512.webp"
   },
   "24": {
    "file": "24-6d961788.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "24-6d961788-512.webp"
   },
   "25": {
    "file": "25-5466c584.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "25-5466c584-512.webp"
   },
   "26": {
    "file": "26-1a21982f.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "26-1a21982f-512.webp"
   },
   "27": {
    "file": "27-5bb0b808.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "27-5bb0b808-512.webp"
   },
   "28": {
    "file": "28-bac56f99.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "28-bac56f99-512.webp"
   },
   "29": {
    "file": "29-93edef6c.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "29-93edef6c-512.webp"
   },
   "30": {
    "file": "30-4c245a78.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "30-4c245a78-512.webp"
   },
   "31": {
    "file": "31-826476a3.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "31-826476a3-512.webp"
   },
   "32": {
    "file": "32-937d0218.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "32-937d0218-512.webp"
   },
   "33": {
    "file": "33-b2820463.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "33-b2820463-512.webp"
   },
   "34": {
    "file": "34-5148665a.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "34-5148665a-512.webp"
   },
   "35": {
    "file": "35-2aaccb08.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "35-2aaccb08-512.webp"
   },
   "36": {
    "file": "36-e4875f99.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "36-e4875f99-512.webp"
   },
   "37": {
    "file": "37-c443131a.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "37-c443131a-512.webp"
   },
   "38": {
    "file": "38-03782f2b.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "38-03782f2b-512.webp"
   },
   "39": {
    "file": "39-7cfbfc4f.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "39-7cfbfc4f-512.webp"
   },
   "40": {
    "file": "40-69a3067f.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "40-69a3067f-512.webp"
   },
   "41": {
    "file": "41-79f77107.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "41-79f77107-512.webp"
   },
   "42": {
    "file": "42-2a244417.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "42-2a244417-512.webp"
   },
   "43": {
    "file": "43-f01ce1fd.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "43-f01ce1fd-512.webp"
   },
   "44": {
    "file": "44-a114abee.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "44-a114abee-512.webp"
   },
   "45": {
    "file": "45-0eb12048.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "45-0eb12048-512.webp"
   },
   "46": {
    "file": "46-d98f322a.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "46-d98f322a-512.webp"
   },
   "47": {
    "file": "47-7e518017.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "47-7e518017-512.webp"
   },
   "48": {
    "file": "48-b983cfb1.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "48-b983cfb1-512.webp"
   },
   "49": {
    "file": "49-b5926b5f.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "49-b5926b5f-512.webp"
   },
   "50": {
    "file": "50-4b5251ed.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "50-4b5251ed-512.webp"
   },
   "51": {
    "file": "51-68e39cbf.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "51-68e39cbf-512.webp"
   },
   "01": {
    "file": "01-62c64028.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "01-62c64028-512.webp"
   },
   "02": {
    "file": "02-e4876f82.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "02-e4876f82-512.webp"
   },
   "03": {
    "file": "03-ea50fc8c.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "03-ea50fc8c-512.webp"
   },
   "04": {
    "file": "04-ff52e991.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "04-ff52e991-512.webp"
   },
   "05": {
    "file": "05-c8844623.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "05-c8844623-512.webp"
   },
   "06": {
    "file": "06-196016c6.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "06-196016c6-512.webp"
   },
   "07": {
    "file": "07-5dc450e9.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "07-5dc450e9-512.webp"
   },
   "08": {
    "file": "08-3474e0bf.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "08-3474e0bf-512.webp"
   },
   "09": {
    "file": "09-1f5d6cc6.webp",
    "size": [
     1220,
     600
-   ]
+   ],
+   "md": "09-1f5d6cc6-512.webp"
   },
   "Poliigon_WoodVeneerOak_7760_BaseColor": {
    "file": "Poliigon_WoodVeneerOak_7760_BaseColor-f0714e74.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Poliigon_WoodVeneerOak_7760_BaseColor-f0714e74-512.webp"
   },
   "Poliigon_MetalPaintedMatte_7037_BaseColor": {
    "file": "Poliigon_MetalPaintedMatte_7037_BaseColor-1fc6b33a.webp",
    "size": [
     851,
     851
-   ]
+   ],
+   "md": "Poliigon_MetalPaintedMatte_7037_BaseColor-1fc6b33a-512.webp"
   },
   "Poliigon_MetalSteelBrushed_7174_BaseColor": {
    "file": "Poliigon_MetalSteelBrushed_7174_BaseColor-43227810.webp",
@@ -560,63 +629,72 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "potted_plant_02_pot_diff_1k-b700cd31-512.webp"
   },
   "potted_plant_01_pot_diff_1k": {
    "file": "potted_plant_01_pot_diff_1k-ec16a13b.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "potted_plant_01_pot_diff_1k-ec16a13b-512.webp"
   },
   "painted_wooden_bench_diff_1k": {
    "file": "painted_wooden_bench_diff_1k-1c1444a9.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "painted_wooden_bench_diff_1k-1c1444a9-512.webp"
   },
   "Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project": {
    "file": "Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project-31bae0d8.webp",
    "size": [
     1280,
     1007
-   ]
+   ],
+   "md": "Vincent_van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project-31bae0d8-512.webp"
   },
   "Tsunami_by_hokusai_19th_century": {
    "file": "Tsunami_by_hokusai_19th_century-d1bd11d5.webp",
    "size": [
     1280,
     860
-   ]
+   ],
+   "md": "Tsunami_by_hokusai_19th_century-d1bd11d5-512.webp"
   },
   "Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog": {
    "file": "Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog-5c38effc.webp",
    "size": [
     1280,
     1639
-   ]
+   ],
+   "md": "Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog-5c38effc-512.webp"
   },
   "Van_Gogh_-_Starry_Night_-_Google_Art_Project": {
    "file": "Van_Gogh_-_Starry_Night_-_Google_Art_Project-f133633b.webp",
    "size": [
     1280,
     1014
-   ]
+   ],
+   "md": "Van_Gogh_-_Starry_Night_-_Google_Art_Project-f133633b-512.webp"
   },
   "Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project": {
    "file": "Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project-ebbe8e9a.webp",
    "size": [
     1280,
     1435
-   ]
+   ],
+   "md": "Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project-ebbe8e9a-512.webp"
   },
   "Claude_Monet_-_Water_Lilies_-_1906,_Ryerson": {
    "file": "Claude_Monet_-_Water_Lilies_-_1906__Ryerson-a99f2792.webp",
    "size": [
     1280,
     1230
-   ]
+   ],
+   "md": "Claude_Monet_-_Water_Lilies_-_1906__Ryerson-a99f2792-512.webp"
   },
   "cork_art": {
    "file": "cork_art-f9cf17d1.webp",
@@ -665,28 +743,32 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Office_desk_BaseColor-150322f9-512.webp"
   },
   "texture pothos": {
    "file": "texture_pothos-5fd7d7ce.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "texture_pothos-5fd7d7ce-512.webp"
   },
   "pot texture": {
    "file": "pot_texture-241566e6.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "pot_texture-241566e6-512.webp"
   },
   "potted+plant+3d+model_basecolor": {
    "file": "potted_plant_3d_model_basecolor-43330547.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "potted_plant_3d_model_basecolor-43330547-512.webp"
   },
   "Back_plate_Material_BaseColor": {
    "file": "Back_plate_Material_BaseColor-280b54b6.webp",
@@ -700,35 +782,40 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "New_music_column_Dark_Oak_Wood_BaseColor-6d36aa96-512.webp"
   },
   "the_last_of_us": {
    "file": "the_last_of_us-b1a9506f.webp",
    "size": [
     600,
     900
-   ]
+   ],
+   "md": "the_last_of_us-b1a9506f-512.webp"
   },
   "portal_2": {
    "file": "portal_2-5dc5d00d.webp",
    "size": [
     600,
     900
-   ]
+   ],
+   "md": "portal_2-5dc5d00d-512.webp"
   },
   "Ukulele_01_diff_2k": {
    "file": "Ukulele_01_diff_2k-0fd99de3.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Ukulele_01_diff_2k-0fd99de3-512.webp"
   },
   "stationery_supplies_diff_2k": {
    "file": "stationery_supplies_diff_2k-1e100622.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "stationery_supplies_diff_2k-1e100622-512.webp"
   },
   "book_spine_1": {
    "file": "book_spine_1-5c4c0a06.webp",
@@ -763,28 +850,32 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "LampShade_emissive-668aa6b9-512.webp"
   },
   "Bed_albedo": {
    "file": "Bed_albedo-29cb8a62.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Bed_albedo-29cb8a62-512.webp"
   },
   "Chair_low_Material.001_BaseColor": {
    "file": "Chair_low_Material.001_BaseColor-f6c35f68.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Chair_low_Material.001_BaseColor-f6c35f68-512.webp"
   },
   "PC9801U_Base_Color": {
    "file": "PC9801U_Base_Color-31ea4619.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "PC9801U_Base_Color-31ea4619-512.webp"
   },
   "pc_screen_art": {
    "file": "pc_screen_art-023b0865.webp",
@@ -798,49 +889,56 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "PC-9801_UX_Base_Color-372ca7f5-512.webp"
   },
   "pctowercolor": {
    "file": "pctowercolor-6a91269a.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "pctowercolor-6a91269a-512.webp"
   },
   "Record_Player_StingrayPBS1SG_albedo": {
    "file": "Record_Player_StingrayPBS1SG_albedo-50a4b344.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Record_Player_StingrayPBS1SG_albedo-50a4b344-512.webp"
   },
   "Ring_Material _25_BaseColor": {
    "file": "Ring_Material__25_BaseColor-25fd6526.webp",
    "size": [
     685,
     685
-   ]
+   ],
+   "md": "Ring_Material__25_BaseColor-25fd6526-512.webp"
   },
   "mini_music_column_main_column_BaseColor": {
    "file": "mini_music_column_main_column_BaseColor-07224b5f.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "mini_music_column_main_column_BaseColor-07224b5f-512.webp"
   },
   "alarm_clock_01_diff_2k": {
    "file": "alarm_clock_01_diff_2k-d451457f.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "alarm_clock_01_diff_2k-d451457f-512.webp"
   },
   "office_notepads_diff_2k": {
    "file": "office_notepads_diff_2k-a83e0ee6.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "office_notepads_diff_2k-a83e0ee6-512.webp"
   },
   "black": {
    "file": "black-018de0f7.webp",
@@ -854,14 +952,16 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "brownwood-4665c646-512.webp"
   },
   "darkwood": {
    "file": "darkwood-0bb93614.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "darkwood-0bb93614-512.webp"
   },
   "membrane cooper": {
    "file": "membrane_cooper-0aa488ca.webp",
@@ -875,14 +975,16 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "koc-3b4adceb-512.webp"
   },
   "membrane": {
    "file": "membrane-f6239b68.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "membrane-f6239b68-512.webp"
   },
   "cinchhl": {
    "file": "cinchhl-1bd09837.webp",
@@ -924,14 +1026,16 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "wicker_basket_02_diff_2k-0840eeea-512.webp"
   },
   "ai-engineering_spine": {
    "file": "ai-engineering_spine-493dd279.webp",
    "size": [
     127,
     1025
-   ]
+   ],
+   "md": "ai-engineering_spine-493dd279-512.webp"
   },
   "ai-engineering_cover": {
    "file": "ai-engineering_cover-9804bcf4.webp",
@@ -945,70 +1049,80 @@
    "size": [
     1024,
     742
-   ]
+   ],
+   "md": "bsc_datascience_ai_2026-86dad44e-512.webp"
   },
   "texture_pbr_v128": {
    "file": "texture_pbr_v128-ba44c89c.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "texture_pbr_v128-ba44c89c-512.webp"
   },
   "hands-on-llms_spine": {
    "file": "hands-on-llms_spine-bd22bdc0.webp",
    "size": [
     103,
     1025
-   ]
+   ],
+   "md": "hands-on-llms_spine-bd22bdc0-512.webp"
   },
   "hands-on-llms_cover": {
    "file": "hands-on-llms_cover-66960617.webp",
    "size": [
     815,
     1070
-   ]
+   ],
+   "md": "hands-on-llms_cover-66960617-512.webp"
   },
   "practical-nlp_spine": {
    "file": "practical-nlp_spine-81b1f6e9.webp",
    "size": [
     109,
     1025
-   ]
+   ],
+   "md": "practical-nlp_spine-81b1f6e9-512.webp"
   },
   "practical-nlp_cover": {
    "file": "practical-nlp_cover-e7ef0694.webp",
    "size": [
     748,
     981
-   ]
+   ],
+   "md": "practical-nlp_cover-e7ef0694-512.webp"
   },
   "practical-mlops_spine": {
    "file": "practical-mlops_spine-b1a6eb30.webp",
    "size": [
     111,
     1025
-   ]
+   ],
+   "md": "practical-mlops_spine-b1a6eb30-512.webp"
   },
   "practical-mlops_cover": {
    "file": "practical-mlops_cover-487e5bd9.webp",
    "size": [
     889,
     1167
-   ]
+   ],
+   "md": "practical-mlops_cover-487e5bd9-512.webp"
   },
   "llmops_spine": {
    "file": "llmops_spine-9c2aa914.webp",
    "size": [
     74,
     1025
-   ]
+   ],
+   "md": "llmops_spine-9c2aa914-512.webp"
   },
   "llmops_cover": {
    "file": "llmops_cover-4c6c5a1e.webp",
    "size": [
     889,
     1167
-   ]
+   ],
+   "md": "llmops_cover-4c6c5a1e-512.webp"
   },
   "ddia2_spine": {
    "file": "ddia2_spine-c1013e80.webp",
@@ -1022,91 +1136,104 @@
    "size": [
     425,
     557
-   ]
+   ],
+   "md": "ddia2_cover-42848726-512.webp"
   },
   "database-internals_spine": {
    "file": "database-internals_spine-30d6e942.webp",
    "size": [
     91,
     1025
-   ]
+   ],
+   "md": "database-internals_spine-30d6e942-512.webp"
   },
   "database-internals_cover": {
    "file": "database-internals_cover-3d6b5a4b.webp",
    "size": [
     929,
     1219
-   ]
+   ],
+   "md": "database-internals_cover-3d6b5a4b-512.webp"
   },
   "storytelling-with-data_spine": {
    "file": "storytelling-with-data_spine-3c884b1c.webp",
    "size": [
     71,
     1030
-   ]
+   ],
+   "md": "storytelling-with-data_spine-3c884b1c-512.webp"
   },
   "storytelling-with-data_cover": {
    "file": "storytelling-with-data_cover-dac288ec.webp",
    "size": [
     970,
     1199
-   ]
+   ],
+   "md": "storytelling-with-data_cover-dac288ec-512.webp"
   },
   "esl_spine": {
    "file": "esl_spine-8b35b015.webp",
    "size": [
     176,
     1034
-   ]
+   ],
+   "md": "esl_spine-8b35b015-512.webp"
   },
   "esl_cover": {
    "file": "esl_cover-48de111d.webp",
    "size": [
     1014,
     1323
-   ]
+   ],
+   "md": "esl_cover-48de111d-512.webp"
   },
   "cv-szeliski_spine": {
    "file": "cv-szeliski_spine-7246261f.webp",
    "size": [
     217,
     1118
-   ]
+   ],
+   "md": "cv-szeliski_spine-7246261f-512.webp"
   },
   "cv-szeliski_cover": {
    "file": "cv-szeliski_cover-bc60cc2c.webp",
    "size": [
     1024,
     1362
-   ]
+   ],
+   "md": "cv-szeliski_cover-bc60cc2c-512.webp"
   },
   "TVScreen_albedo": {
    "file": "TVScreen_albedo-9342981d.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "TVScreen_albedo-9342981d-512.webp"
   },
   "saltLamp_mtl_emissive": {
    "file": "saltLamp_mtl_emissive-aa9fe7e9.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "saltLamp_mtl_emissive-aa9fe7e9-512.webp"
   },
   "saltLamp_mtl_albedo": {
    "file": "saltLamp_mtl_albedo-9322b597.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "saltLamp_mtl_albedo-9322b597-512.webp"
   },
   "texgen_2": {
    "file": "texgen_2-926c70f7.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "texgen_2-926c70f7-512.webp"
   },
   "back_to_the_future": {
    "file": "back_to_the_future-89ad3ddf.webp",
@@ -1120,14 +1247,16 @@
    "size": [
     1024,
     696
-   ]
+   ],
+   "md": "rug_art-b420401e-512.webp"
   },
   "TVStand_mat_diff": {
    "file": "TVStand_mat_diff-27d95aaa.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "TVStand_mat_diff-27d95aaa-512.webp"
   },
   "crt_screen_art": {
    "file": "crt_screen_art-b7a555cd.webp",
@@ -1141,28 +1270,32 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "Material_albedo-cd44fb02-512.webp"
   },
   "arch_books__3_": {
    "file": "arch_books__3_-71c48e14.webp",
    "size": [
     2016,
     2048
-   ]
+   ],
+   "md": "arch_books__3_-71c48e14-512.webp"
   },
   "arch_books_front": {
    "file": "arch_books_front-c73e1d41.webp",
    "size": [
     780,
     1019
-   ]
+   ],
+   "md": "arch_books_front-c73e1d41-512.webp"
   },
   "arch_books__4_": {
    "file": "arch_books__4_-89bb70c5.webp",
    "size": [
     780,
     1120
-   ]
+   ],
+   "md": "arch_books__4_-89bb70c5-512.webp"
   },
   "arch_books_rear": {
    "file": "arch_books_rear-82e4088a.webp",
@@ -1176,28 +1309,32 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "low_Face_1001_Emissive-6d7a9b8b-512.webp"
   },
   "low_Face_1001_Diffuse": {
    "file": "low_Face_1001_Diffuse-fb6ebbf5.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "low_Face_1001_Diffuse-fb6ebbf5-512.webp"
   },
   "M_Steam_Machine_1001_emissive": {
    "file": "M_Steam_Machine_1001_emissive-fece79d9.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "M_Steam_Machine_1001_emissive-fece79d9-512.webp"
   },
   "M_Steam_Machine_1001_albedo": {
    "file": "M_Steam_Machine_1001_albedo-a9ab54aa.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "M_Steam_Machine_1001_albedo-a9ab54aa-512.webp"
   },
   "alien_(film)": {
    "file": "alien__film_-f57fd6a6.webp",
@@ -1218,84 +1355,96 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "DefaultMaterial_emissive-d9bd7e87-512.webp"
   },
   "DefaultMaterial_albedo": {
    "file": "DefaultMaterial_albedo-41f01515.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "DefaultMaterial_albedo-41f01515-512.webp"
   },
   "kertas_buku": {
    "file": "kertas_buku-cefb4aed.webp",
    "size": [
     128,
     1024
-   ]
+   ],
+   "md": "kertas_buku-cefb4aed-512.webp"
   },
   "buku_1": {
    "file": "buku_1-b09e7ad9.webp",
    "size": [
     1920,
     1342
-   ]
+   ],
+   "md": "buku_1-b09e7ad9-512.webp"
   },
   "buku_10": {
    "file": "buku_10-11987175.webp",
    "size": [
     1504,
     894
-   ]
+   ],
+   "md": "buku_10-11987175-512.webp"
   },
   "buku_11": {
    "file": "buku_11-021fc647.webp",
    "size": [
     1298,
     926
-   ]
+   ],
+   "md": "buku_11-021fc647-512.webp"
   },
   "buku_12": {
    "file": "buku_12-351cc520.webp",
    "size": [
     1000,
     684
-   ]
+   ],
+   "md": "buku_12-351cc520-512.webp"
   },
   "buku_2": {
    "file": "buku_2-552c55bb.webp",
    "size": [
     1178,
     837
-   ]
+   ],
+   "md": "buku_2-552c55bb-512.webp"
   },
   "buku_3": {
    "file": "buku_3-87bdd3a8.webp",
    "size": [
     900,
     707
-   ]
+   ],
+   "md": "buku_3-87bdd3a8-512.webp"
   },
   "buku_5": {
    "file": "buku_5-16596631.webp",
    "size": [
     1178,
     837
-   ]
+   ],
+   "md": "buku_5-16596631-512.webp"
   },
   "buku_6": {
    "file": "buku_6-217781f2.webp",
    "size": [
     1178,
     837
-   ]
+   ],
+   "md": "buku_6-217781f2-512.webp"
   },
   "buku_7": {
    "file": "buku_7-c3738ef2.webp",
    "size": [
     956,
     675
-   ]
+   ],
+   "md": "buku_7-c3738ef2-512.webp"
   },
   "buku_8": {
    "file": "buku_8-7b9412c4.webp",
@@ -1309,35 +1458,40 @@
    "size": [
     800,
     574
-   ]
+   ],
+   "md": "buku_9-fbf32ba4-512.webp"
   },
   "half_life_2": {
    "file": "half_life_2-643ae1bf.webp",
    "size": [
     600,
     900
-   ]
+   ],
+   "md": "half_life_2-643ae1bf-512.webp"
   },
   "stray": {
    "file": "stray-f8708f46.webp",
    "size": [
     600,
     900
-   ]
+   ],
+   "md": "stray-f8708f46-512.webp"
   },
   "wall_clock_diff_2k": {
    "file": "wall_clock_diff_2k-8ddb9988.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "wall_clock_diff_2k-8ddb9988-512.webp"
   },
   "hands-on-ml_spine": {
    "file": "hands-on-ml_spine-39aeac9f.webp",
    "size": [
     200,
     1025
-   ]
+   ],
+   "md": "hands-on-ml_spine-39aeac9f-512.webp"
   },
   "hands-on-ml_cover": {
    "file": "hands-on-ml_cover-9cb564ba.webp",
@@ -1351,21 +1505,24 @@
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "PCKD854n_Base_Color-b5573280-512.webp"
   },
   "potted_plant_02_leaves_diff_1k": {
    "file": "potted_plant_02_leaves_diff_1k-4b9c4099.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "potted_plant_02_leaves_diff_1k-4b9c4099-512.webp"
   },
   "potted_plant_01_leaves_diff_1k": {
    "file": "potted_plant_01_leaves_diff_1k-eee64f70.webp",
    "size": [
     1024,
     1024
-   ]
+   ],
+   "md": "potted_plant_01_leaves_diff_1k-eee64f70-512.webp"
   }
  },
  "materials": {

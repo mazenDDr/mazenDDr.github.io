@@ -216,7 +216,8 @@ export function playIntro({ room, progress, openAngle, director, doodles, camera
     started = true;
     card.classList.add('knocking');
     label.textContent = 'Knocking…';
-    try { await audio().resume(); } catch { /* no audio is fine */ }
+    // (without a click, as when the live room hands over mid-knock, the sound may never be allowed: don't wait for it)
+    try { await Promise.race([audio().resume(), wait(0.3)]); } catch { /* no audio is fine */ }
     // Keep knocking until the room is ready (at least once), reacting as it loads.
     let heard = false;
     for (let i = 0; ; i++) {
@@ -230,6 +231,7 @@ export function playIntro({ room, progress, openAngle, director, doodles, camera
         heard = true;
         say('footsteps…');
         await wait(footsteps(4) * 0.8);
+        await Promise.race([room.catch(() => {}), wait(2.5)]);           // someone's at the door: open the moment the room is there
       }
       if (loaded && heard) break;
     }

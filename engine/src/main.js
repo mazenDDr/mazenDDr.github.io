@@ -5,6 +5,8 @@ import { Hotspots, PARENT } from './hotspots.js';
 import { playIntro, setMuted } from './intro.js';
 import { Screens } from './screens.js';
 import { createPost, LOOK, SCALES } from './post.js';
+import { PLACES } from './places.js';
+import { fetchAsset } from '../../src/tour/cdn.js';
 
 const canvas = document.getElementById('room');
 // alpha: the live screens show through holes in the canvas (see screens.js).
@@ -16,7 +18,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, 1, 0.03, 80);
 camera.userData.canvas = canvas;
 const params = new URLSearchParams(location.search);
-const anchors = await (await fetch('public/anchors.json')).json();
+const anchors = await (await fetchAsset('public/anchors.json')).json();
 
 // Blender keeps the horizontal field of view fixed; do the same so framing
 // matches the renders on any window shape (capped on tall phones).
@@ -27,7 +29,7 @@ function setHfov(deg) {
   camera.fov = Math.min(THREE.MathUtils.radToDeg(v), 105);
   camera.updateProjectionMatrix();
 }
-let post = null, screens = null, redraw = true, door = null;
+let post = null, screens = null, redraw = true, door = null, bench = null, warmed = false;
 function resize() {
   redraw = true;
   renderer.setSize(innerWidth, innerHeight, false);
@@ -104,11 +106,13 @@ const knockBtn = document.querySelector('#intro .knock span');
 knockBtn.textContent = 'Knock on the door';
 let progress = 0;
 // On the website (window.ROOM_LIVE, set by the page's device check) the room starts
-// small and streams its full textures in; the capture tools load it all at once.
+// small and streams sharper textures in; the capture tools load it all at once.
 const live = !!window.ROOM_LIVE;
 const bar = document.querySelector('#loading .bar i');
 const uploads = [];
-const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.width = `${p * 100}%`; }, anchors.door.hinge, { lite: live }).then(({ room, parts, stream }) => {
+const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.width = `${p * 100}%`; }, anchors.door.hinge,
+  { lite: live, tier: window.ROOM_TIER }).then(async ({ room, parts, stream }) => {
+  performance.mark('room-loaded');
   stream(uploads);                  // sharper pictures from now on, the landing first
   scene.add(room);
   post = createPost(renderer, scene, camera);
@@ -116,10 +120,44 @@ const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.w
   screens = new Screens(anchors, scene, LOOK.exposure, goBack);
   door = parts.door;
   resize();
+  if (live) await warmUp();
+  warmed = true;                    // sharper pictures may replace the warmed-up ones from now on
+  performance.mark('room-ready');
   document.getElementById('loading')?.classList.add('done');    // the 3D view takes over from the still
   document.body.classList.add('drawn');
   return { door: parts.door, parts };
 });
+
+// ---- ready before the door opens (the visitor is still knocking): every shader compiled,
+// every texture on the GPU, and the room itself drawn off screen and timed, so the way in
+// runs at the size this GPU can hold from its very first frame, with no hitch. A GPU that
+// can't draw the room at 20 frames a second even at the smallest size goes to the pictures.
+async function warmUp() {
+  const p = PLACES.room;
+  const pose = () => { camera.position.copy(p.eye); camera.lookAt(p.look); setHfov(p.hfov); camera.updateMatrixWorld(); };
+  const frame = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r)));   // a step per frame: the knocking stays smooth
+  pose();
+  // compiled for where the room is really drawn (post's target: no tone mapping, linear), in parallel where the GPU allows
+  renderer.setRenderTarget(post.target);
+  const compiled = renderer.compileAsync(scene, camera).catch(() => { /* compiled on first draw instead */ });
+  renderer.setRenderTarget(null);
+  await compiled;
+  const textures = new Set();
+  scene.traverse((o) => { for (const u of Object.values(o.material?.uniforms || {})) if (u.value?.isTexture) textures.add(u.value); });
+  let batch = 0;
+  for (const t of textures) { renderer.initTexture(t); if (++batch % 24 === 0) await frame(); }
+  // each timing in a frame of its own; the loop puts the camera back in between
+  const ms = async (scale) => { const t = []; for (let i = 0; i < 4; i++) { await frame(); pose(); t.push(post.time(scale)); director.apply(); } return t.slice(1).sort((a, b) => a - b)[1]; };
+  const times = [];
+  let fits = 0;
+  for (; fits < SCALES.length; fits++) {
+    times.push(Math.round(await ms(SCALES[fits]) * 10) / 10);
+    if (times[fits] < 22) break;
+  }
+  bench = times;
+  if (fits === SCALES.length && times[times.length - 1] > 50) return toPictures();
+  level = Math.min(fits, SCALES.length - 1);
+}
 
 const intro = playIntro({
   room: roomReady, progress: () => progress, openAngle: anchors.door.open_angle_deg, director, doodles: spots.doodles, camera,
@@ -144,7 +182,7 @@ roomReady.then(async ({ parts }) => {
     if (deep && deep !== 'room') director.snap(deep);
     syncHud();
   }
-  window.__room = { scene, camera, parts, renderer, director, spots, screens, post, invalidate, quality: () => SCALES[level], ready: true };
+  window.__room = { scene, camera, parts, renderer, director, spots, screens, post, invalidate, quality: () => SCALES[level], bench, ready: true };
 });
 
 // ---- drawing only what changed
@@ -170,7 +208,7 @@ renderer.setAnimationLoop(() => {
   spots.update();
   if (!post) return;
   // a sharper texture onto the GPU: one per frame, never mid-flight (no hitches)
-  if (uploads.length && !director.busy) { uploads.shift()(); redraw = true; }
+  if (uploads.length && !director.busy && warmed) { uploads.shift()(); redraw = true; }
   const view = viewChanged();
   const moving = !!view || screens.update(dt);
   if (moving || redraw) {
@@ -201,9 +239,25 @@ let slowFrames = 0, movingFrames = 0;
 function watchdog(raw) {
   movingFrames++;
   if (level === SCALES.length - 1 && raw > 1 / 22) slowFrames++;
-  if (movingFrames > 90 && slowFrames > movingFrames * 0.4) {
-    try { localStorage.setItem('room-mode', 'tour'); } catch { /* private mode */ }
-    const place = director.place && director.place !== 'hall' ? director.place : 'room';
-    location.replace(`${location.pathname}?mode=tour&place=${place}`);
-  }
+  if (movingFrames > 90 && slowFrames > movingFrames * 0.4) toPictures();
 }
+let leaving = false;
+function toPictures() {
+  if (leaving) return new Promise(() => {});
+  leaving = true;
+  try { localStorage.setItem('room-mode', 'tour'); } catch { /* private mode */ }
+  const place = director.place && director.place !== 'hall' ? director.place : 'room';
+  const knocked = document.getElementById('intro')?.classList.contains('knocking') ? '&knocked' : '';
+  location.replace(`${location.pathname}?mode=tour${director.place === 'hall' ? knocked : `&place=${place}`}`);
+  return new Promise(() => {});                    // the door never opens here
+}
+
+// A phone can take the GPU's memory back (a background tab, a low-memory moment); the
+// page's copies of the textures are gone by then (room.js frees them), so start again
+// where the visitor was.
+canvas.addEventListener('webglcontextlost', (e) => {
+  e.preventDefault();
+  const place = director.place && director.place !== 'hall' ? `?place=${director.place}` : '';
+  addEventListener('webglcontextrestored', () => location.replace(location.pathname + place), { once: true });
+  if (document.visibilityState === 'visible') setTimeout(() => location.replace(location.pathname + place), 1500);
+});

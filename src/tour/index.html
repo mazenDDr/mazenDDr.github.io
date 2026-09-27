@@ -12,38 +12,120 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg">
-<link rel="preload" href="{{hallStrip}}" as="fetch" crossorigin fetchpriority="high">
 <link rel="preload" href="{{hallFront}}" as="image" type="image/avif">
 <link rel="preload" href="fonts/{{caveat}}" as="font" type="font/woff2" crossorigin>
 <script>
 /* Which room this device gets, decided before anything big downloads (ES5: runs anywhere).
-   live: the real-time 3D room (sharp, flies freely) for capable computers.
-   tour: the pre-rendered room (pictures and short videos) for phones and weak machines.
-   ?mode=live|tour overrides; a computer too slow for live is remembered as tour. */
+   live: the real-time 3D room (sharp, flies freely), on every device whose graphics can
+         hold it: computers get the full textures ("full"), phones, tablets and laptops with
+         basic Intel graphics copies sized for their memory ("compact").
+   tour: the pre-rendered room (pictures and short videos): slow connections, old or weak GPUs.
+   ?mode=live|tour overrides; a device that proved too slow for live, or whose browser gave
+   up on it (the page died without leaving), is remembered as tour. */
 window.ROOM_CDN = '{{cdn}}';
+/* A file from the CDN, with the site itself as the backup: if the CDN hasn't answered
+   within 1.5 s (a cold CDN cache once took 13 s) or fails, the site is asked too, and the
+   first good answer wins. Resolves to the fetch() Response. `priority`: high, low or auto. */
+window.ROOM_GET = function (path, priority) {
+  var cdn = window.ROOM_CDN;
+  if (!cdn) return fetch(path, { priority: priority || 'auto' }).then(function (r) { if (!r.ok) throw new Error(r.status + ' ' + path); return r; });
+  return new Promise(function (resolve, reject) {
+    var settled = false, site = false, left = 0, ctls = [], timer = 0;
+    function attempt(url) {
+      var ctl = window.AbortController ? new AbortController() : null;
+      left++;
+      ctls.push(ctl);
+      fetch(url, { signal: ctl ? ctl.signal : undefined, priority: priority || 'auto' }).then(function (r) {
+        if (!r.ok) throw new Error(r.status + ' ' + url);
+        if (settled) { if (ctl) ctl.abort(); return; }
+        settled = true;
+        clearTimeout(timer);
+        for (var i = 0; i < ctls.length; i++) if (ctls[i] && ctls[i] !== ctl) ctls[i].abort();
+        resolve(r);
+      })['catch'](function (e) {
+        left--;
+        if (settled) return;
+        if (!site) backup(); else if (!left) reject(e);
+      });
+    }
+    function backup() { if (site || settled) return; site = true; attempt(path); }
+    attempt(cdn + path);
+    timer = setTimeout(backup, 1500);
+  });
+};
 (function () {
+  var n = navigator, ua = n.userAgent, gpu = '';
+  var apple = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && n.maxTouchPoints > 1);
+  var touch = !!(n.userAgentData && n.userAgentData.mobile) || /Android|Mobile/i.test(ua) || apple;
   function pick() {
-    var n = navigator, c = n.connection || {}, ua = n.userAgent;
-    if (c.saveData || /2g|3g/.test(c.effectiveType || '')) return 'tour';
-    if ((n.userAgentData && n.userAgentData.mobile) || /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && n.maxTouchPoints > 1)) return 'tour';
-    if ((n.deviceMemory && n.deviceMemory < 4) || (n.hardwareConcurrency && n.hardwareConcurrency < 4)) return 'tour';
+    var c = n.connection || {};
+    if (c.saveData || /2g|3g/.test(c.effectiveType || '') || (c.downlink && c.downlink < 5)) return 'tour';   /* under 5 Mbps (Chrome's estimate) */
+    /* little memory or few cores (Safari on iPhone and iPad may report fewer cores than it has: not counted there) */
+    if ((n.deviceMemory && n.deviceMemory < 4) || (n.hardwareConcurrency && n.hardwareConcurrency < 4 && !apple)) return 'tour';
+    if (!window.fetch || !window.Promise) return 'tour';
     var gl = null;
     try { gl = document.createElement('canvas').getContext('webgl2'); } catch (e) {}
     if (!gl || !(gl.getExtension('EXT_color_buffer_half_float') || gl.getExtension('EXT_color_buffer_float'))) return 'tour';
     var info = gl.getExtension('WEBGL_debug_renderer_info');
-    var gpu = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+    gpu = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
     var lose = gl.getExtension('WEBGL_lose_context');
     if (lose) lose.loseContext();
-    if (/swiftshader|llvmpipe|softpipe|software|basic render|mali|adreno|powervr|videocore/i.test(gpu)) return 'tour';
-    if (/intel/i.test(gpu) && !/iris|arc/i.test(gpu)) return 'tour';      /* Intel HD/UHD: the weak laptop GPUs */
+    /* software, and the phone GPUs of the low end or of before 2019 */
+    if (/swiftshader|llvmpipe|softpipe|software|basic render|videocore|powervr|mali-[t4]|mali-g(?:[1-5]\d|3\d0)\b|adreno \(tm\) [2-5]\d\d\b/i.test(gpu)) return 'tour';
+    /* Intel graphics from before 2015 (HD 2000-4600, and unnumbered) */
+    if (/intel/i.test(gpu) && !/iris|arc|uhd|hd graphics [5-6]\d\d\b|hd graphics 6000/i.test(gpu)) return 'tour';
     return 'live';
   }
-  var m = /[?&]mode=(live|tour)/.exec(location.search), mode = m && m[1];
+  var m = /[?&]mode=(live|tour)/.exec(location.search), mode = m && m[1], alive = false;
+  try { alive = sessionStorage.getItem('room-live') === '1'; } catch (e) {}
+  if (!mode && alive) { mode = 'tour'; try { localStorage.setItem('room-mode', 'tour'); } catch (e) {} }   /* the last visit died in the live room */
   if (!mode) { try { mode = localStorage.getItem('room-mode'); } catch (e) {} }
   if (mode !== 'live' && mode !== 'tour') mode = pick();
   window.ROOM_MODE = mode;
   window.ROOM_LIVE = mode === 'live';
+  window.ROOM_TIER = touch || /intel/i.test(gpu) && !/iris|arc/i.test(gpu) || (n.deviceMemory && n.deviceMemory <= 4) ? 'compact' : 'full';
   document.documentElement.className += ' ' + mode;
+  if (mode !== 'live') {
+    /* the pictures' first strip of the landing (only the tour reads it) */
+    var strip = document.createElement('link');
+    strip.rel = 'preload'; strip.as = 'fetch'; strip.crossOrigin = 'anonymous'; strip.href = '{{hallStrip}}';
+    strip.setAttribute('fetchpriority', 'high');
+    document.head.appendChild(strip);
+    return;
+  }
+  /* Mark the live room as running while this page is on screen; a page that leaves or is
+     hidden clears it. Still set at the next load means the browser killed the page (out of
+     memory on a phone): that device gets the pictures from then on. */
+  function mark(on) { try { if (on) sessionStorage.setItem('room-live', '1'); else sessionStorage.removeItem('room-live'); } catch (e) {} }
+  mark(true);
+  addEventListener('pagehide', function () { mark(false); });
+  document.addEventListener('visibilitychange', function () { mark(document.visibilityState === 'visible'); });
+  /* Everything the room needs before the door can open, asked for now, all at once (not
+     one after another as the script finds out about them): the script first, the light
+     maps last. Each byte that arrives is counted: if after 2.5 s the rest would take more
+     than 10 s more (a line under about 5 Mbps), the visit goes to the pictures instead,
+     a fifth of the download, before anyone has knocked for long. ?mode=live keeps it live. */
+  var first = {{first}}, total = {{firstBytes}}, got = 0, t0 = performance.now(), gone = false;
+  function judge() {
+    var s = (performance.now() - t0) / 1000;
+    if (gone || m || s < 2.5 || got >= total || (total - got) * s / Math.max(got, 1) < 10) return;
+    gone = true;
+    var intro = document.getElementById('intro'), knocked = intro && /knocking/.test(intro.className) ? '&knocked' : '';
+    location.replace(location.pathname + '?mode=tour&slow' + knocked);
+  }
+  function count(res) {
+    if (!res.body || !res.body.tee || !window.ReadableStream) return res;
+    var two = res.body.tee(), reader = two[1].getReader();
+    (function pump() { reader.read().then(function (x) { if (x.done) return; got += x.value.length; judge(); pump(); }, function () {}); })();
+    return new Response(two[0], { status: res.status, statusText: res.statusText, headers: res.headers });
+  }
+  setTimeout(judge, 2600);
+  setTimeout(judge, 4000);
+  window.ROOM_FIRST = {};
+  for (var i = 0; i < first.length; i++) {
+    var f = first[i], prio = /\.js$|\.json$/.test(f) ? 'high' : /\.webp$/.test(f) ? 'low' : 'auto';
+    window.ROOM_FIRST[f] = window.ROOM_GET(f, prio).then(count);
+  }
 })();
 </script>
 <style>{{css}}</style>
@@ -80,9 +162,11 @@ window.ROOM_CDN = '{{cdn}}';
 <noscript><div id="fallback"><p>The room needs JavaScript. Everything in it is also here:</p><a href="apps/tv/">Mazenflix: my projects</a><a href="apps/pc/">MazenOS: about me</a><a href="apps/memo/">The pinboard</a></div></noscript>
 <script id="tour-data" type="application/json">{{data}}</script>
 <script type="module">
-  // the chosen room; if the live one can't start here, the pictures always can
+  // the chosen room, fetched like every other file (CDN, the site as backup) and run from
+  // memory; if the live one can't start here, the pictures always can
   const file = window.ROOM_LIVE ? '{{live}}' : '{{app}}';
-  (window.ROOM_CDN ? import(window.ROOM_CDN + file).catch(() => import('./' + file)) : import('./' + file)).catch((e) => {
+  ((window.ROOM_FIRST && window.ROOM_FIRST[file]) || window.ROOM_GET(file)).then((r) => r.text(), () => null)
+    .then((js) => (js ? import(URL.createObjectURL(new Blob([js], { type: 'text/javascript' }))) : import('./' + file))).catch((e) => {
     console.error(e);
     if (!window.ROOM_LIVE) return;
     try { localStorage.setItem('room-mode', 'tour'); } catch (e) { /* private mode */ }

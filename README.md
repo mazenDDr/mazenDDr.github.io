@@ -20,17 +20,37 @@ Deep links: `?place=couch|tv|desk|pc|bed|memo|certificates`, `?skip` (no knock).
 A tiny check in the page's head (`src/tour/index.html`) picks, before anything big
 downloads:
 
-- **live** (capable computers: Apple Silicon, NVIDIA/AMD, Intel Iris/Arc): the
-  real-time 3D room in `engine/` (three.js, Cycles-baked light), sharp at any
-  resolution, flying freely. It starts from a small model (textures at most 256 px,
-  quarter-size light maps; about 8 MB over the wire) and streams the full textures
-  in while you knock, the landing first. If a machine turns out too slow even at
-  the lowest render size, a watchdog moves it to the pictures (and remembers).
-- **tour** (phones, tablets, weak GPUs, Save-Data or 2G/3G): the same room as
-  pictures, rendered in advance by the engine: a panorama at every place and a short
-  video for every flight (AV1 where the hardware decodes it, else H.264; 720p on
-  phones), shown by ~44 KB of plain WebGL 1 (`src/tour/`). Flights you can take are
-  fetched as soon as you arrive; if one isn't ready, the view dissolves there at once.
+- **live**: the real-time 3D room in `engine/` (three.js, Cycles-baked light), sharp
+  at any resolution, flying freely. Every device whose graphics can hold it gets it,
+  phones and tablets included, in one of two sizes:
+  - *full* (computers): every texture at full size once you're in (1.2 GB of
+    graphics memory when all is in);
+  - *compact* (phones, tablets, basic Intel graphics, 4 GB of memory or less):
+    textures of at most 512 px and half-size light maps (280 MB).
+
+  Both start from the same small model (textures at most 256 px, quarter-size light
+  maps: 6.9 MB over the wire, all asked for by the page's head at once) and stream the
+  sharper pictures in while you knock, the landing first. Before the door opens the
+  room is warmed up behind it: shaders compiled, textures on the GPU, and one frame of
+  the room timed off screen, so the way in starts at the render size this GPU holds.
+- **tour**: the same room as pictures, rendered in advance by the engine: a panorama
+  at every place and a short video for every flight (AV1 where the hardware decodes
+  it, else H.264; 720p on phones and slow lines), shown by ~44 KB of plain WebGL 1
+  (`src/tour/`). For slow lines (Save-Data, 2G/3G, under 5 Mbps), old or low-end GPUs
+  (software, Mali-G5x and older, Adreno 5xx and older, PowerVR, Intel HD before 2015)
+  and browsers without WebGL 2. Flights you can take are fetched as soon as you
+  arrive; if one isn't ready, the view dissolves there at once.
+
+The live room hands over to the tour, at the same place and still knocking, when:
+the line turns out slow (the head counts the bytes of the first files: if after 2.5 s
+the rest would take over 10 s more, the tour is a fifth of the download); the GPU can't
+draw the room at 20 frames a second even at the smallest size (timed before the door
+opens, and watched while flying); or the browser killed the page last time (a phone out
+of memory: the head notices the page died without leaving). The last two are remembered.
+
+Files come from jsDelivr pinned to a commit; if the CDN hasn't answered in 1.5 s (a
+cold CDN cache once took 13 s) or fails, the same file is asked of GitHub Pages too
+and the first answer wins (`ROOM_GET` in the page's head).
 
 `?mode=live` or `?mode=tour` forces one. In both, the live pages (TV, PC,
 pinboard) are mapped onto their screens with one projective CSS matrix each, which
@@ -86,7 +106,7 @@ $B --background --python-exit-code 1 --python web/tools/prep_web.py     # ~11 mi
 $B --background --python-exit-code 1 --python web/tools/bake_web.py -- --samples 256   # ~45 min on an M4 Pro
 $B --background --python-exit-code 1 --python web/tools/export_web.py   # the GLB + material manifest (texture sizes from tools/texture_needs.json)
 $B --background design/blender/room_polished.blend --python web/tools/anchors.py
-cd web && node tools/pack.mjs                                            # meshopt + WebP + manifest
+cd web && node tools/pack.mjs                                            # slim_room + meshopt + WebP (full, phone and first sizes) + manifest
 ```
 
 Then the tour, from `web/` (about 10 minutes):
@@ -146,6 +166,46 @@ of view. Measured with `tools/motion_probe.py`:
 | turn acceleration, 99th percentile | 8,261 °/s² | 1,141 °/s² |
 
 ## Speed on any machine
+
+### The live room: in within the knock
+
+Measured with `tools/perf_probe.py --gzip --mode live` (files served compressed, as
+GitHub Pages does; M4 Pro, 1440x900 at 2x). *Extra wait* is how much longer than one
+knock, the door and the way in (5.6 s) the visitor stood at the door; "after reading"
+is `--read 2.5`, knocking once the title card has been read.
+
+| | before | now |
+|---|---:|---:|
+| first model, over the wire (brotli) | 7.7 MB | **5.7 MB** |
+| triangles | 919k | **591k** |
+| 20 Mbps, knock at once: extra wait | 2.9 s | **1.5 s** |
+| 20 Mbps, after reading | 0 s | **0 s** |
+| fast 4G 9 Mbps, knock at once | 8.3 s | **4.2 s** |
+| fast 4G 9 Mbps, after reading | 4.8 s | **1.7 s** (the footsteps) |
+| phone (844x390 at 3x, CPU 4x slower, 9 Mbps, after reading) | 4.9 s | **2.0 s** |
+| graphics memory when all is in: computer / phone | 1.26 GB / (tour) | **1.2 GB / 280 MB** |
+
+On a line under 5 Mbps the visit goes to the pictures (slow 4G 1.6 Mbps: in the room
+at 12.9 s, 1.4 MB, where the live room would take about 35 s). What changed:
+
+- **A lighter model, closer to Blender's.** `tools/slim_room.mjs` (run by `pack.mjs`)
+  drops what the shader never reads (vertex colours, and texture UVs on untextured
+  surfaces) and simplifies each surface only as far as can't be seen from the closest
+  any camera gets to it (every frame of every flight in `tools/moves.json`: 0.0003 rad,
+  half a pixel on a Retina laptop), with surfaces locked where two materials meet. Then
+  positions are stored at 16 bits instead of 14: at 14 a room-sized chunk's grid is
+  0.4-1.3 mm, enough to merge the floppy disks' labels into the disks (they flickered).
+  Against the Blender original over 17 views (the engine, grain off): median PSNR
+  48.8 dB before, **49.8 dB now**; worst view 43.4 → 45.6 dB.
+- **Everything asked for at once.** The page's head knows the first files (the script,
+  the model, the small light maps, the room's data) and requests them before the
+  script runs, instead of one after another as the script found out about them.
+- **A backup for a cold CDN** (see above) and a **warm-up behind the door**: shaders,
+  textures and the render size are settled while you knock, so the way in never hitches.
+- **The door opens the moment the room is there** once the footsteps have been heard,
+  instead of after one more round of knocking.
+
+### The pictures (tour)
 
 Measured with `tools/perf_probe.py`: the page is opened, the visitor knocks at once,
 enters the room and flies to the desk. "Old" is the previous real-time version (now
@@ -210,7 +270,8 @@ $P web/tools/flow_test.py OUT/ [--url https://mazenddr.github.io/]   # the whole
 $P web/tools/shoot.py --query view=hero --out hero.png      # the engine, at the Blender hero camera
 $P web/tools/app_shot.py apps/tv/ tv.png --click .person
 $P web/tools/motion_probe.py         # smoothness of the camera
-$P web/tools/perf_probe.py [--net fast4g|slow4g] [--cpu 6] [--swiftshader] [--mobile] [--page engine/index.html]
+$P web/tools/perf_probe.py [--net home|fast4g|slow4g] [--gzip] [--read 2.5] [--cpu 6] [--swiftshader] [--mobile] [--mode live|tour] [--page engine/index.html]
+$P web/tools/flow_test.py OUT/ --mobile                     # the same visit on a phone held sideways: taps and the Back button
 $P web/tools/texture_needs.py        # the engine: how big each texture needs to be (before export_web.py)
 $P web/tools/calibrate_look.py       # refit the grade after a rebake
 $P web/tools/sharpness.py REF.png WEB.png   # detail vs a Cycles close-up

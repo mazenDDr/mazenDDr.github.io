@@ -130,6 +130,8 @@ export function createPost(renderer, scene, camera, look = LOOK) {
   const size = renderer.getDrawingBufferSize(new THREE.Vector2());
   const full = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType, samples: 4 });
   const low = {};                                  // scale -> target, made only if a slow GPU needs it
+  let probe = null;
+  const px = new Uint8Array(4);
   renderer.setClearColor(0x000000, 0);           // transparent where the live screens show through
   renderer.toneMapping = THREE.NoToneMapping;    // the final pass tone-maps
   const bloom = new UnrealBloomPass(size.clone(), look.glow.strength, look.glow.radius, look.glow.threshold);
@@ -147,15 +149,16 @@ export function createPost(renderer, scene, camera, look = LOOK) {
     post.onChange?.();                             // main.js redraws the (otherwise still) view
   };
   const post = {
-    look, apply, bloom,
+    look, apply, bloom, target: full,
     setSize(w, h) {
       const s = renderer.getDrawingBufferSize(new THREE.Vector2());
       full.setSize(s.x, s.y);
       bloom.setSize(s.x, s.y);
       for (const k of Object.keys(low)) { low[k].dispose(); delete low[k]; }
     },
-    /** One frame. `scale` < 1 draws the room smaller (only while moving, on a slow GPU). */
-    render(t, scale = 1) {
+    /** One frame. `scale` < 1 draws the room smaller (only while moving, on a slow GPU);
+     *  `out` is where the finished picture goes (the screen by default). */
+    render(t, scale = 1, out = null) {
       let target = full;
       if (scale < 1) {
         target = low[scale] ||= new THREE.WebGLRenderTarget(Math.round(full.width * scale), Math.round(full.height * scale),
@@ -167,8 +170,18 @@ export function createPost(renderer, scene, camera, look = LOOK) {
       finalMaterial.uniforms.tBloom.value = glow(renderer, bloom, target.texture);
       finalMaterial.uniforms.tScene.value = target.texture;
       finalMaterial.uniforms.time.value = t % 100;
-      renderer.setRenderTarget(null);
+      renderer.setRenderTarget(out);
       quad.render(renderer);
+      if (out) renderer.setRenderTarget(null);
+    },
+    /** Milliseconds one frame at `scale` takes, drawn off screen and waited for
+     *  (main.js times the room this way before the door opens). */
+    time(scale) {
+      probe ||= new THREE.WebGLRenderTarget(4, 4);
+      const t0 = performance.now();
+      post.render(0, scale, probe);
+      renderer.readRenderTargetPixels(probe, 0, 0, 1, 1, px);
+      return performance.now() - t0;
     },
   };
   apply(look);

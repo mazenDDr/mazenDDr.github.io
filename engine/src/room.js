@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { gradeUniforms, GRADE_GLSL } from './post.js';
-import { asset, fetchAsset } from '../../src/tour/cdn.js';
+import { fetchAsset } from '../../src/tour/cdn.js';
 
 const KIND = { constant: 0, image: 1, recipe: 2, special: 3, cutout: 3 };
 const SCREEN_GLASS = new Set(['image|crt_art', 'image|pc_art']);
@@ -66,6 +66,47 @@ const fragmentShader = /* glsl */ `
     gl_FragColor = vec4(grade(c), 1.0);
   }`;
 
+/** A picture decoded off the main thread, exactly as stored (no flip, no colour
+ *  management: light maps are data). Older Safari: through an <img>. */
+async function decode(blob) {
+  try { return await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' }); } catch { /* below */ }
+  const img = new Image();
+  img.src = URL.createObjectURL(blob);
+  await img.decode();
+  return img;
+}
+
+/** Once a picture is on the GPU the page's copy isn't needed: on a phone that halves the
+ *  memory the room takes (if the GPU loses the textures, main.js reloads the page). */
+function freeAfterUpload(t) {
+  t.onUpdate = () => {
+    const img = t.source.data;
+    t.userData.size = [img.width, img.height];      // (for the probes: a closed bitmap has none)
+    if (img?.close) img.close();
+    else if (img?.src?.startsWith('blob:')) URL.revokeObjectURL(img.src);
+    t.onUpdate = null;
+  };
+}
+
+/** A response's body, reporting how much has arrived (`size`: the file's size, since a
+ *  compressed transfer's Content-Length isn't). */
+async function readAll(res, size, onProgress) {
+  if (!res.body?.getReader) return res.arrayBuffer();
+  const reader = res.body.getReader(), parts = [];
+  let got = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    parts.push(value);
+    got += value.length;
+    onProgress(Math.min(1, got / size));
+  }
+  const out = new Uint8Array(got);
+  let at = 0;
+  for (const p of parts) { out.set(p, at); at += p.length; }
+  return out.buffer;
+}
+
 export function roomMaterial({ kind, color, map, atlas, lightMap, range, emissive, emissiveMap, cutout }) {
   return new THREE.ShaderMaterial({
     vertexShader, fragmentShader,
@@ -86,13 +127,15 @@ export function roomMaterial({ kind, color, map, atlas, lightMap, range, emissiv
 
 /**
  * @param lite  the website: start from the small model and quarter-size light maps
- *              (about 9 MB) and stream the full ones in afterwards with stream();
+ *              (about 7 MB) and stream sharper ones in afterwards with stream();
  *              the capture tools load everything full-size at once.
+ * @param tier  what stream() brings in: 'full' (every texture at full size) or 'compact'
+ *              (textures of at most 512 px and half-size light maps, for the graphics
+ *              memory of phones, tablets and basic laptops: about 300 MB instead of 1.3 GB)
  */
-export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { lite = false } = {}) {
-  const manifest = await (await fetch('public/bake/manifest.json')).json();
+export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { lite = false, tier = 'full' } = {}) {
+  const manifest = await (await fetchAsset('public/bake/manifest.json')).json();
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
-  const texLoader = new THREE.TextureLoader();
   const aniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
 
   // The model is most of the download, so its bytes drive most of the bar.
@@ -100,17 +143,21 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
   const lightFile = (c) => (lite && c.lo) || c.file, albedoFile = (c) => (lite && c.albedoLo) || c.albedo;
   const files = manifest.chunks.flatMap((c) => [lightFile(c), albedoFile(c)].filter(Boolean));
   const report = () => onProgress(0.8 * glb + 0.2 * done / files.length);
-  const tick = () => { done++; report(); };
-  // from the CDN when there is one, else (or if it fails) from the site
-  const fromEither = (loaderOf, path, onProgress) => loaderOf.loadAsync(asset(path), onProgress).catch(() => loaderOf.loadAsync(path, onProgress));
-  const load = (file, srgb) => fromEither(texLoader, `public/bake/${file}`).then((t) => {
+  const load = (file, srgb) => fetchAsset(`public/bake/${file}`).then((r) => r.blob()).then(decode).then((img) => {
+    const t = new THREE.Texture(img);
     t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
     t.flipY = false;                 // glTF UV convention
     t.anisotropy = aniso;
-    tick();
+    t.needsUpdate = true;
+    freeAfterUpload(t);
+    done++;
+    report();
     return t;
   });
-  const gltfP = fromEither(loader, lite ? 'public/room-lo.glb' : 'public/room.glb', (e) => { if (e.total) { glb = e.loaded / e.total; report(); } })
+  const size = 1024 * (lite ? manifest.lo_kb : manifest.glb_kb);
+  const gltfP = fetchAsset(lite ? 'public/room-lo.glb' : 'public/room.glb')
+    .then((r) => readAll(r, size, (f) => { glb = f; report(); }))
+    .then((buffer) => loader.parseAsync(buffer, ''))
     .then((g) => { glb = 1; report(); return g; });
   const chunkP = Promise.all(manifest.chunks.map(async (c) => [c.name, {
     ...c, light: await load(lightFile(c), false), atlasTex: c.albedo ? await load(albedoFile(c), true) : null,
@@ -170,11 +217,12 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
     }
   });
 
-  /** The full-size light maps, colour atlases and textures, fetched a few at a time
-   *  (light first: the whole look rests on it). Each arrives as a job for `queue`,
-   *  which the page runs one per frame when the camera is still. */
+  /** The sharper light maps, colour atlases and textures (full size, or the compact
+   *  tier's), fetched a few at a time (light first: the whole look rests on it). Each
+   *  arrives as a job for `queue`, which the page runs one per frame when the camera is still. */
   function stream(queue) {
     if (!lite) return;
+    const compact = tier === 'compact';
     const byName = new Map();
     for (const t of holders.keys()) if (t.name) byName.set(t.name, t);
     // what you see first (the landing and the door, while knocking) goes first
@@ -185,23 +233,22 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
     const chunkOrder = [...manifest.chunks].sort((a, b) => FIRST.includes(b.name) - FIRST.includes(a.name));
     for (const c of chunkOrder) {
       const ch = chunks[c.name];
-      if (c.lo) jobs.push([`public/bake/${c.file}`, ch.light]);
-      if (c.albedoLo && ch.atlasTex) jobs.push([`public/bake/${c.albedo}`, ch.atlasTex]);
+      if (c.lo) jobs.push([`public/bake/${(compact && c.md) || c.file}`, ch.light]);
+      if (c.albedoLo && ch.atlasTex) jobs.push([`public/bake/${(compact && c.albedoMd) || c.albedo}`, ch.atlasTex]);
     }
     const texs = Object.entries(manifest.textures || {}).filter(([n, t]) => byName.has(n) && Math.max(...t.size) > 256)
       .sort((a, b) => b[1].size[0] * b[1].size[1] - a[1].size[0] * a[1].size[1]);
     texs.sort((a, b) => firstTex.has(b[0]) - firstTex.has(a[0]));
     const [lightFirst, lightRest] = [jobs.filter((j) => FIRST.some((k) => j[0].includes(`/${k}.`))), jobs.filter((j) => !FIRST.some((k) => j[0].includes(`/${k}.`)))];
     jobs.length = 0;
-    jobs.push(...lightFirst, ...texs.filter(([n]) => firstTex.has(n)).map(([n, t]) => [`public/tex/${t.file}`, byName.get(n)]), ...lightRest,
-      ...texs.filter(([n]) => !firstTex.has(n)).map(([n, t]) => [`public/tex/${t.file}`, byName.get(n)]));
+    const texJob = ([n, t]) => [`public/tex/${(compact && t.md) || t.file}`, byName.get(n)];
+    jobs.push(...lightFirst, ...texs.filter(([n]) => firstTex.has(n)).map(texJob), ...lightRest, ...texs.filter(([n]) => !firstTex.has(n)).map(texJob));
     let next = 0;
     const worker = async () => {
       while (next < jobs.length) {
         const [url, old] = jobs[next++];
         try {
-          const blob = await (await fetchAsset(url)).blob();
-          const img = await createImageBitmap(blob, { premultiplyAlpha: 'none', colorSpaceConversion: 'none' });
+          const img = await decode(await (await fetchAsset(url)).blob());
           queue.push(() => swap(old, img));
         } catch { /* keep the small one */ }
       }
@@ -209,11 +256,14 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
     for (let i = 0; i < 4; i++) worker();
   }
 
-  /** A new texture object for the sharper picture (a texture can't change size in place). */
+  /** A new texture object for the sharper picture (a texture can't change size in place).
+   *  (clone() marks the old picture for another upload too: harmless, as the old texture is
+   *  disposed here and never drawn again.) */
   function swap(old, img) {
     const t = old.clone();
-    t.source = new THREE.Source(img);
+    t.source = new THREE.TextureSource(img);
     t.needsUpdate = true;
+    freeAfterUpload(t);
     for (const u of holders.get(old) || []) u.value = t;
     holders.set(t, holders.get(old) || []);
     holders.delete(old);

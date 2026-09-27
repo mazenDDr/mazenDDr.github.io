@@ -10,7 +10,7 @@
 //   visit loads from disk
 import { build } from 'esbuild';
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import sharp from 'sharp';
 
 const hash = (b) => createHash('sha1').update(b).digest('hex').slice(0, 8);
@@ -60,6 +60,10 @@ writeFileSync(ogFile, og);
 
 // 5. the page
 const hall = manifest.views.hall.files;
+// what the live room needs before the door opens: the page's head asks for all of it at once
+const bake = JSON.parse(readFileSync('public/bake/manifest.json', 'utf8'));
+const first = [liveFile, 'public/anchors.json', 'public/bake/manifest.json', 'public/room-lo.glb',
+  ...bake.chunks.flatMap((c) => [c.lo, c.albedoLo].filter(Boolean).map((f) => `public/bake/${f}`))];
 const caveat = readdirSync('fonts').find((f) => f.startsWith('caveat'));
 const html = readFileSync('src/tour/index.html', 'utf8')
   .replaceAll('{{app}}', app)
@@ -68,6 +72,8 @@ const html = readFileSync('src/tour/index.html', 'utf8')
   .replace('{{data}}', data)
   .replace('{{og}}', `https://mazenddr.github.io/${ogFile}`)
   .replace('{{cdn}}', CDN)
+  .replace('{{first}}', JSON.stringify(first))
+  .replace('{{firstBytes}}', String(first.reduce((n, f) => n + statSync(f).size, 0)))
   .replace('{{hallStrip}}', `${CDN}${OUT}/${hall.strip.avif}`)
   .replaceAll('{{hallFront}}', `${CDN}${OUT}/${hall.front[1024].avif}`)
   .replaceAll('{{hallFrontWebp}}', `${CDN}${OUT}/${hall.front[1024].webp}`)

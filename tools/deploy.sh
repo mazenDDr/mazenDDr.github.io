@@ -18,7 +18,7 @@ git add index.html sw.js
 git commit -q -m "Serve the heavy files from jsDelivr (commit $SHA)"
 git push -q origin HEAD
 CDN="https://cdn.jsdelivr.net/gh/mazenDDr/mazenDDr.github.io@$SHA"
-for f in $(grep -oE "public/tour/(app|live)-[0-9a-f]{8}\.js|public/tour/hall-(strip|front-1024)-[0-9a-f]{8}\.(avif|webp)" index.html | sort -u) public/room-lo.glb; do
+for f in $(grep -oE "public/tour/(app|live)-[0-9a-f]{8}\.js|public/tour/hall-(strip|front-1024)-[0-9a-f]{8}\.(avif|webp)|public/(anchors\.json|room-lo\.glb|bake/[a-z0-9_-]+\.(json|webp))" index.html | sort -u); do
   curl -s -o /dev/null -w "warm %{http_code} %{time_total}s $f\n" "$CDN/$f"
 done
 echo "published: page -> $CDN"
