@@ -38,10 +38,10 @@ export class Loader {
     this.light = !!c.saveData || /(^|-)(2g|3g)$/.test(c.effectiveType || '');
     this.dpr = Math.min(devicePixelRatio || 1, 2);
     // phones get 720p: a small screen can't show more, and older phones decode it smoothly;
-    // so do slow lines (under 5 Mbps, or sent here by the live room for being slow): the
+    // so do slow lines (sent here by the live room, which timed its first downloads): the
     // way in is a third of the size
     const phone = Math.min(screen.width, screen.height) < 600;
-    const slow = this.light || (c.downlink && c.downlink < 5) || /[?&]slow\b/.test(location.search);
+    const slow = this.light || /[?&]slow\b/.test(location.search);
     this.res = !slow && !phone && Math.max(innerWidth, innerHeight) * this.dpr >= 1400 ? '1080' : '720';
     this.queue = [];
     this.running = 0;

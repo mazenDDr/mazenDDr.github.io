@@ -59,7 +59,9 @@ window.ROOM_GET = function (path, priority) {
   var touch = !!(n.userAgentData && n.userAgentData.mobile) || /Android|Mobile/i.test(ua) || apple;
   function pick() {
     var c = n.connection || {};
-    if (c.saveData || /2g|3g/.test(c.effectiveType || '') || (c.downlink && c.downlink < 5)) return 'tour';   /* under 5 Mbps (Chrome's estimate) */
+    /* (not Chrome's downlink estimate: a fresh browser says 1.6 Mbps on a 40 Mbps line; the
+       first downloads are timed below instead) */
+    if (c.saveData || /2g|3g/.test(c.effectiveType || '')) return 'tour';
     /* little memory or few cores (Safari on iPhone and iPad may report fewer cores than it has: not counted there) */
     if ((n.deviceMemory && n.deviceMemory < 4) || (n.hardwareConcurrency && n.hardwareConcurrency < 4 && !apple)) return 'tour';
     if (!window.fetch || !window.Promise) return 'tour';
