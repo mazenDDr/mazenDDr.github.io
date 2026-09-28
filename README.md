@@ -232,6 +232,15 @@ at 12.9 s, 1.4 MB, where the live room would take about 35 s). What changed:
   textures and the render size are settled while you knock, so the way in never hitches.
 - **The door opens the moment the room is there** once the footsteps have been heard,
   instead of after one more round of knocking.
+- **A smaller render size is tried, not assumed.** While moving, a slow frame used to make
+  the room draw smaller (down to 55%, blurry until the view stops). But a browser saving
+  battery caps pages at 30 frames a second whatever they draw (Chrome's Energy Saver on a
+  laptop), so the room went blurry for nothing. Now a smaller size stays only if frames get
+  faster at it; if not, the room stays sharp (a page held to 30 fps: 55% before, full size
+  now). A GPU too slow even so still goes to the pictures.
+- **Sharper textures reach the GPU only while the view is still** (at most one a second for
+  someone who never stops looking around): a 4096-px light map can take a GPU 100 ms, a jolt
+  mid-move. Looking around right after arriving: frames over 50 ms 3 → 0, worst 124 → 34 ms.
 
 ### The pictures (tour)
 

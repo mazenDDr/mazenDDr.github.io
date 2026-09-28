@@ -157,8 +157,8 @@ async function warmUp() {
     if (times[fits] < 22) break;
   }
   bench = times;
-  if (fits === SCALES.length && times[times.length - 1] > 50) return toPictures();
   level = Math.min(fits, SCALES.length - 1);
+  if (fits === SCALES.length && times[times.length - 1] > 50) return toPictures();
 }
 
 const intro = playIntro({
@@ -202,6 +202,11 @@ function viewChanged() {
   return changed ? now : null;
 }
 let level = 0, slow = 0, quick = 0, soft = false, wasMoving = false;
+// A smaller size is tried, not assumed: if frames come no faster at it, it isn't the GPU
+// holding them back (a browser saving battery caps pages at 30 frames a second), so the
+// sharper size comes back, and frames that slow don't lower it again.
+let pace = 1 / 60, trial = null, capped = 0;
+let lastMove = 0, lastUpload = 0;
 const timer = new THREE.Timer();
 renderer.setAnimationLoop(() => {
   timer.update();
@@ -209,16 +214,33 @@ renderer.setAnimationLoop(() => {
   if (!params.has('view')) director.update(dt); else director.apply();
   spots.update();
   if (!post) return;
-  // a sharper texture onto the GPU: one per frame, never mid-flight (no hitches)
-  if (uploads.length && !director.busy && warmed) { uploads.shift()(); redraw = true; }
+  // A sharper texture onto the GPU: one per frame, never while the view moves (a 4096-px
+  // one can take a GPU 100 ms: a jolt mid-move, unseen while still); at most one a second
+  // for someone who never stops looking around.
+  const now = timer.getElapsed();
+  if (uploads.length && !director.busy && warmed && (now - lastMove > 0.2 || now - lastUpload > 1)) {
+    uploads.shift()();
+    redraw = true;
+    lastUpload = now;
+  }
   const view = viewChanged();
+  if (view) lastMove = now;
   const moving = !!view || screens.update(dt);
   if (moving || redraw) {
     if (moving && wasMoving) {                      // how long the last moving frame really took
-      if (raw > 1 / 42) { slow++; quick = 0; } else if (raw < 1 / 56) { quick++; slow = 0; }
-      if (slow > 6 && level < SCALES.length - 1) { level++; slow = 0; }
+      pace += (raw - pace) * 0.1;
+      if (trial) {
+        trial.sum += raw;
+        if (++trial.n >= 12) {
+          if (trial.sum / trial.n > trial.before * 0.85) { level = trial.from; capped = trial.before * 1.2; }   // no faster: keep it sharp
+          trial = null;
+        }
+      } else {
+        if (raw > 1 / 42 && raw > capped) { slow++; quick = 0; } else if (raw < 1 / 56) { quick++; slow = 0; }
+        if (slow > 6 && level < SCALES.length - 1) { trial = { from: level, before: pace, n: 0, sum: 0 }; level++; slow = 0; }
+        if (quick > 120 && level > 0) { level--; quick = 0; }
+      }
       if (live) watchdog(raw);
-      if (quick > 120 && level > 0) { level--; quick = 0; }
     }
     const scale = moving && !redraw ? SCALES[level] : 1;
     post.render(timer.getElapsed(), scale);
@@ -240,7 +262,7 @@ window.__room = { director, spots, camera, invalidate, ready: false };
 let slowFrames = 0, movingFrames = 0;
 function watchdog(raw) {
   movingFrames++;
-  if (level === SCALES.length - 1 && raw > 1 / 22) slowFrames++;
+  if ((level === SCALES.length - 1 || capped) && raw > 1 / 22) slowFrames++;   // (capped: a smaller size didn't help)
   if (movingFrames > 90 && slowFrames > movingFrames * 0.4) toPictures();
 }
 let leaving = false;
