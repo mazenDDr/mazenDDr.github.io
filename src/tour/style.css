@@ -70,7 +70,7 @@ body.moving #spots, body.moving #doodles { visibility: hidden; }
 .doodle.hot .hand { opacity: 1; animation: write .6s cubic-bezier(.4,0,.3,1) both; }
 @media (max-height: 500px) { .hand { font-size: 24px; } .pen { stroke-width: 2.2; } }
 html.phone .hand { font-size: 19px; stroke-width: .4; }
-html.phone .pen { stroke-width: 1.7; filter: drop-shadow(0 1px 1px #000a) drop-shadow(0 0 4px #0006); }
+html.phone .pen { stroke-width: 1.7; filter: drop-shadow(0 1px 1.2px #000c); }   /* one light shadow: cheap for a phone to redraw */
 html.phone .doodle.hot .pen { stroke-width: 2.2; }
 @keyframes write { from { clip-path: inset(-20% 100% -20% 0); } to { clip-path: inset(-20% -5% -20% 0); } }
 
@@ -93,8 +93,6 @@ body.covered #screens { visibility: hidden; }
 .screen-app.crt::after { content: ''; position: absolute; inset: 0; pointer-events: none;
   background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0, 0, 0, .16) 2px 4px); }
 #screens .screen-app.on { pointer-events: auto; }
-.fix-layer #screens .screen-app { will-change: transform; backface-visibility: hidden; }
-.fix-noscan .screen-app.crt::after { display: none; }
 body.screen-focus #room { pointer-events: none; }
 
 /* Certificate lightbox */

@@ -53,13 +53,19 @@ cold CDN cache once took 13 s) or fails, the same file is asked of GitHub Pages 
 and the first answer wins (`ROOM_GET` in the page's head).
 
 On a phone (touch, and a small screen either way up) the hand-drawn arrows are drawn
-at phone size, and fewer at a time: the seats (couch, desk, bed, diploma) from the room,
-and the TV, the computer and the pinboard from their own seat. Computers and tablets
-keep the full-size arrows and every one of them.
+at phone size, with one light shadow, and fewer at a time: the seats (couch, desk, bed,
+diploma) from the room, and the TV, the computer and the pinboard from their own seat.
+An arrow at the edge of the view stays until its object is well out of it, so looking
+around with a finger doesn't make arrows blink. Computers and tablets keep the full-size
+arrows and every one of them.
 
-`?fix=keep,layer,noscan` turns on, one by one, the candidate fixes for the screens that
-flicker on some Android phones (the canvas keeps its drawn frame; each screen page is one
-stable layer; no CRT scanlines over the pages); nothing uses them by default yet.
+On Android, Chrome re-draws each screen's page at every new size while the camera moves
+(the pages are mapped onto the screens behind the canvas), and the screens lagged and
+flickered from across the room (Galaxy S21, S23 Ultra). There, each screen shows a still
+of its page instead (`tools/screen_stills.py`, 1024 x 1024, in `public/screens/`), drawn
+by WebGL behind the glass and blended exactly as the browser blends the live page; the
+live page takes over once you zoom in on a screen. Both rooms do this; `?pictures` shows
+it on any device. `tools/build.mjs` warns when the pages changed after their stills.
 
 `?mode=live` or `?mode=tour` forces one. In both, the live pages (TV, PC,
 pinboard) are mapped onto their screens with one projective CSS matrix each, which
@@ -287,6 +293,7 @@ $P web/tools/motion_probe.py         # smoothness of the camera
 $P web/tools/perf_probe.py [--net home|fast4g|slow4g] [--gzip] [--read 2.5] [--cpu 6] [--swiftshader] [--mobile] [--mode live|tour] [--page engine/index.html]
 $P web/tools/flow_test.py OUT/ --mobile                     # the same visit on a phone held sideways: taps and the Back button
 node web/tools/zfight_scan.mjs web/public/room.glb          # surfaces lying on each other (flicker), with the one on top
+$P web/tools/screen_stills.py                               # the screens' stills for Android: after changing content or an app
 $P web/tools/texture_needs.py        # the engine: how big each texture needs to be (before export_web.py)
 $P web/tools/calibrate_look.py       # refit the grade after a rebake
 $P web/tools/sharpness.py REF.png WEB.png   # detail vs a Cycles close-up

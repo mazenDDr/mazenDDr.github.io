@@ -173,6 +173,7 @@ export function createPost(renderer, scene, camera, look = LOOK) {
       renderer.setRenderTarget(out);
       quad.render(renderer);
       if (out) renderer.setRenderTarget(null);
+      else post.after?.();                           // (main.js: the screens' stills, behind the room)
     },
     /** Milliseconds one frame at `scale` takes, drawn off screen and waited for
      *  (main.js times the room this way before the door opens). */

@@ -115,10 +115,14 @@ export class Hotspots {
   /** Position the markers each frame. */
   update() {
     const vis = new Set(this.visibleSpots());
+    const phone = isPhone();
     let near = Infinity;
     for (const s of this.spots) {
       const [vx, vy, vz] = this.camera.project(s.anchor), v = { x: vx, y: vy, z: vz };
-      const on = vis.has(s) && v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05;
+      // On a phone, where a finger swings the view further, an arrow at the edge stays until its
+      // object is well out of view and comes back once it is well in: no blinking in and out.
+      const lim = phone ? (s.el.classList.contains('on') ? 1.25 : 0.98) : 1.05;
+      const on = vis.has(s) && v.z < 1 && Math.abs(v.x) < lim && Math.abs(v.y) < lim;
       s.el.classList.toggle('on', on);
       s.el.classList.toggle('hot', this.hover === s);
       const x = (v.x + 1) / 2 * innerWidth, y = (1 - v.y) / 2 * innerHeight;

@@ -101,5 +101,10 @@ self.addEventListener('fetch', (e) => {
   e.respondWith(fetch(r).then((res) => { if (res.ok) caches.open(CACHE).then((c) => c.put(r, res.clone())); return res; }).catch(() => caches.match(r)));
 });
 `);
+// the screens' stills (Android) must show today's pages: warn when a page changed after them
+const newest = (dir) => Math.max(...readdirSync(dir, { recursive: true }).map((f) => statSync(`${dir}/${f}`).mtimeMs));
+if (statSync('public/screens/stills.json').mtimeMs < Math.max(statSync('content/portfolio.json').mtimeMs, newest('apps'))) {
+  console.warn('warning: the screens changed since their stills: run tools/screen_stills.py');
+}
 const gz = (b) => Math.round(b.length / 1024);
 console.log(`index.html ${gz(Buffer.from(html))} KB, ${app} ${gz(code)} KB, ${liveFile} ${gz(liveCode)} KB, og ${gz(og)} KB`);

@@ -38,8 +38,9 @@ async function start() {
   const flight = new Flight();
   const tour = new Tour(manifest, anchors, loader, flight, canvas);
   tour.drawNow = () => viewer.render(tour.camera, tour.pano);
-  viewer.onRestore = () => { loader.panos = {}; loader.pano(tour.pano, 0); redraw = true; wake(); };
-  const screens = new Screens(anchors, viewer, goBack);
+  viewer.onRestore = () => { loader.panos = {}; loader.pano(tour.pano, 0); if (screens.pictures) screens.loadPictures(); redraw = true; wake(); };
+  // Android: stills on the screens until you zoom in on one (screens.js); ?pictures tries it anywhere
+  const screens = new Screens(anchors, viewer, goBack, { pictures: /Android/i.test(navigator.userAgent) || params.has('pictures') });
   const lightbox = document.getElementById('lightbox');
   const spots = new Hotspots(tour.camera, tour, (action) => { if (action.startsWith('cert:')) openCertificate(action.slice(5)); });
 

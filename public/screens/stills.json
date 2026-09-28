@@ -1,0 +1,23 @@
+{
+ "tv": {
+  "file": "tv-45fed999.webp",
+  "page": [
+   1280,
+   975
+  ]
+ },
+ "pc": {
+  "file": "pc-2f1ec5db.webp",
+  "page": [
+   1024,
+   770
+  ]
+ },
+ "memo": {
+  "file": "memo-f6a97a98.webp",
+  "page": [
+   1300,
+   900
+  ]
+ }
+}

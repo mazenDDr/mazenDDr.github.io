@@ -10,12 +10,7 @@ import { fetchAsset } from '../../src/tour/cdn.js';
 
 const canvas = document.getElementById('room');
 // alpha: the live screens show through holes in the canvas (see screens.js).
-// ?fix=keep,layer,noscan: switches for finding what makes the screens flicker on some
-// Android phones (keep: the canvas keeps its drawn frame; layer: each screen page is one
-// stable layer; noscan: no CRT scanlines over the pages).
-const fixes = new Set((new URLSearchParams(location.search).get('fix') || '').split(',').filter(Boolean));
-for (const f of fixes) document.documentElement.classList.add(`fix-${f}`);
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance', preserveDrawingBuffer: fixes.has('keep') });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;   // the room renders linear light; post.js grades it
 
@@ -122,7 +117,9 @@ const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.w
   scene.add(room);
   post = createPost(renderer, scene, camera);
   post.onChange = () => { redraw = true; };
-  screens = new Screens(anchors, scene, LOOK.exposure, goBack);
+  // Android: stills on the screens until you zoom in on one (screens.js); ?pictures tries it anywhere
+  screens = new Screens(anchors, scene, LOOK.exposure, goBack, { pictures: /Android/i.test(navigator.userAgent) || params.has('pictures') });
+  post.after = () => screens.drawUnder(renderer, camera);
   door = parts.door;
   resize();
   if (live) await warmUp();

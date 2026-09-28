@@ -5,8 +5,12 @@
 // exactly where each screen shows (rendered in), so they appear inside the tube
 // and anything in front still covers them. The viewer draws the glass on top.
 // Pages load only once the room is entered, and sleep when not looked at.
+// On Android phones (`pictures`) each screen is a still of its page drawn by the viewer
+// (Chrome there re-draws a page mapped like this at every new size, and the screens lagged
+// and flickered from across the room); the live page takes over once you zoom in on it.
 import { DIM } from './glass.js';
 import { place } from './homography.js';
+import { fetchAsset } from './cdn.js';
 
 // Pixel size each app is designed for (the aspect matches the glass), and the black
 // border a CRT leaves around its picture, as a fraction of the glass.
@@ -39,7 +43,9 @@ function planeGeometry(c, r, u, n, w, h) {
 }
 
 export class Screens {
-  constructor(anchors, viewer, onBack) {
+  constructor(anchors, viewer, onBack, { pictures = false } = {}) {
+    this.viewer = viewer;
+    this.pictures = pictures;
     this.root = document.createElement('div');
     this.root.id = 'screens';
     document.body.prepend(this.root);             // behind the canvas
@@ -74,9 +80,24 @@ export class Screens {
       // the page's corners in the room (top-left, top-right, bottom-right, bottom-left)
       const corners = [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([x, y]) => add(add(centre, s.right, (x * pw * k) / 2), s.up, (y * ph * k) / 2));
       this.root.append(wrap);
-      this.objects[name] = { app, wrap, frame, glass, corners, px: [[0, 0], [pw, 0], [pw, ph], [0, ph]], src: app.src, dim: DIM, to: DIM };
+      this.objects[name] = { app, wrap, frame, glass, corners, px: [[0, 0], [pw, 0], [pw, ph], [0, ph]], src: app.src, dim: DIM, to: DIM,
+        page: [w, h], frameSize: [pw, ph] };
     }
     addEventListener('message', (e) => { if (e.data?.type === 'room-back') onBack(); });
+    if (pictures) this.loadPictures();
+  }
+
+  /** The stills (tools/screen_stills.py); until one arrives its live page shows. */
+  async loadPictures() {
+    try {
+      const stills = await (await fetchAsset('public/screens/stills.json')).json();
+      await Promise.all(Object.entries(this.objects).map(async ([name, o]) => {
+        const img = await createImageBitmap(await (await fetchAsset(`public/screens/${stills[name].file}`)).blob(), { colorSpaceConversion: 'none' });
+        o.picture = this.viewer.addPicture({ corners: o.corners, px: o.px, page: o.page, frame: o.frameSize, crt: o.app.crt, img });
+        o.picture.show = !o.live;
+        this.changed = true;
+      }));
+    } catch { /* the live pages stay */ }
   }
 
   /** Start the pages (once the room is entered: nothing loads before it's needed). */
@@ -112,6 +133,9 @@ export class Screens {
       setTimeout(() => f.focus(), 350);
     } else {
       o.wrap.classList.add('on');
+      o.live = true;                                // (a still until now, on Android)
+      if (o.picture) o.picture.show = false;
+      this.changed = true;
       o.to = 0;
       o.glass.sheen = 0.5;
       // keys go to the page only once it can answer them (Escape still works meanwhile)
@@ -123,6 +147,8 @@ export class Screens {
   hide() {
     for (const o of Object.values(this.objects)) {
       o.wrap.classList.remove('on');
+      o.live = false;
+      if (o.picture) o.picture.show = true;
       o.to = DIM;
       o.glass.sheen = 1;
       if (o.src !== o.app.src) { o.frame.src = o.app.src; o.src = o.app.src; }
@@ -135,7 +161,8 @@ export class Screens {
 
   /** Ease the dimming; true while it still changes (the view must redraw). */
   update(dt) {
-    let moving = false;
+    let moving = this.changed;
+    this.changed = false;
     for (const o of Object.values(this.objects)) {
       if (o.dim === o.to) continue;
       o.dim = Math.abs(o.to - o.dim) < 0.004 ? o.to : o.dim + (o.to - o.dim) * Math.min(1, dt * 6);
@@ -147,7 +174,13 @@ export class Screens {
 
   /** Map each page onto its screen as the camera sees it. */
   render(cam, w, h) {
-    for (const o of Object.values(this.objects)) place(o, cam.viewProj, w, h);
+    for (const o of Object.values(this.objects)) {
+      if (o.picture && !o.live) {                   // drawn as a still: the page itself stays hidden
+        if (o.shown !== false) { o.shown = false; o.wrap.style.visibility = 'hidden'; }
+        continue;
+      }
+      place(o, cam.viewProj, w, h);
+    }
   }
 
   set visible(on) { this.root.style.visibility = on ? '' : 'hidden'; }

@@ -8,8 +8,15 @@
 // rounded corners included, like a picture *in* the tube rather than on top of
 // it. Over it, the same glass is drawn again: darker towards the rim where the
 // tube curves away, with the room's lights reflected in its curvature.
+//
+// On Android phones (`pictures`), Chrome re-draws a page mapped like this at every new
+// size while the camera moves, and the screens lagged and flickered from across the room.
+// There, each screen shows a still of its page (tools/screen_stills.py) drawn by WebGL
+// behind the glass, blended exactly as the browser blends the live page, and the live
+// page takes over once you have zoomed in on it.
 import * as THREE from 'three';
 import { place } from '../../src/tour/homography.js';
+import { fetchAsset } from '../../src/tour/cdn.js';
 
 // Pixel size each app is designed for (the aspect matches the glass), and the
 // black border a CRT leaves around its picture, as a fraction of the glass.
@@ -91,6 +98,46 @@ function glassMaterial(exposure, crt) {
   });
 }
 
+/** A still of a page on its screen, drawn *behind* what the canvas already holds: where
+ *  the room left the canvas see-through (the glass: alpha = its dimming), the page shows
+ *  through by (1 - alpha), which is how the browser composites the live page under it.
+ *  `px` is the position in the page's frame (the CRT's black border included); the
+ *  scanlines are the CSS ones, averaged where they are finer than a pixel. */
+function pictureMaterial(map, [w, h], [pw, ph], crt) {
+  return new THREE.RawShaderMaterial({
+    glslVersion: THREE.GLSL3,
+    uniforms: { map: { value: map }, page: { value: new THREE.Vector2(w, h) }, margin: { value: new THREE.Vector2((pw - w) / 2, (ph - h) / 2) } },
+    defines: { CRT: crt ? 1 : 0 },
+    vertexShader: /* glsl */ `
+      precision highp float;
+      uniform mat4 modelViewMatrix, projectionMatrix;
+      in vec3 position;
+      in vec2 px;
+      out vec2 vPx;
+      void main() { vPx = px; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */ `
+      precision highp float;
+      uniform sampler2D map;
+      uniform vec2 page, margin;
+      in vec2 vPx;
+      out vec4 color;
+      void main() {
+        vec2 p = vPx - margin;
+        vec3 c = vec3(5.0, 4.0, 3.0) / 255.0;          // the tube's black around the picture
+        if (all(greaterThanEqual(p, vec2(0.0))) && all(lessThanEqual(p, page))) c = texture(map, p / page).rgb;
+        #if CRT
+          float line = step(2.0, mod(vPx.y, 4.0));
+          c *= mix(1.0 - 0.16 * line, 0.92, clamp(fwidth(vPx.y) - 0.5, 0.0, 1.0));
+        #endif
+        color = vec4(c, 1.0);
+      }`,
+    transparent: true, depthTest: false, depthWrite: false, side: THREE.DoubleSide,
+    blending: THREE.CustomBlending, blendEquation: THREE.AddEquation,
+    blendSrc: THREE.OneMinusDstAlphaFactor, blendDst: THREE.OneFactor,
+    blendSrcAlpha: THREE.OneMinusDstAlphaFactor, blendDstAlpha: THREE.OneFactor,
+  });
+}
+
 /** The glass mesh, plus each vertex's place on the face (-1..1 across and up). */
 function glassGeometry(g, s) {
   const geo = new THREE.BufferGeometry();
@@ -109,7 +156,7 @@ function glassGeometry(g, s) {
 }
 
 export class Screens {
-  constructor(anchors, scene, exposure, onBack) {
+  constructor(anchors, scene, exposure, onBack, { pictures = false } = {}) {
     const el = document.createElement('div');
     el.id = 'screens';
     document.body.prepend(el);                     // behind the canvas
@@ -163,11 +210,49 @@ export class Screens {
       const corners = [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([x, y]) => c.clone().addScaledVector(right, (x * pw * k) / 2).addScaledVector(up, (y * ph * k) / 2).toArray());
       if (!g) wrap.style.cssText = `width:${w}px;height:${h}px`;
       el.append(wrap);
-      this.objects[name] = { wrap, frame, hole, glass, corners, px: [[0, 0], [pw, 0], [pw, ph], [0, ph]], src: app.src, dim: DIM, to: DIM };
+      this.objects[name] = { wrap, frame, hole, glass, corners, px: [[0, 0], [pw, 0], [pw, ph], [0, ph]], src: app.src, dim: DIM, to: DIM,
+        page: [w, h], frameSize: [pw, ph], crt: !!app.crt };
     }
+    if (pictures) this.loadPictures();
     // Apps ask to leave with Escape (keys inside an iframe never reach this page).
     addEventListener('message', (e) => { if (e.data?.type === 'room-back') onBack(); });
 
+  }
+
+  /** The stills, one quad each on its page's corners; until one arrives its live page shows. */
+  async loadPictures() {
+    this.under = new THREE.Scene();
+    const stills = await (await fetchAsset('public/screens/stills.json')).json();
+    await Promise.all(Object.entries(this.objects).map(async ([name, o]) => {
+      const blob = await (await fetchAsset(`public/screens/${stills[name].file}`)).blob();
+      const img = await createImageBitmap(blob, { colorSpaceConversion: 'none' }).catch(() => null);
+      if (!img) return;
+      const map = new THREE.Texture(img);
+      map.flipY = false;                            // (the page's top row first, as the shader reads it)
+      map.colorSpace = THREE.NoColorSpace;          // sRGB bytes straight to the (sRGB) canvas
+      map.anisotropy = 8;
+      map.needsUpdate = true;
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(o.corners.flat(), 3));
+      geo.setAttribute('px', new THREE.Float32BufferAttribute(o.px.flat(), 2));
+      geo.setIndex([0, 1, 2, 0, 2, 3]);
+      o.picture = new THREE.Mesh(geo, pictureMaterial(map, o.page, o.frameSize, o.crt));
+      o.picture.frustumCulled = false;
+      this.under.add(o.picture);
+      this.changed = true;
+    })).catch(() => { /* the live pages stay */ });
+  }
+
+  /** After the room is drawn: the stills, behind it (see pictureMaterial). */
+  drawUnder(renderer, camera) {
+    if (!this.under) return;
+    let any = false;
+    for (const o of Object.values(this.objects)) if (o.picture) any = (o.picture.visible = !o.live) || any;
+    if (!any) return;
+    const clear = renderer.autoClear;
+    renderer.autoClear = false;
+    renderer.render(this.under, camera);
+    renderer.autoClear = clear;
   }
 
   /** Narrow or portrait screens can't read a 1280-px app shrunk onto a TV. */
@@ -199,6 +284,7 @@ export class Screens {
       setTimeout(() => f.focus(), 350);
     } else {
       o.wrap.classList.add('on');
+      o.live = true;                                // (a still until now, on Android)
       o.to = 0;
       o.glass.material.uniforms.sheen.value = 0.5;
       setTimeout(() => o.frame.focus(), 350);
@@ -210,6 +296,7 @@ export class Screens {
   hide() {
     for (const [name, o] of Object.entries(this.objects)) {
       o.wrap.classList.remove('on');
+      o.live = false;
       o.to = DIM;
       o.glass.material.uniforms.sheen.value = 1;
       if (o.src !== APPS[name].src) { o.frame.src = APPS[name].src; o.src = APPS[name].src; }
@@ -239,6 +326,12 @@ export class Screens {
   render(camera) {
     // each page onto its screen with one flat matrix (works in Safari; hidden when out of view)
     const m = new THREE.Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).elements;
-    for (const o of Object.values(this.objects)) place(o, m, innerWidth, innerHeight);
+    for (const o of Object.values(this.objects)) {
+      if (o.picture && !o.live) {                   // drawn as a still: the page itself stays hidden
+        if (o.shown !== false) { o.shown = false; o.wrap.style.visibility = 'hidden'; }
+        continue;
+      }
+      place(o, m, innerWidth, innerHeight);
+    }
   }
 }

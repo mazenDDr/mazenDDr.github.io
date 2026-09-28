@@ -11,8 +11,12 @@ function rng(seed) {
 
 /** A phone (touch, and a small screen either way up): arrows at phone size, fewer of them
  *  (hotspots.js). Computers and tablets keep the full-size ones. */
-export const isPhone = () => matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) < 500;
-const markPhone = () => document.documentElement.classList.toggle('phone', isPhone());
+let phone = false;
+export const isPhone = () => phone;
+const markPhone = () => {
+  phone = matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) < 500;
+  document.documentElement.classList.toggle('phone', phone);
+};
 markPhone();
 addEventListener('resize', markPhone);
 
