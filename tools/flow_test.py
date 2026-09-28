@@ -47,6 +47,7 @@ with sync_playwright() as p:
     pg = ctx.new_page()
     pg.on('console', lambda m: (m.type == 'error' or (m.type == 'warning' and 'WebGL' in m.text)) and errors.append(m.text))   # WebGL only warns
     pg.on('pageerror', lambda e: errors.append(f'pageerror: {e}'))
+    pg.on('response', lambda r: r.status >= 400 and errors.append(f'{r.status} {r.url}'))   # which file the console means
     pg.goto(url)
     pg.wait_for_function('window.__room && window.__room.director', timeout=60000)
 
