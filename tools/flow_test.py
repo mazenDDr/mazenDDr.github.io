@@ -129,6 +129,7 @@ with sync_playwright() as p:
         click_spot('cert:bsc'); time.sleep(0.8); shot('diploma_lightbox')
         pg.locator('#lightbox button').tap(); time.sleep(0.3)
         back('room')
+        click_spot('bed'); settle(); time.sleep(0.4)        # a phone reaches the pinboard from the bed
         click_spot('memo'); settle(); time.sleep(2.5); shot('memo', {'focus': 'memo'})
         back('bed'); back('room')
         shot('stood_up', {'place': 'room'})

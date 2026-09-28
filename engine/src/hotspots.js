@@ -3,7 +3,7 @@
 // marker and a hover label drawn as HTML over the canvas.
 import * as THREE from 'three';
 import { B, PLACES } from './places.js';
-import { Doodles } from './doodles.js';
+import { Doodles, isPhone } from './doodles.js';
 
 // `say` is what the hand writes when you hover; markers sit on the object itself.
 const SPOTS = [
@@ -91,7 +91,11 @@ export class Hotspots {
   visibleSpots() {
     const d = this.director;
     if (!this.enabled || d.busy || d.focus) return [];
-    return this.spots.filter((s) => (s.onlyAt ? s.onlyAt === d.place : s.place !== d.place && PARENT[d.place] !== s.place));
+    // A phone shows the seats, and the screens only from their own seat: the TV from the
+    // couch, the computer from the desk, the pinboard from the bed (no crowd of arrows).
+    const phone = isPhone();
+    return this.spots.filter((s) => (s.onlyAt ? s.onlyAt === d.place : s.place !== d.place && PARENT[d.place] !== s.place
+      && (!phone || !PARENT[s.place] || PARENT[s.place] === d.place)));
   }
 
   onMove(e) {
@@ -135,6 +139,7 @@ export class Hotspots {
       if (fresh.length) {
         const pos = (s) => s.el.style.transform.match(/[-\d.]+/g).map(Number);
         const on = this.spots.filter((s) => s.el.classList.contains('on'));
+        const [reach, push] = isPhone() ? [170, 75] : [320, 140];         // markers this close push each other's tails apart
         // Fan the arrows out: each tail points away from nearby markers, with a
         // gentle pull toward the middle of the screen so it stays in view.
         for (const s of fresh) {
@@ -143,7 +148,7 @@ export class Hotspots {
           for (const o of on) {
             if (o === s) continue;
             const [ox, oy] = pos(o), d2 = (x - ox) ** 2 + (y - oy) ** 2;
-            if (d2 < 320 ** 2) { dx += (x - ox) / d2 * 140; dy += (y - oy) / d2 * 140; }
+            if (d2 < reach ** 2) { dx += (x - ox) / d2 * push; dy += (y - oy) / d2 * push; }
           }
           const n = Math.hypot(dx, dy) || 1;
           this.doodles.aim(s.key, [dx / n, dy / n]);

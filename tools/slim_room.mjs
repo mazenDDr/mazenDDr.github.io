@@ -10,10 +10,15 @@
 //   Retina laptop), in metres, never under 0.2 mm. The light-map UVs (uv1) and texture
 //   UVs (uv0) count in the error, and every vertex a surface shares with another surface
 //   (where two materials meet) is locked, so neighbours never crack apart.
+// - moves details that lie on another surface (a label on a box, a band on a book, a
+//   window on a facade: tools/zfight_scan.mjs) just in front of it, 0.5 mm or three
+//   depth-buffer steps at the closest the camera gets, so the depth test always picks
+//   the detail instead of flickering between the two.
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
 import { compactPrimitive, prune, weld } from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer';
+import { areas, onTop, overlaps, triangles } from './zfight_scan.mjs';
 
 const [inp, out] = process.argv.slice(2);
 const arg = (k, d) => (process.argv.includes(k) ? Number(process.argv[process.argv.indexOf(k) + 1]) : d);
@@ -79,7 +84,31 @@ for (const mesh of root.listMeshes()) {
     after += J.length / 3;
   }
 }
+// Details lying on another surface, moved just in front of it (after simplifying, which
+// could undo it). The depth buffer (24 bits, near plane 3 cm) resolves d² / 2^24 / 0.03 m
+// at a distance d: three of those steps, and never under 0.5 mm (16-bit positions move
+// a vertex by up to a third of that in a room-sized chunk).
+// A detail on a detail (a trim on a panel on a plate) moves again on the next pass.
+let lifted = 0, left = 0;
+for (let pass = 0; pass < 6; pass++) for (const s of root.listScenes()) for (const node of s.listChildren()) {
+  const tris = triangles(node), area = areas(tris), move = new Map();
+  const pairs = overlaps(tris);
+  if (pass === 5) { left += pairs.length; continue; }
+  for (const [tr, o] of pairs) {
+    const top = onTop(area, tr, o);
+    const lo = [0, 1, 2].map((k) => Math.min(top.a[k], top.b[k], top.c[k])), hi = [0, 1, 2].map((k) => Math.max(top.a[k], top.b[k], top.c[k]));
+    const d = Math.max(0.0005, 3 * nearest(lo, hi) ** 2 / 2 ** 24 / 0.03);
+    const m = move.get(top.prim) || move.set(top.prim, new Map()).get(top.prim);
+    for (const v of top.vi) if (!m.has(v) || m.get(v).d < d) m.set(v, { d, n: top.n });
+  }
+  for (const [prim, m] of move) {
+    const pos = prim.getAttribute('POSITION');
+    for (const [v, { d, n }] of m) pos.setElement(v, pos.getElement(v, []).map((x, k) => x + n[k] * d));
+    lifted += m.size;
+  }
+}
+
 // keep what looks unused to glTF: the shader reads uv1 (light maps) and solid-colour textures
 await doc.transform(prune({ keepAttributes: true, keepSolidTextures: true }));
 await io.write(out, doc);
-console.log(JSON.stringify({ triangles_before: Math.round(before), triangles_after: Math.round(after), kept: +(after / before).toFixed(3), angle: SIMPLIFY ? ANGLE : 0 }));
+console.log(JSON.stringify({ triangles_before: Math.round(before), triangles_after: Math.round(after), kept: +(after / before).toFixed(3), angle: SIMPLIFY ? ANGLE : 0, vertices_lifted: lifted, fights_left: left }));

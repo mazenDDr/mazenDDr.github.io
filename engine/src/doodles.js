@@ -9,8 +9,15 @@ function rng(seed) {
   return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 2 ** 32);
 }
 
-/** Arrow body and head in local coordinates, the target at (0, 0). */
-function arrowShape(seed, dir, k = 1) {
+/** A phone (touch, and a small screen either way up): arrows at phone size, fewer of them
+ *  (hotspots.js). Computers and tablets keep the full-size ones. */
+export const isPhone = () => matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) < 500;
+const markPhone = () => document.documentElement.classList.toggle('phone', isPhone());
+markPhone();
+addEventListener('resize', markPhone);
+
+/** Arrow body and head in local coordinates, the target at (0, 0). `headK` scales the head. */
+function arrowShape(seed, dir, k = 1, headK = 1) {
   const r = rng(seed);
   const len = (150 + r() * 40) * k;                // tail distance from the target
   const [dx, dy] = dir;
@@ -39,7 +46,7 @@ function arrowShape(seed, dir, k = 1) {
   // Arrowhead: two short strokes back from the tip.
   const tip = p[p.length - 1], back = p[p.length - 2];
   const a = Math.atan2(tip[1] - back[1], tip[0] - back[0]);
-  const h = 14 + r() * 3, spread = 0.48 + r() * 0.12;
+  const h = (14 + r() * 3) * headK, spread = 0.48 + r() * 0.12;
   const w1 = [tip[0] - Math.cos(a - spread) * h, tip[1] - Math.sin(a - spread) * h];
   const w2 = [tip[0] - Math.cos(a + spread) * (h - 1.5), tip[1] - Math.sin(a + spread) * (h - 1.5)];
   const head = `M${w1.map((v) => v.toFixed(1))} L${tip.map((v) => v.toFixed(1))} L${w2.map((v) => v.toFixed(1))}`;
@@ -96,20 +103,22 @@ export class Doodles {
         const ux = cx / n, uy = cy / n;
         it.dir = [ux * Math.cos(turn) - uy * Math.sin(turn), ux * Math.sin(turn) + uy * Math.cos(turn)];
       }
-      const k = Math.min(1, Math.max(0.5, innerWidth / 1100), innerHeight / 720);   // smaller arrows on small (or short) screens
-      let s = arrowShape(it.seed, it.dir, k);
+      const phone = isPhone();
+      const k = phone ? 0.42 : Math.min(1, Math.max(0.5, innerWidth / 1100), innerHeight / 720);   // smaller arrows on small (or short) screens
+      const headK = phone ? 0.62 : 1;
+      let s = arrowShape(it.seed, it.dir, k, headK);
       // Keep the tail and its label on screen: mirror the arrow if it would leave.
-      const room = 16, labelW = 170;
+      const room = 16, labelW = phone ? 110 : 170, edge = phone ? 36 : 60;
       const tx = x + s.tail[0], ty = y + s.tail[1];
       if (tx - labelW < room && it.dir[0] < 0 || tx + labelW > innerWidth - room && it.dir[0] > 0) it.dir = [-it.dir[0], it.dir[1]];
-      if (ty < 60 && it.dir[1] < 0 || ty > innerHeight - 60 && it.dir[1] > 0) it.dir = [it.dir[0], -it.dir[1]];
-      s = arrowShape(it.seed, it.dir, k);
+      if (ty < edge && it.dir[1] < 0 || ty > innerHeight - edge && it.dir[1] > 0) it.dir = [it.dir[0], -it.dir[1]];
+      s = arrowShape(it.seed, it.dir, k, headK);
       it.body.setAttribute('d', s.d);
       it.head.setAttribute('d', s.head);
       // Label beside the tail, written toward the middle of the screen.
       const right = x + s.tail[0] < innerWidth / 2;
       it.label.setAttribute('x', (s.tail[0] + (right ? 8 : -8)).toFixed(1));
-      it.label.setAttribute('y', (s.tail[1] + (it.dir[1] >= 0 ? 22 : -10)).toFixed(1));
+      it.label.setAttribute('y', (s.tail[1] + (it.dir[1] >= 0 ? (phone ? 16 : 22) : (phone ? -7 : -10))).toFixed(1));
       it.label.setAttribute('text-anchor', right ? 'start' : 'end');
       it.tail = s.tail;
     }

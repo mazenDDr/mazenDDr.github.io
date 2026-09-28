@@ -52,6 +52,15 @@ Files come from jsDelivr pinned to a commit; if the CDN hasn't answered in 1.5 s
 cold CDN cache once took 13 s) or fails, the same file is asked of GitHub Pages too
 and the first answer wins (`ROOM_GET` in the page's head).
 
+On a phone (touch, and a small screen either way up) the hand-drawn arrows are drawn
+at phone size, and fewer at a time: the seats (couch, desk, bed, diploma) from the room,
+and the TV, the computer and the pinboard from their own seat. Computers and tablets
+keep the full-size arrows and every one of them.
+
+`?fix=keep,layer,noscan` turns on, one by one, the candidate fixes for the screens that
+flicker on some Android phones (the canvas keeps its drawn frame; each screen page is one
+stable layer; no CRT scanlines over the pages); nothing uses them by default yet.
+
 `?mode=live` or `?mode=tour` forces one. In both, the live pages (TV, PC,
 pinboard) are mapped onto their screens with one projective CSS matrix each, which
 every browser draws (Safari won't draw three.js-style CSS3D scenes).
@@ -196,7 +205,12 @@ at 12.9 s, 1.4 MB, where the live room would take about 35 s). What changed:
   positions are stored at 16 bits instead of 14: at 14 a room-sized chunk's grid is
   0.4-1.3 mm, enough to merge the floppy disks' labels into the disks (they flickered).
   Against the Blender original over 17 views (the engine, grain off): median PSNR
-  48.8 dB before, **49.8 dB now**; worst view 43.4 → 45.6 dB.
+  48.8 dB before, **49.8 dB now**; worst view 43.4 → 45.6 dB. Details that lie on
+  another surface (the colour bands on the shelf books, dust jackets, a label, windows on
+  the buildings outside, the trim on the wall) are moved just in front of it, 0.5 mm or
+  three depth-buffer steps at the closest the camera gets, so they show as Cycles shows
+  them instead of flickering with what's under them: `tools/zfight_scan.mjs` finds
+  them (55 such pairs in the published model before, none left before compression).
 - **Everything asked for at once.** The page's head knows the first files (the script,
   the model, the small light maps, the room's data) and requests them before the
   script runs, instead of one after another as the script found out about them.
@@ -272,6 +286,7 @@ $P web/tools/app_shot.py apps/tv/ tv.png --click .person
 $P web/tools/motion_probe.py         # smoothness of the camera
 $P web/tools/perf_probe.py [--net home|fast4g|slow4g] [--gzip] [--read 2.5] [--cpu 6] [--swiftshader] [--mobile] [--mode live|tour] [--page engine/index.html]
 $P web/tools/flow_test.py OUT/ --mobile                     # the same visit on a phone held sideways: taps and the Back button
+node web/tools/zfight_scan.mjs web/public/room.glb          # surfaces lying on each other (flicker), with the one on top
 $P web/tools/texture_needs.py        # the engine: how big each texture needs to be (before export_web.py)
 $P web/tools/calibrate_look.py       # refit the grade after a rebake
 $P web/tools/sharpness.py REF.png WEB.png   # detail vs a Cycles close-up
