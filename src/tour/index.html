@@ -25,9 +25,13 @@
 window.ROOM_CDN = '{{cdn}}';
 /* A file from the CDN, with the site itself as the backup: if the CDN hasn't answered
    within 1.5 s (a cold CDN cache once took 13 s) or fails, the site is asked too, and the
-   first good answer wins. Resolves to the fetch() Response. `priority`: high, low or auto. */
+   first good answer wins. Resolves to the fetch() Response. `priority`: high, low or auto.
+   jsDelivr serves a repository of up to 50 MB and this one is bigger: it answers some files
+   and refuses others ("Package size exceeded"); after three refusals this visit stops asking
+   it and goes straight to the site. */
+var cdnRefused = 0;
 window.ROOM_GET = function (path, priority) {
-  var cdn = window.ROOM_CDN;
+  var cdn = cdnRefused < 3 && window.ROOM_CDN;
   if (!cdn) return fetch(path, { priority: priority || 'auto' }).then(function (r) { if (!r.ok) throw new Error(r.status + ' ' + path); return r; });
   return new Promise(function (resolve, reject) {
     var settled = false, site = false, left = 0, ctls = [], timer = 0;
@@ -36,7 +40,7 @@ window.ROOM_GET = function (path, priority) {
       left++;
       ctls.push(ctl);
       fetch(url, { signal: ctl ? ctl.signal : undefined, priority: priority || 'auto' }).then(function (r) {
-        if (!r.ok) throw new Error(r.status + ' ' + url);
+        if (!r.ok) { if (url !== path) cdnRefused++; throw new Error(r.status + ' ' + url); }
         if (settled) { if (ctl) ctl.abort(); return; }
         settled = true;
         clearTimeout(timer);
