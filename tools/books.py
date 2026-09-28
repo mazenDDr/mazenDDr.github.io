@@ -124,3 +124,30 @@ def add_books():
     end.location = (0, y + 0.004, LOWER_Z)
     col.objects.link(end)
     return {'removed': len(removed), 'books': placed, 'row_ends_y_cm': round(y * 100, 1)}
+
+
+def seat_covers():
+    """The shelf's generated books (live_room.py) put each cover board inside the page block,
+    its outer face exactly on the pages' side: the two fought over which shows (the pink/cream
+    flicker on the end books). Move every such cover out by its own thickness, so it wraps
+    the pages as a real cover does."""
+    from mathutils import Vector
+    moved = 0
+    for ob in bpy.data.objects:
+        if ob.type != 'MESH' or '_cover' not in ob.name or not any(m and 'book_band' in m.name for m in ob.data.materials):
+            continue
+        pages = bpy.data.objects.get(ob.name.split('_cover')[0] + '_pages')
+        if not pages:
+            continue
+        if ob.data.users > 1:
+            ob.data = ob.data.copy()                                          # (front and back covers share one mesh)
+        vs = [v.co for v in ob.data.vertices]
+        lo = Vector([min(v[i] for v in vs) for i in range(3)]); hi = Vector([max(v[i] for v in vs) for i in range(3)])
+        axis = min(range(3), key=lambda i: hi[i] - lo[i])                    # the board's thickness
+        pc = ob.matrix_world.inverted() @ (pages.matrix_world @ (sum((Vector(c) for c in pages.bound_box), Vector()) / 8))
+        side = 1 if (lo[axis] + hi[axis]) / 2 > pc[axis] else -1                # away from the pages' middle
+        shift = Vector((0, 0, 0)); shift[axis] = side * (hi[axis] - lo[axis])
+        for v in ob.data.vertices:
+            v.co += shift
+        moved += 1
+    return moved

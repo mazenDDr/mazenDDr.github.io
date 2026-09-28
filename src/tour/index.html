@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+/* The site lives on Cloudflare Pages; the GitHub Pages address sends visitors there (same path, query, place). */
+if (location.hostname === 'mazenddr.github.io' && '{{home}}') location.replace('{{home}}' + location.pathname.replace(/^\//, '') + location.search + location.hash);
+</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mazen's Room · Mazen Khaled, AI engineer</title>
 <meta name="description" content="Mazen Khaled's portfolio: knock on the door and look around his room. The TV, the computer and the pinboard show his projects.">
@@ -12,6 +16,12 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mazen's Room">
 <link rel="preload" href="{{hallFront}}" as="image" type="image/avif">
 <link rel="preload" href="fonts/{{caveat}}" as="font" type="font/woff2" crossorigin>
 <script>
@@ -84,8 +94,9 @@ window.ROOM_GET = function (path, priority) {
   }
   var m = /[?&]mode=(live|tour)/.exec(location.search), mode = m && m[1], alive = false;
   try { alive = sessionStorage.getItem('room-live') === '1'; } catch (e) {}
-  if (!mode && alive) { mode = 'tour'; try { localStorage.setItem('room-mode', 'tour'); } catch (e) {} }   /* the last visit died in the live room */
-  if (!mode) { try { mode = localStorage.getItem('room-mode'); } catch (e) {} }
+  if (!mode && alive) { mode = 'tour'; try { localStorage.setItem('room-mode', 'tour:' + Date.now()); } catch (e) {} }   /* the last visit died in the live room */
+  /* remembered for a day, then the device gets another chance (a slow moment isn't forever) */
+  if (!mode) { try { var kept = /^tour:(\d+)$/.exec(localStorage.getItem('room-mode') || ''); if (kept && Date.now() - kept[1] < 864e5) mode = 'tour'; } catch (e) {} }
   if (mode !== 'live' && mode !== 'tour') mode = pick();
   window.ROOM_MODE = mode;
   window.ROOM_LIVE = mode === 'live';
@@ -157,6 +168,7 @@ window.ROOM_GET = function (path, priority) {
   <p class="rotate-title">Turn your phone sideways</p>
   <p>The room is made for a wide screen.</p>
   <button type="button" class="turn" hidden>Turn it for me</button>
+  <p class="home" hidden>For full screen on an iPhone: Share, then <b>Add to Home Screen</b>, and open it from there.</p>
   <button type="button" class="stay">Continue anyway</button>
 </div>
 <div id="fallback" hidden>
@@ -175,7 +187,7 @@ window.ROOM_GET = function (path, priority) {
     .then((js) => (js ? import(URL.createObjectURL(new Blob([js], { type: 'text/javascript' }))) : import('./' + file))).catch((e) => {
     console.error(e);
     if (!window.ROOM_LIVE) return;
-    try { localStorage.setItem('room-mode', 'tour'); } catch (e) { /* private mode */ }
+    try { localStorage.setItem('room-mode', 'tour:' + Date.now()); } catch (e) { /* private mode */ }
     location.replace(location.pathname + '?mode=tour');
   });
   // both rooms: keep every never-changing file on the device, so a second visit is instant

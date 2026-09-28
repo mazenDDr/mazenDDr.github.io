@@ -39,8 +39,8 @@ async function start() {
   const tour = new Tour(manifest, anchors, loader, flight, canvas);
   tour.drawNow = () => viewer.render(tour.camera, tour.pano);
   viewer.onRestore = () => { loader.panos = {}; loader.pano(tour.pano, 0); if (screens.pictures) screens.loadPictures(); redraw = true; wake(); };
-  // Android: stills on the screens until you zoom in on one (screens.js); ?pictures / ?pictures=0 force it on / off
-  const screens = new Screens(anchors, viewer, goBack, { pictures: params.has('pictures') ? params.get('pictures') !== '0' : /Android/i.test(navigator.userAgent) });
+  // Phones and tablets: stills on the screens, apps full screen (screens.js); ?pictures / ?pictures=0 force it on / off
+  const screens = new Screens(anchors, viewer, goBack, { pictures: params.has('pictures') ? params.get('pictures') !== '0' : /Android/i.test(navigator.userAgent) || matchMedia('(pointer: coarse)').matches });
   const lightbox = document.getElementById('lightbox');
   const spots = new Hotspots(tour.camera, tour, (action) => { if (action.startsWith('cert:')) openCertificate(action.slice(5)); });
 
@@ -143,6 +143,9 @@ async function start() {
   try { if (sessionStorage.getItem('portrait-ok')) document.body.classList.add('rotate-ok'); } catch { /* private mode */ }
   rotate.querySelector('.stay').addEventListener('click', stayPortrait);
   const turn = rotate.querySelector('.turn');
+  // iPhone Safari can't make a page full screen; opened from the Home Screen, the room fills it
+  const homeTip = rotate.querySelector('.home');
+  if (homeTip) homeTip.hidden = !(/iPhone|iPod/.test(navigator.userAgent) && !navigator.standalone);
   if (document.documentElement.requestFullscreen && screen.orientation?.lock) {
     turn.hidden = false;
     turn.addEventListener('click', async () => {

@@ -1,3 +1,4 @@
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 :root { --hand: 'Caveat', 'Bradley Hand', cursive; --type: 'Special Elite', 'Courier New', monospace; }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; overflow: hidden; background: #6b4a2b; }

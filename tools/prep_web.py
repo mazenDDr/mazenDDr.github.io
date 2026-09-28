@@ -41,6 +41,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 import realism, books
 realism_report = realism.add_realism()
 realism_report['books'] = books.add_books()
+realism_report['covers_seated'] = books.seat_covers()
 realism_report['landing'] = realism.add_landing()
 sc = bpy.context.scene
 dg = bpy.context.evaluated_depsgraph_get()

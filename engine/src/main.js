@@ -95,6 +95,9 @@ const stayPortrait = () => { document.body.classList.add('rotate-ok'); try { ses
 try { if (sessionStorage.getItem('portrait-ok')) document.body.classList.add('rotate-ok'); } catch {}
 rotate.querySelector('.stay').addEventListener('click', stayPortrait);
 const turn = rotate.querySelector('.turn');
+// iPhone Safari can't make a page full screen; opened from the Home Screen, the room fills it
+const homeTip = rotate.querySelector('.home');
+if (homeTip) homeTip.hidden = !(/iPhone|iPod/.test(navigator.userAgent) && !navigator.standalone);
 if (document.documentElement.requestFullscreen && screen.orientation?.lock) {
   turn.hidden = false;
   turn.addEventListener('click', async () => {
@@ -117,8 +120,8 @@ const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.w
   scene.add(room);
   post = createPost(renderer, scene, camera);
   post.onChange = () => { redraw = true; };
-  // Android: stills on the screens until you zoom in on one (screens.js); ?pictures / ?pictures=0 force it on / off
-  screens = new Screens(anchors, scene, LOOK.exposure, goBack, { pictures: params.has('pictures') ? params.get('pictures') !== '0' : /Android/i.test(navigator.userAgent) });
+  // Phones and tablets: stills on the screens, apps full screen (screens.js); ?pictures / ?pictures=0 force it on / off
+  screens = new Screens(anchors, scene, LOOK.exposure, goBack, { pictures: params.has('pictures') ? params.get('pictures') !== '0' : /Android/i.test(navigator.userAgent) || matchMedia('(pointer: coarse)').matches });
   post.after = () => screens.drawUnder(renderer, camera);
   door = parts.door;
   resize();
@@ -270,7 +273,7 @@ function toPictures() {
   if (params.has('stay')) return Promise.resolve();   // ?stay: keep the live room even on a GPU this slow (tests)
   if (leaving) return new Promise(() => {});
   leaving = true;
-  try { localStorage.setItem('room-mode', 'tour'); } catch { /* private mode */ }
+  try { localStorage.setItem('room-mode', `tour:${Date.now()}`); } catch { /* private mode */ }
   const place = director.place && director.place !== 'hall' ? director.place : 'room';
   const knocked = document.getElementById('intro')?.classList.contains('knocking') ? '&knocked' : '';
   location.replace(`${location.pathname}?mode=tour${director.place === 'hall' ? knocked : `&place=${place}`}`);

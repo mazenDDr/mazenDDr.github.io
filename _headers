@@ -1,0 +1,14 @@
+# Cloudflare Pages: files named by their content (a hash) never change; the rest may.
+# (A deployment's own address never changes either, but the project's main address does.)
+/public/tour/*
+  Cache-Control: public, max-age=31536000, immutable
+/public/tex/*
+  Cache-Control: public, max-age=31536000, immutable
+/*
+  Access-Control-Allow-Origin: *
+# The room models: Cloudflare compresses (brotli) only some types, not glTF; labelled as
+# wasm they are, 7.9 -> 5.8 MB (the page reads their bytes, whatever the label).
+/public/room-lo.glb
+  Content-Type: application/wasm
+/public/room.glb
+  Content-Type: application/wasm

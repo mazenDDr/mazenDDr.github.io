@@ -1,3 +1,4 @@
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 :root {
   --bg: #141414; --panel: #181818; --ink: #fff; --muted: #b3b3b3; --dim: #777;
   --red: #e50914; --green: #46d369;

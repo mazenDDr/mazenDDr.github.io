@@ -109,7 +109,10 @@ export class Screens {
     }
   }
 
-  get flat() { return innerWidth < 760 || innerHeight > innerWidth * 1.1; }
+  /** Narrow or portrait screens can't read a 1280-px app shrunk onto a TV; on Android an
+   *  app mapped into its screen is more than Chrome's tile memory holds there (the page
+   *  flickered, lagged and lost parts): both get the app as a flat, full-screen sheet. */
+  get flat() { return this.pictures || innerWidth < 760 || innerHeight > innerWidth * 1.1; }
 
   wake(o, on) { o.frame.contentWindow?.postMessage({ type: 'room-focus', on }, '*'); }
 
@@ -121,7 +124,7 @@ export class Screens {
     if (swapped) { o.frame.src = src; o.src = src; }
     this.active = name;
     document.body.classList.add('screen-focus');
-    this.wake(o, true);
+    if (!this.flat) this.wake(o, true);             // (flat: the sheet's copy is the one awake)
     if (this.flat) {
       this.sheet ||= Object.assign(document.createElement('div'), { id: 'app-sheet' });
       document.body.append(this.sheet);

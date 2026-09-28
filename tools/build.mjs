@@ -16,8 +16,14 @@ import sharp from 'sharp';
 const hash = (b) => createHash('sha1').update(b).digest('hex').slice(0, 8);
 // --cdn <commit>: the heavy files are also served by jsDelivr from that commit of the
 // repository (tools/deploy.sh pushes them first); the page is told where.
-const cdnAt = process.argv.includes('--cdn') ? process.argv[process.argv.indexOf('--cdn') + 1] : '';
-const CDN = cdnAt ? `https://cdn.jsdelivr.net/gh/mazenDDr/mazenDDr.github.io@${cdnAt}/` : '';
+// --cdn-url <url>: the same files at one Cloudflare Pages deployment (its own address, never
+// changes: tools/deploy.sh), which the page is told to use first.
+const arg = (k) => (process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : '');
+const cdnAt = arg('--cdn'), cdnUrl = arg('--cdn-url');
+// --home <url>: where the site lives (Cloudflare Pages); the GitHub Pages copy forwards there
+const HOME = arg('--home').replace(/\/?$/, '/').replace(/^\/$/, '');
+const SITE = HOME || 'https://mazenddr.github.io/';
+const CDN = cdnUrl ? cdnUrl.replace(/\/?$/, '/') : cdnAt ? `https://cdn.jsdelivr.net/gh/mazenDDr/mazenDDr.github.io@${cdnAt}/` : '';
 const OUT = 'public/tour';
 const manifest = JSON.parse(readFileSync(`${OUT}/manifest.json`, 'utf8'));
 const anchors = JSON.parse(readFileSync('public/anchors.json', 'utf8'));
@@ -70,7 +76,8 @@ const html = readFileSync('src/tour/index.html', 'utf8')
   .replaceAll('{{live}}', liveFile)
   .replace('{{css}}', css.outputFiles[0].text.trim())
   .replace('{{data}}', data)
-  .replace('{{og}}', `https://mazenddr.github.io/${ogFile}`)
+  .replace('{{og}}', `${SITE}${ogFile}`)
+  .replaceAll('{{home}}', HOME)
   .replace('{{cdn}}', CDN)
   .replace('{{first}}', JSON.stringify(first))
   .replace('{{firstBytes}}', String(first.reduce((n, f) => n + statSync(f).size, 0)))
@@ -92,7 +99,7 @@ self.addEventListener('fetch', (e) => {
   const r = e.request, url = new URL(r.url);
   if (r.method !== 'GET' || r.headers.has('range')) return;
   // never-changing files: named by hash, fonts, or pinned to a commit on jsDelivr
-  const cdn = url.hostname === 'cdn.jsdelivr.net';
+  const cdn = url.hostname === 'cdn.jsdelivr.net' || /^[0-9a-f]{8}\.mazenddr\.pages\.dev$/.test(url.hostname);   // (one deployment's own address)
   if (!cdn && url.origin !== location.origin) return;
   if (cdn || /\\/public\\/tour\\/[^/]+-[0-9a-f]{8}\\.|\\/fonts\\//.test(url.pathname)) {
     e.respondWith(caches.open(CACHE).then((c) => c.match(r).then((hit) => hit || fetch(r).then((res) => { if (res.ok) c.put(r, res.clone()); return res; }))));

@@ -179,6 +179,7 @@
    ],
    "row_ends_y_cm": 246.9
   },
+  "covers_seated": 20,
   "landing": [
    {
     "name": "real_painted_wooden_bench",
@@ -340,5 +341,5 @@
    "area_m2": 14.07
   }
  ],
- "seconds": 845.0
+ "seconds": 860.1
 }

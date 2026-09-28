@@ -121,8 +121,9 @@ with sync_playwright() as p:
         shot('looked_around', {'place': 'room'})
         click_spot('couch'); settle(); time.sleep(0.4); shot('couch', {'place': 'couch', 'busy': False})
         click_spot('tv'); settle(); time.sleep(2.5); shot('tv', {'place': 'tv', 'focus': 'tv'})
-        # zoomed in, the live page shows (on Android the screens are stills until then)
-        live = pg.evaluate("() => { const o = __room.screens.objects.tv; return o.wrap.style.visibility !== 'hidden' && !(o.picture && o.picture.visible); }")
+        # zoomed in, the app shows: full screen on phones (a sheet), else the live page in the TV
+        live = pg.evaluate("() => { const sheet = document.querySelector('#app-sheet.on iframe'); if (sheet) return sheet.src.includes('apps/tv');"
+                           " const o = __room.screens.objects.tv; return o.wrap.style.visibility !== 'hidden' && !(o.picture && o.picture.visible); }")
         results[-1]['ok'] = results[-1]['ok'] and live
         back('couch')
         back('room')

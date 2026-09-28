@@ -3,7 +3,7 @@
   "group": "detail",
   "res": 4096,
   "samples": 256,
-  "seconds": 253.2,
+  "seconds": 267.0,
   "range": [
    -12.1246,
    3.8754
@@ -15,10 +15,10 @@
   "group": "detail",
   "res": 4096,
   "samples": 256,
-  "seconds": 221.5,
+  "seconds": 276.5,
   "range": [
-   -11.0503,
-   4.9497
+   -11.0506,
+   4.9494
   ],
   "albedo": true,
   "tris": 98148
@@ -27,10 +27,10 @@
   "group": "door",
   "res": 1024,
   "samples": 256,
-  "seconds": 68.2,
+  "seconds": 25.0,
   "range": [
-   -13.137,
-   2.863
+   -13.1361,
+   2.8639
   ],
   "albedo": false,
   "tris": 4612
@@ -39,10 +39,10 @@
   "group": "hall",
   "res": 2048,
   "samples": 256,
-  "seconds": 40.7,
+  "seconds": 36.4,
   "range": [
-   -10.7214,
-   5.2786
+   -10.8113,
+   5.1887
   ],
   "albedo": false,
   "tris": 52027
@@ -51,10 +51,10 @@
   "group": "outside",
   "res": 1024,
   "samples": 256,
-  "seconds": 20.0,
+  "seconds": 11.8,
   "range": [
-   -10.1683,
-   5.8317
+   -10.169,
+   5.831
   ],
   "albedo": false,
   "tris": 69200
@@ -63,10 +63,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 142.4,
+  "seconds": 121.3,
   "range": [
-   -11.4688,
-   4.5312
+   -11.464,
+   4.536
   ],
   "albedo": false,
   "tris": 70468
@@ -75,10 +75,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 51.7,
+  "seconds": 60.1,
   "range": [
-   -11.6112,
-   4.3888
+   -11.6111,
+   4.3889
   ],
   "albedo": false,
   "tris": 60520
@@ -87,10 +87,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 87.2,
+  "seconds": 94.3,
   "range": [
-   -12.1601,
-   3.8399
+   -12.1579,
+   3.8421
   ],
   "albedo": false,
   "tris": 129884
@@ -99,10 +99,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 51.2,
+  "seconds": 68.7,
   "range": [
-   -11.7112,
-   4.2888
+   -11.7105,
+   4.2895
   ],
   "albedo": false,
   "tris": 17500
@@ -111,10 +111,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 79.1,
+  "seconds": 95.1,
   "range": [
-   -3.5015,
-   3.3456
+   -3.4722,
+   3.3495
   ],
   "albedo": false,
   "tris": 12
@@ -123,10 +123,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 74.5,
+  "seconds": 83.3,
   "range": [
-   -11.7497,
-   4.2503
+   -11.7885,
+   4.2115
   ],
   "albedo": false,
   "tris": 21027
@@ -135,7 +135,7 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 47.9,
+  "seconds": 53.2,
   "range": [
    -12.3305,
    3.6695
@@ -147,10 +147,10 @@
   "group": "plain",
   "res": 2048,
   "samples": 256,
-  "seconds": 95.0,
+  "seconds": 109.1,
   "range": [
-   -10.6515,
-   5.3485
+   -10.6472,
+   5.3528
   ],
   "albedo": false,
   "tris": 91566
@@ -159,10 +159,10 @@
   "group": "special",
   "res": 2048,
   "samples": 256,
-  "seconds": 67.5,
+  "seconds": 71.5,
   "range": [
-   -9.1294,
-   6.8706
+   -9.1319,
+   6.8681
   ],
   "albedo": false,
   "tris": 123105

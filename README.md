@@ -1,6 +1,6 @@
 # Mazen's Room: the portfolio site
 
-**Live: https://mazenddr.github.io/**
+**Live: https://mazenddr.pages.dev/** (https://mazenddr.github.io/ forwards there)
 
 A first-person visit to Mazen's room, in the spirit of *Life is Strange*.
 You stand on a landing with paintings on the wall and knock (the room downloads
@@ -46,11 +46,16 @@ the line turns out slow (the head counts the bytes of the first files: if after 
 the rest would take over 10 s more, the tour is a fifth of the download); the GPU can't
 draw the room at 20 frames a second even at the smallest size (timed before the door
 opens, and watched while flying); or the browser killed the page last time (a phone out
-of memory: the head notices the page died without leaving). The last two are remembered.
+of memory: the head notices the page died without leaving). The last two are remembered
+for a day, then the device gets another chance.
 
-Files come from jsDelivr pinned to a commit; if the CDN hasn't answered in 1.5 s (a
-cold CDN cache once took 13 s) or fails, the same file is asked of GitHub Pages too
-and the first answer wins (`ROOM_GET` in the page's head).
+**Hosting.** The site lives on Cloudflare Pages (free: no bandwidth limit, servers near
+every visitor; the project `mazenddr`), published by `sh tools/deploy.sh "what changed"`
+(`npx wrangler login` once). GitHub keeps the files, and its Pages address forwards visitors
+to Cloudflare (the page's first script, keeping the path, query and place). `_headers`
+caches the files named by their content for a year and labels the room models as wasm so
+Cloudflare compresses them (7.9 → 5.8 MB). jsDelivr, used before, served this repository
+only in part (over its 50 MB limit).
 
 On a phone (touch, and a small screen either way up) the hand-drawn arrows are drawn
 at phone size, with one light shadow, and fewer at a time: the seats (couch, desk, bed,
@@ -59,9 +64,16 @@ An arrow at the edge of the view stays until its object is well out of it, so lo
 around with a finger doesn't make arrows blink. Computers and tablets keep the full-size
 arrows and every one of them.
 
+Phones and tablets open the TV, computer and pinboard apps as a flat, full-screen sheet
+(Mazenflix mapped into the TV was more than Android's tile memory holds: warnings while
+using it 20-37 → 0), and ignore Safari's habit of enlarging text when an iPhone is turned
+sideways. Safari on iPhone can't make a page full screen; opened from the Home Screen
+(`manifest.webmanifest`, `apple-touch-icon.png`) the room fills it, and the "turn your
+phone" card says so.
+
 On Android, Chrome re-draws each screen's page at every new size while the camera moves
 (the pages are mapped onto the screens behind the canvas), and the screens lagged and
-flickered from across the room (Galaxy S21, S23 Ultra). There, each screen shows a still
+flickered from across the room (Galaxy S21, S23 Ultra). There (and on every phone and tablet), each screen shows a still
 of its page instead (`tools/screen_stills.py`, 1024 x 1024, in `public/screens/`), drawn
 by WebGL behind the glass and blended exactly as the browser blends the live page; the
 live page takes over once you zoom in on a screen. Both rooms do this; `?pictures` shows
@@ -146,7 +158,9 @@ node tools/build.mjs        # bundle + minify, inline CSS and data, preload tags
 from Poly Haven (alarm clock, glasses, ukulele, basket, notepads, pencil cup, wall
 clock; sources in `design/assets/realism/SOURCES.json`), dropped onto real
 surfaces with a downward ray and checked for overlaps, plus modelled curtains,
-a light switch, outlets and cables. `tools/books.py` shelves the books with real
+a light switch, outlets and cables. `tools/books.py` also seats the older shelf books' cover boards outside their pages (they
+were generated inside them, the cover and the pages' side in the same place: a flicker).
+`tools/books.py` shelves the books with real
 covers and spines made by `tools/make_book_textures.py` (covers from Open
 Library and Google Books, in `design/assets/books/`), and the door is the
 downloaded *Door with Doorframe* model in `design/assets/door/`.

@@ -214,6 +214,7 @@ export class Screens {
       this.objects[name] = { wrap, frame, hole, glass, corners, px: [[0, 0], [pw, 0], [pw, ph], [0, ph]], src: app.src, dim: DIM, to: DIM,
         page: [w, h], frameSize: [pw, ph], crt: !!app.crt };
     }
+    this.pictures = pictures;
     if (pictures) this.loadPictures();
     // Apps ask to leave with Escape (keys inside an iframe never reach this page).
     addEventListener('message', (e) => { if (e.data?.type === 'room-back') onBack(); });
@@ -256,8 +257,10 @@ export class Screens {
     renderer.autoClear = clear;
   }
 
-  /** Narrow or portrait screens can't read a 1280-px app shrunk onto a TV. */
-  get flat() { return innerWidth < 760 || innerHeight > innerWidth * 1.1; }
+  /** Narrow or portrait screens can't read a 1280-px app shrunk onto a TV; on Android an
+   *  app mapped into its screen is more than Chrome's tile memory holds there (the page
+   *  flickered, lagged and lost parts): both get the app as a flat, full-screen sheet. */
+  get flat() { return this.pictures || innerWidth < 760 || innerHeight > innerWidth * 1.1; }
 
   /** Tell an app whether it's being looked at, so idle ones stop animating. */
   wake(o, on) { o.frame.contentWindow?.postMessage({ type: 'room-focus', on }, '*'); }
@@ -270,9 +273,8 @@ export class Screens {
     if (o.src !== src) { o.frame.src = src; o.src = src; }
     this.active = name;
     document.body.classList.add('screen-focus');
-    this.wake(o, true);
     this.changed = true;
-    if (this.flat) {
+    if (this.flat) {                                // (the page in the room stays asleep: the sheet's copy is the one awake)
       this.sheet ||= Object.assign(document.createElement('div'), { id: 'app-sheet' });
       document.body.append(this.sheet);
       this.sheet.innerHTML = '';
@@ -280,10 +282,12 @@ export class Screens {
       f.src = src;
       f.className = 'flat';
       f.title = o.frame.title;
+      f.addEventListener('load', () => f.contentWindow?.postMessage({ type: 'room-focus', on: true }, '*'));
       this.sheet.append(f);
       requestAnimationFrame(() => this.sheet.classList.add('on'));
       setTimeout(() => f.focus(), 350);
     } else {
+      this.wake(o, true);
       o.wrap.classList.add('on');
       o.live = true;                                // (a still until now, on Android)
       o.to = 0;

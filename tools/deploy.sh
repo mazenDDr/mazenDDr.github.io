@@ -1,24 +1,25 @@
 #!/bin/sh
-# Publish to GitHub Pages in two steps:
-#   1. every file (so jsDelivr can serve that exact commit of the repository);
-#   2. the page, pointing its heavy files at jsDelivr@<that commit>.
-# Then ask jsDelivr for the first files once, so the first visitor doesn't wait for it
-# to fetch them from GitHub.
-#   sh tools/deploy.sh "What changed"
+# Publish. The site lives on Cloudflare Pages (free: no bandwidth limit, servers near every
+# visitor); GitHub keeps the files and its Pages address sends visitors to Cloudflare (the
+# page's first script). jsDelivr is no longer used: it served this repository only in part
+# (over its 50 MB limit).
+#   sh tools/deploy.sh "What changed"          (once before: npx wrangler login)
 set -e
 cd "$(dirname "$0")/.."
 export GIT_AUTHOR_NAME='Mazen Khaled' GIT_AUTHOR_EMAIL='khaledmazen456@gmail.com' GIT_COMMITTER_NAME='Mazen Khaled' GIT_COMMITTER_EMAIL='khaledmazen456@gmail.com'
-node tools/build.mjs
+# the site's Cloudflare address (its Pages project "mazenddr", made once with --force)
+HOME_URL=$(cat tools/cloudflare-url.txt)
+node tools/build.mjs --home "$HOME_URL"
 git add -A
 git commit -q -m "$1" || true
 git push -q origin HEAD
-SHA=$(git rev-parse --short=12 HEAD)
-node tools/build.mjs --cdn "$SHA"
-git add index.html sw.js
-git commit -q -m "Serve the heavy files from jsDelivr (commit $SHA)"
-git push -q origin HEAD
-CDN="https://cdn.jsdelivr.net/gh/mazenDDr/mazenDDr.github.io@$SHA"
-for f in $(grep -oE "public/tour/(app|live)-[0-9a-f]{8}\.js|public/tour/hall-(strip|front-1024)-[0-9a-f]{8}\.(avif|webp)|public/(anchors\.json|room-lo\.glb|bake/[a-z0-9_-]+\.(json|webp))" index.html | sort -u); do
-  curl -s -o /dev/null -w "warm %{http_code} %{time_total}s $f\n" "$CDN/$f"
+OUT=$(mktemp -d) NEUTRAL=$(mktemp -d)
+git archive HEAD | tar -x -C "$OUT"
+rm -rf "$OUT/node_modules" "$OUT/package.json" "$OUT/package-lock.json" "$OUT/tools" "$OUT/build"   # the site only
+# (run from an empty folder: in a project folder wrangler "sets it up" for Workers on its own)
+(cd "$NEUTRAL" && npx --yes wrangler pages deploy "$OUT" --project-name mazenddr --branch main --commit-dirty=true)
+rm -rf "$OUT" "$NEUTRAL"
+for f in index.html $(grep -oE "public/tour/(app|live)-[0-9a-f]{8}\.js|public/(anchors\.json|room-lo\.glb|bake/[a-z0-9_-]+\.(json|webp))" index.html | sort -u); do
+  curl -s -o /dev/null -w "warm %{http_code} %{time_total}s $f\n" "$HOME_URL$f"
 done
-echo "published: page -> $CDN"
+echo "published: $HOME_URL (and https://mazenddr.github.io/ forwards there)"
