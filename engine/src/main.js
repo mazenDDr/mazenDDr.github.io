@@ -117,8 +117,8 @@ const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.w
   scene.add(room);
   post = createPost(renderer, scene, camera);
   post.onChange = () => { redraw = true; };
-  // Android: stills on the screens until you zoom in on one (screens.js); ?pictures tries it anywhere
-  screens = new Screens(anchors, scene, LOOK.exposure, goBack, { pictures: /Android/i.test(navigator.userAgent) || params.has('pictures') });
+  // Android: stills on the screens until you zoom in on one (screens.js); ?pictures / ?pictures=0 force it on / off
+  screens = new Screens(anchors, scene, LOOK.exposure, goBack, { pictures: params.has('pictures') ? params.get('pictures') !== '0' : /Android/i.test(navigator.userAgent) });
   post.after = () => screens.drawUnder(renderer, camera);
   door = parts.door;
   resize();
@@ -245,6 +245,7 @@ function watchdog(raw) {
 }
 let leaving = false;
 function toPictures() {
+  if (params.has('stay')) return Promise.resolve();   // ?stay: keep the live room even on a GPU this slow (tests)
   if (leaving) return new Promise(() => {});
   leaving = true;
   try { localStorage.setItem('room-mode', 'tour'); } catch { /* private mode */ }

@@ -124,7 +124,8 @@ function pictureMaterial(map, [w, h], [pw, ph], crt) {
       void main() {
         vec2 p = vPx - margin;
         vec3 c = vec3(5.0, 4.0, 3.0) / 255.0;          // the tube's black around the picture
-        if (all(greaterThanEqual(p, vec2(0.0))) && all(lessThanEqual(p, page))) c = texture(map, p / page).rgb;
+        // (a sharper mip than the default: small type stays legible from across the room)
+        if (all(greaterThanEqual(p, vec2(0.0))) && all(lessThanEqual(p, page))) c = texture(map, p / page, -0.6).rgb;
         #if CRT
           float line = step(2.0, mod(vPx.y, 4.0));
           c *= mix(1.0 - 0.16 * line, 0.92, clamp(fwidth(vPx.y) - 0.5, 0.0, 1.0));

@@ -65,7 +65,15 @@ flickered from across the room (Galaxy S21, S23 Ultra). There, each screen shows
 of its page instead (`tools/screen_stills.py`, 1024 x 1024, in `public/screens/`), drawn
 by WebGL behind the glass and blended exactly as the browser blends the live page; the
 live page takes over once you zoom in on a screen. Both rooms do this; `?pictures` shows
-it on any device. `tools/build.mjs` warns when the pages changed after their stills.
+it on any device and `?pictures=0` turns it off. `tools/build.mjs` warns when the pages
+changed after their stills.
+
+Measured in Chrome for Android (`tools/android_probe.py`, the Android emulator shaped like a
+Galaxy S21): with the live pages, Chrome logged *"tile memory limits exceeded, some content
+may not draw"* 148 times arriving in the room, 87 times while a finger looked around and 119
+times on the couch, and its screenshots show the TV and computer black and arrows missing;
+with the stills, 2, 0 and 0, everything drawn. (The emulator draws in software, so its frame
+rates aren't a phone's; `&stay` keeps the live room there anyway.)
 
 `?mode=live` or `?mode=tour` forces one. In both, the live pages (TV, PC,
 pinboard) are mapped onto their screens with one projective CSS matrix each, which
@@ -294,6 +302,7 @@ $P web/tools/perf_probe.py [--net home|fast4g|slow4g] [--gzip] [--read 2.5] [--c
 $P web/tools/flow_test.py OUT/ --mobile                     # the same visit on a phone held sideways: taps and the Back button
 node web/tools/zfight_scan.mjs web/public/room.glb          # surfaces lying on each other (flicker), with the one on top
 $P web/tools/screen_stills.py                               # the screens' stills for Android: after changing content or an app
+$P web/tools/android_probe.py --query 'mode=live&stay'      # Chrome for Android on the emulator: tile memory, frames, a screen recording
 $P web/tools/texture_needs.py        # the engine: how big each texture needs to be (before export_web.py)
 $P web/tools/calibrate_look.py       # refit the grade after a rebake
 $P web/tools/sharpness.py REF.png WEB.png   # detail vs a Cycles close-up

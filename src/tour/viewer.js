@@ -42,7 +42,7 @@ const PIC_FRAG = `
   void main() {
     vec2 p = vPx - margin;
     vec3 c = vec3(5.0, 4.0, 3.0) / 255.0;
-    if (p.x >= 0.0 && p.y >= 0.0 && p.x <= page.x && p.y <= page.y) c = texture2D(map, p / page).rgb;
+    if (p.x >= 0.0 && p.y >= 0.0 && p.x <= page.x && p.y <= page.y) c = texture2D(map, p / page, -0.6).rgb;   // (a sharper mip: small type stays legible)
     gl_FragColor = vec4(c * (crt > 0.5 ? 0.92 : 1.0), 1.0);
   }`;
 
