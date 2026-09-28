@@ -167,9 +167,17 @@ async function start() {
   } else {
     tour.snap('hall');
     loader.pano('hall', 0);
-    const needs = [loader.videoFile('hall>room'),
-      ...manifest.views.room.faces.map((f) => [manifest.views.room.files[f][1024][loader.ext], manifest.views.room.files[f][1024].kb])];
-    const ready = Promise.all([loader.video('hall>room', 2), loader.pano('room', 2)]);
+    // the way in and the room at full sharpness before the door opens (shown under the knock)
+    const { front, side } = loader.sizes('room'), rf = manifest.views.room.files;
+    const size = (f) => (f === 'front' ? front : side) > 1024 ? (f === 'front' ? front : side) : 1024;
+    const needs = [loader.videoFile('hall>room'), ...manifest.views.room.faces.map((f) => [rf[f][size(f)][loader.ext], rf[f][size(f)].kb])];
+    const ready = Promise.all([loader.video('hall>room', 2), loader.pano('room', 2).then(() => loader.panos.room.full), screens.picturesReady]);
+    const loadBar = document.querySelector('#intro .load');
+    const tick = setInterval(() => {
+      const p = loader.progress(needs);
+      if (loadBar) { loadBar.querySelector('i').style.width = `${p * 100}%`; loadBar.querySelector('.pct').textContent = `${Math.floor(p * 100)}%`; }
+    }, 200);
+    ready.then(() => { clearInterval(tick); loadBar?.classList.add('ready'); });
     ready.then(() => screens.load());
     const intro = playIntro({ ready, progress: () => loader.progress(needs), tour, doodles: spots.doodles, enter: () => tour.goTo('room'), onDone: enterRoom });
     if (params.has('knocked')) intro.knock();       // sent here by the live room mid-knock: carry on knocking

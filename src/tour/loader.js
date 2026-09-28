@@ -97,7 +97,8 @@ export class Loader {
   }
 
   /** A place's pictures: strip, then 1024 faces, then (if `sharp`) as sharp as the
-   *  screen can show. Resolves when it looks right (the 1024 faces). */
+   *  screen can show. Resolves when it looks right (the 1024 faces); panos[key].full when
+   *  it is as sharp as it gets. */
   pano(key, prio = 3, sharp = true) {
     const v = this.m.views[key];
     this.viewer.add(key, v.pose.quat, v.faces);
@@ -110,15 +111,17 @@ export class Loader {
     const file = (face, size) => v.files[face][size][this.ext];
     const strip = this.get(v.files.strip[this.ext], prio).then(put('strip', 0));
     const base = Promise.all(v.faces.map((f) => this.get(file(f, 1024), prio + 1).then(put(f, 1024))));
+    let full = base;                    // (resolves when the place is as sharp as this screen shows)
     if (sharp) {
       const { front, side } = this.sizes(key);
-      base.then(() => Promise.all(v.faces.map((f) => {
+      full = base.then(() => Promise.all(v.faces.map((f) => {
         const n = f === 'front' ? front : side;
         return n > 1024 ? this.get(file(f, n), prio + 4).then(put(f, n)) : null;
-      }))).catch(() => {});
+      })));
+      full.catch(() => {});
     }
     strip.catch(() => {});
-    this.panos[key] = { prio: Math.min(prio, had?.prio ?? prio), promise: base, sharp: sharp || had?.sharp };
+    this.panos[key] = { prio: Math.min(prio, had?.prio ?? prio), promise: base, full, sharp: sharp || had?.sharp };
     return base;
   }
 

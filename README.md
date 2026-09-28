@@ -244,6 +244,11 @@ at 12.9 s, 1.4 MB, where the live room would take about 35 s). What changed:
   script runs, instead of one after another as the script found out about them.
 - **A backup for a cold CDN** (see above) and a **warm-up behind the door**: shaders,
   textures and the render size are settled while you knock, so the way in never hitches.
+- **Full quality before the door opens.** A bar under the knock counts the room in; the door
+  waits until every sharper texture and light map is downloaded and already on the GPU
+  (and, on phones, the screens' stills; in the pictures tour, the room at full sharpness and
+  the way in), so nothing is blurry or pops in after you enter (169 of 169 textures at full
+  size on arrival). The knocking lasts longer on a slow line instead.
 - **The door opens the moment the room is there** once the footsteps have been heard,
   instead of after one more round of knocking.
 - **A smaller render size is tried, not assumed.** While moving, a slow frame used to make

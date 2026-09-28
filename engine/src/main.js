@@ -113,10 +113,23 @@ let progress = 0;
 const live = !!window.ROOM_LIVE;
 const bar = document.querySelector('#loading .bar i');
 const uploads = [];
-const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.width = `${p * 100}%`; }, anchors.door.hinge,
+// Loading shown under the knock: the first model (a third of the way), then every sharper
+// picture. The door opens only when the whole room is there at full quality.
+let first = 0, streaming = null;
+const loadBar = document.querySelector('#intro .load');
+function showProgress() {
+  progress = 0.35 * first + 0.65 * (streaming ? streaming.progress() : 0);
+  if (bar) bar.style.width = `${progress * 100}%`;
+  if (loadBar) {
+    loadBar.querySelector('i').style.width = `${progress * 100}%`;
+    loadBar.querySelector('.pct').textContent = `${Math.floor(progress * 100)}%`;
+  }
+}
+const roomReady = loadRoom(renderer, (p) => { first = p; showProgress(); }, anchors.door.hinge,
   { lite: live, tier: window.ROOM_TIER }).then(async ({ room, parts, stream }) => {
   performance.mark('room-loaded');
-  stream(uploads);                  // sharper pictures from now on, the landing first
+  streaming = stream(uploads);      // every sharper picture, the landing first
+  const ticker = setInterval(showProgress, 200);
   scene.add(room);
   post = createPost(renderer, scene, camera);
   post.onChange = () => { redraw = true; };
@@ -126,7 +139,19 @@ const roomReady = loadRoom(renderer, (p) => { progress = p; if (bar) bar.style.w
   door = parts.door;
   resize();
   if (live) await warmUp();
-  warmed = true;                    // sharper pictures may replace the warmed-up ones from now on
+  // Full quality before the door opens: every sharper picture downloaded and put on the GPU
+  // now, a few per frame while the visitor knocks, and the screens' stills in place.
+  await streaming.done;
+  while (uploads.length) {
+    for (let i = 0; i < 3 && uploads.length; i++) { const t = uploads.shift()(); if (t) renderer.initTexture(t); }
+    redraw = true;
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+  await screens.picturesReady;
+  clearInterval(ticker);
+  first = 1; showProgress();
+  loadBar?.classList.add('ready');
+  warmed = true;                    // (nothing is left to stream now)
   performance.mark('room-ready');
   document.getElementById('loading')?.classList.add('done');    // the 3D view takes over from the still
   document.body.classList.add('drawn');

@@ -221,10 +221,10 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
    *  tier's), fetched a few at a time (light first: the whole look rests on it). Each
    *  arrives as a job for `queue`, which the page runs one per frame when the camera is still. */
   function stream(queue) {
-    if (!lite) return;
+    if (!lite) return { done: Promise.resolve(), progress: () => 1 };
     const compact = tier === 'compact';
-    const byName = new Map();
-    for (const t of holders.keys()) if (t.name) byName.set(t.name, t);
+    const byName = new Map();                       // name -> every texture of that name (a picture can be used twice)
+    for (const t of holders.keys()) if (t.name) (byName.get(t.name) || byName.set(t.name, []).get(t.name)).push(t);
     // what you see first (the landing and the door, while knocking) goes first
     const FIRST = ['hall', 'door'];
     const firstTex = new Set();
@@ -243,17 +243,22 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
     jobs.length = 0;
     const texJob = ([n, t]) => [`public/tex/${(compact && t.md) || t.file}`, byName.get(n)];
     jobs.push(...lightFirst, ...texs.filter(([n]) => firstTex.has(n)).map(texJob), ...lightRest, ...texs.filter(([n]) => !firstTex.has(n)).map(texJob));
-    let next = 0;
+    let next = 0, finished = 0;
     const worker = async () => {
       while (next < jobs.length) {
         const [url, old] = jobs[next++];
         try {
-          const img = await decode(await (await fetchAsset(url)).blob());
-          queue.push(() => swap(old, img));
+          const blob = await (await fetchAsset(url)).blob();
+          for (const o of [old].flat()) {             // (its own decoded copy each: a texture frees its picture after upload)
+            const img = await decode(blob);
+            queue.push(() => swap(o, img));
+          }
         } catch { /* keep the small one */ }
+        finished++;
       }
     };
-    for (let i = 0; i < 4; i++) worker();
+    // done: every sharper picture downloaded and decoded (queued for the GPU)
+    return { done: Promise.all([0, 1, 2, 3].map(worker)), progress: () => (jobs.length ? finished / jobs.length : 1) };
   }
 
   /** A new texture object for the sharper picture (a texture can't change size in place).
@@ -268,6 +273,7 @@ export async function loadRoom(renderer, onProgress = () => {}, hinge = null, { 
     holders.set(t, holders.get(old) || []);
     holders.delete(old);
     old.dispose();
+    return t;
   }
 
   return { room, parts, stream };

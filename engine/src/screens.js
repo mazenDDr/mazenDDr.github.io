@@ -215,7 +215,7 @@ export class Screens {
         page: [w, h], frameSize: [pw, ph], crt: !!app.crt };
     }
     this.pictures = pictures;
-    if (pictures) this.loadPictures();
+    this.picturesReady = pictures ? this.loadPictures() : Promise.resolve();
     // Apps ask to leave with Escape (keys inside an iframe never reach this page).
     addEventListener('message', (e) => { if (e.data?.type === 'room-back') onBack(); });
 

@@ -84,7 +84,7 @@ export class Screens {
         page: [w, h], frameSize: [pw, ph] };
     }
     addEventListener('message', (e) => { if (e.data?.type === 'room-back') onBack(); });
-    if (pictures) this.loadPictures();
+    this.picturesReady = pictures ? this.loadPictures() : Promise.resolve();
   }
 
   /** The stills (tools/screen_stills.py); until one arrives its live page shows. */
